@@ -6,7 +6,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, field_validator
 from dotenv import load_dotenv
 
-# Tìm .env linh hoạt
 current_file = Path(__file__).resolve()
 env_path = None
 for parent in current_file.parents:
@@ -21,13 +20,17 @@ if env_path:
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 class Settings(BaseSettings):
+    hf_token: str = Field(default="", validation_alias="HF_TOKEN")
+
     model_path_raw: str = Field(default="model-store/chatbot_models", validation_alias="MODEL_PATH")
     
     es_host: str = Field(default="http://localhost:9200", validation_alias="ES_HOST")
     recommendation_service_url: str = Field(default="http://localhost:8080")
     embed_model_name: str = Field(default="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2", validation_alias="EMBED_MODEL_NAME")
-    llm_model_name: str = Field(default="Llama-3.2-3B-Instruct-Q4_K_M.gguf", validation_alias="LLM_MODEL_NAME")
-    
+
+    repo_id: str = Field(default="hugging-quants/Llama-3.2-3B-Instruct-Q4_K_M-GGUF")
+    llm_model_name: str = Field(default="llama-3.2-3b-instruct-q4_k_m.gguf", validation_alias="LLM_MODEL_NAME")
+
     intent_anchors: Dict[str, List[str]] = Field(default_factory=dict)
     genre_map: Dict[str, str] = Field(default_factory=dict)
 

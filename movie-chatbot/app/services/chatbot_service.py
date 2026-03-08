@@ -14,7 +14,6 @@ class ChatBotService:
     def __init__(self):
         self.nlp = NLPService()
         self.search_service = SearchService()
-        self.llm_model = GPT4All(model_name=settings.llm_model_name, model_path=settings.model_path)
         self.llm_service = LLMService()
         self.es_client = Elasticsearch(settings.es_host)
         self.recommendation_service = RecommendationService()

@@ -19,7 +19,6 @@ COPY . .
 
 RUN mkdir -p /app/model-store
 
-EXPOSE 8082
+EXPOSE 8002
 
-# Command to run the application using uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8082"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8002"]

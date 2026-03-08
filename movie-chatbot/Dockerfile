@@ -1,6 +1,5 @@
 FROM python:3.10-slim
 
-# Cài đặt công cụ để compile một số thư viện C++ (như gpt4all hoặc psycopg2)
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -10,13 +9,12 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-# Cài đặt torch bản CPU trước để nhẹ image
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install llama-cpp-python huggingface_hub
 
 COPY . .
 
-# Port này phải khớp với .env APP_PORT
-EXPOSE 8081
+EXPOSE 8001
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8081"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
