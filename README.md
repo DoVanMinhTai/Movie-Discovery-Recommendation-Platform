@@ -37,12 +37,15 @@ cd movie-recommendation
 ```
 
 ## 2. Clone the Repository
-For security reasons, sensitive keys such as TMDB API tokens and Database credentials are not included in the repository.
-A valid .env file is required to run this project. 
-Please contact the author to obtain the configuration template and necessary keys:
-> Author: Do Van Minh Tai
->
-> Email: dotai05678910@gmail.com
+For security reasons, sensitive keys (TMDB API tokens, Database credentials, etc.) are not included in this repository.
+
+To run the project, you need a valid `.env` file. You can:
+1. **Download the template:** [https://drive.google.com/file/d/1IXgiLbs1BCTm-Eym6MQslcvHlYh5vzzR/view?usp=sharing]
+2. **Setup:** Place the downloaded `.env` file into the root directory of the project.
+
+> **Note:** If you don't have access to the link above, please contact the author:
+> - **Author:** Do Van Minh Tai
+> - **Email:** dotai05678910@gmail.com
 
 ## 3.Execution
 Run the entire stack using Docker:
