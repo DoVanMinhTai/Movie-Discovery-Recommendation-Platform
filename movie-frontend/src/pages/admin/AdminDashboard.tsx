@@ -1,4 +1,3 @@
-// ... các import khác
 import { useState } from 'react';
 import Dashboard from './Dashboard';
 import MovieManage from './MovieManage';

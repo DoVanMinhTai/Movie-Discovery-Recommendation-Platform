@@ -1,7 +1,7 @@
 import apiClientService from "../../../common/services/ApiClientService";
 import type { ProfileVm } from "../model/ProfileVm";
 
-const baseUrl = "http://localhost:8080/auth";
+const baseUrl = process.env.REACT_APP_API_BASE_URL + "/auth";
 
 export async function register(userName: string, email: string, password: string) {
     const response = await apiClientService.post(`${baseUrl}/register`, {

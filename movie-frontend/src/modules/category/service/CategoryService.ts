@@ -1,6 +1,6 @@
 import apiClientService from "../../../common/services/ApiClientService"
 
-const baseURL = "http://localhost:8080/movie/"
+const baseURL = process.env.REACT_APP_API_BASE_URL + "/movie/"
 
 export async function getMovieByType(type: string) {
     const response = await apiClientService.get(baseURL, {

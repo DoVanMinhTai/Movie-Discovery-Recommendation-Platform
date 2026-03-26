@@ -9,7 +9,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class RestClientConfig {
 
-    @Bean
+    @Bean(name = "standardRestClient")
     public RestClient restClient(RestClient.Builder restClientBuilder){
         return restClientBuilder.
          defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

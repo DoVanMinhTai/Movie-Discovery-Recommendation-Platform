@@ -91,11 +91,19 @@ services:
       container_name: movie-backend
       ports:
         - "${BACKEND_PORT}:8080"
-      env_file:
-        - .env
-      depends_on:
-        - postgres
-        - elasticsearch
+#      env_file:
+#        - .env
+      environment:
+        - DB_URL=${DB_URL}
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - ES_URL=${ES_URL}
+        - CHATBOT_URL=${CHATBOT_URL}
+        - RECO_URL=${RECO_URL}
+        - JAVA_OPTS=-Xmx350m -Xms256m
+#      depends_on:
+#        - postgres
+#        - elasticsearch
       networks:
         - movie-net
       deploy:

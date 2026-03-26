@@ -1,7 +1,7 @@
 import apiClientService from "../../../common/services/ApiClientService"
 import type { ContentType } from "../model/enum/ContentType";
 
-const baseURL = "http://localhost:8080";
+const baseURL = process.env.REACT_APP_API_BASE_URL;
 
 export async function getTop10(contentType: ContentType, limit: number = 10) {
     const response = await apiClientService.get(`${baseURL}/movie/movies/top10?contenttype=${contentType}&limit=${limit}`);

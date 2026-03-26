@@ -2,20 +2,16 @@ package nlu.fit.movie_backend;
 
 import nlu.fit.movie_backend.config.ServiceUrlConfig;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.TimeZone;
 
-@SpringBootApplication
-@EnableJpaRepositories(
-        basePackages = "nlu.fit.movie_backend.repository.jpa"
-)
-@EnableElasticsearchRepositories(
-        basePackages = "nlu.fit.movie_backend.repository.elasticsearchrepository"
-)
+@SpringBootApplication(exclude = {
+        org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration.class
+})
 @EnableConfigurationProperties(ServiceUrlConfig.class)
 public class MovieBackendApplication {
     static {
@@ -23,6 +19,12 @@ public class MovieBackendApplication {
     }
 
     public static void main(String[] args) {
+        io.github.cdimascio.dotenv.Dotenv dotenv = io.github.cdimascio.dotenv.Dotenv.configure()
+                .ignoreIfMissing()
+                .load();
+
+        dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+
         SpringApplication.run(MovieBackendApplication.class, args);
     }
 

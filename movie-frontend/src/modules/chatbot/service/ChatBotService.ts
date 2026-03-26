@@ -1,5 +1,5 @@
 export async function sendMessage(currentInput: any) {
-    const response = await fetch("http://localhost:8080/chatbot/message", {
+    const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/chatbot/message", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
