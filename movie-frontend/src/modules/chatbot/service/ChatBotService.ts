@@ -1,5 +1,7 @@
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export async function sendMessage(currentInput: any) {
-    const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/chatbot/message", {
+    const response = await fetch(BASE_URL + "/chatbot/message", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

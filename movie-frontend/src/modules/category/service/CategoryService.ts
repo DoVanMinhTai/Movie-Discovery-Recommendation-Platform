@@ -1,9 +1,9 @@
 import apiClientService from "../../../common/services/ApiClientService"
 
-const baseURL = process.env.REACT_APP_API_BASE_URL + "/movie/"
+const BASE_URL = import.meta.env.VITE_API_BASE_URL + "/movie/";
 
 export async function getMovieByType(type: string) {
-    const response = await apiClientService.get(baseURL, {
+    const response = await apiClientService.get(BASE_URL, {
         params: { type: type }
     })
 
@@ -11,7 +11,7 @@ export async function getMovieByType(type: string) {
 }
 
 export async function getAllGenres() {
-    const response = await apiClientService.get(baseURL + "movies/genres");
+    const response = await apiClientService.get(BASE_URL + "movies/genres");
     console.log("Genres response:", response);
     return response.data;
 }
@@ -25,7 +25,7 @@ export async function getMoviesFilter({ sortBy, genre, page }: { sortBy: string;
     if (genre) {
         params.genre = genre;
     }
-    const response = await apiClientService.get(baseURL + "movies/", {
+    const response = await apiClientService.get(BASE_URL + "movies/", {
         params: params
     });
     return response.data;
