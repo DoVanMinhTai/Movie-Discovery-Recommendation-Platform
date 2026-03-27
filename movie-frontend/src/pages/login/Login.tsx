@@ -1,8 +1,8 @@
 import React from 'react';
 import { login } from '../../modules/auth/service/AuthService';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-// Common Input Component để tái sử dụng
 const AuthInput = ({ label, ...props }: any) => (
   <div className="relative w-full mb-4">
     <input
@@ -57,7 +57,7 @@ export default function Login() {
 
             <div className="mt-10 text-white text-center">
               Mới tham gia Netflix?
-              <a href="/register" className="text-white hover:underline ml-1">Đăng ký ngay.</a>
+              <Link to="/register" className="text-white hover:underline ml-1">Đăng ký ngay.</Link>
             </div>
           </div>
         </div>
