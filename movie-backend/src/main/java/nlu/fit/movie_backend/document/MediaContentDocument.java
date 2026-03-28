@@ -1,13 +1,10 @@
 package nlu.fit.movie_backend.document;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.*;
-
-import java.time.LocalDateTime;
 
 @Document(indexName = "mediacontent")
 @Data
