@@ -40,29 +40,34 @@ public class AuthService {
     }
 
     public ProfileVm login(LoginVm loginRequest) {
-        String email = loginRequest.email();
-        String password = loginRequest.password();
-        var authentication = authenticationManager.authenticate(
-                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        email,
-                        password));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            String email = loginRequest.email();
+            String password = loginRequest.password();
+            var authentication = authenticationManager.authenticate(
+                    new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                            email,
+                            password));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        User user = authRepository.findByEmail(email);
+            User user = authRepository.findByEmail(email);
 
-        String jwt = JwtService.generateJWTToken(user);
-        UserToken token = new UserToken();
-        token.setToken(jwt);
-        token.setUser(user);
-        token.setRevoked(false);
-        tokenRepository.save(token);
-        return ProfileVm.builder()
-                .id(user.getId())
-                .userName(user.getUserName())
-                .email(user.getEmail())
-                .role(String.valueOf(user.getRole()))
-                .token(jwt)
-                .build();
+            String jwt = JwtService.generateJWTToken(user);
+            UserToken token = new UserToken();
+            token.setToken(jwt);
+            token.setUser(user);
+            token.setRevoked(false);
+            tokenRepository.save(token);
+            return ProfileVm.builder()
+                    .id(user.getId())
+                    .userName(user.getUserName())
+                    .email(user.getEmail())
+                    .role(String.valueOf(user.getRole()))
+                    .token(jwt)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public ProfileVm getProfile(Long userId) {
