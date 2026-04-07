@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record MovieDetailVm(
+public record MovieDetailGetVm(
         Long id,
         String title,
         String backdropUrl,
@@ -16,6 +16,8 @@ public record MovieDetailVm(
         String description,
         String cast,
         String director,
-        Double rating
+        Double rating,
+        String url,
+        String posterPath
 ) {
 }

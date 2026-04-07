@@ -19,3 +19,10 @@ export async function login(email: string, password: string) : Promise<ProfileVm
     });
     return response.data;
 }
+
+export async function existEmail(email: string) {
+    const response = await apiClientService.get(`${BASE_URL}/exist-email`, {
+        params: { email }
+    });
+    return response.data;
+}

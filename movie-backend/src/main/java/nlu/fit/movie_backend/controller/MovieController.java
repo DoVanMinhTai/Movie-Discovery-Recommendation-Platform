@@ -5,7 +5,8 @@ import nlu.fit.movie_backend.model.Genre;
 import nlu.fit.movie_backend.model.enumeration.CONTENTTYPE;
 import nlu.fit.movie_backend.service.JWTService;
 import nlu.fit.movie_backend.service.MovieService;
-import nlu.fit.movie_backend.viewmodel.movie.MediaContentVm;
+import nlu.fit.movie_backend.service.RateService;
+import nlu.fit.movie_backend.viewmodel.movie.MediaContentGetVm;
 import nlu.fit.movie_backend.viewmodel.movie.MovieHeroVm;
 import nlu.fit.movie_backend.viewmodel.movie.MovieThumbnailVms;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class MovieController {
     private final MovieService movieService;
     private final JWTService jWTService;
+    private final RateService rateService;
 
     @GetMapping("/")
     public ResponseEntity<?> getAllMovies() {
@@ -29,8 +31,9 @@ public class MovieController {
     }
 
     @GetMapping("/{movieId}")
-    public ResponseEntity<Page<MediaContentVm>> getMovieById(@PathVariable Long movieId) {
-        return ResponseEntity.ok(movieService.getMovieById(movieId));
+    public ResponseEntity<MediaContentGetVm> getMediaContentById(@PathVariable Long movieId) {
+        System.out.println(movieService.getMediaContentById(movieId));
+        return ResponseEntity.ok(movieService.getMediaContentById(movieId));
     }
 
     @GetMapping("/movies/latest")
@@ -62,7 +65,7 @@ public class MovieController {
     ) {
         String token = authHeader.substring(7);
         Long userId = jWTService.extractUserId(token);
-        return ResponseEntity.ok(movieService.getMoviePreferredGenres(userId,limit));
+        return ResponseEntity.ok(movieService.getMoviePreferredGenres(userId, limit));
     }
 
     @GetMapping("/movies/genres")
@@ -77,7 +80,7 @@ public class MovieController {
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size
     ) {
-        return ResponseEntity.ok(movieService.filterMovies(sortBy, genreId,page, size));
+        return ResponseEntity.ok(movieService.filterMovies(sortBy, genreId, page, size));
     }
 
     @GetMapping("/movies/hero")
@@ -85,4 +88,6 @@ public class MovieController {
     ) {
         return ResponseEntity.ok(movieService.getMovieHero());
     }
+
+
 }

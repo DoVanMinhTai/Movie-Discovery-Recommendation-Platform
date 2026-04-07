@@ -1,6 +1,6 @@
 import type { Episode } from "./Episode";
 
-export interface Session {
+export interface Season {
     id: number;
     seasonNumber: number;
     title?: string;

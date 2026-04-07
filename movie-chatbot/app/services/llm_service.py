@@ -14,7 +14,10 @@ class LLMService:
                 repo_id=repo_id,
                 filename=model_file,
                 n_ctx=2048,
-                n_threads=4
+                n_threads=4,
+                n_gpu_layers=0,
+                use_mlock=True,
+                use_mmap=True,
             )
             print("LLM Loaded successfully.")
         except Exception as e:

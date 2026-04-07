@@ -1,23 +1,17 @@
-# --- Framework & Server ---
 fastapi
-uvicorn
+uvicorn[standard]
 python-multipart
+pydantic-settings
 python-dotenv
 
-# --- Database & Search ---
 elasticsearch>=8.0.0,<9.0.0
 sqlalchemy
 psycopg2-binary
 requests
 
-# --- AI & NLP ---
-torch --index-url https://download.pytorch.org/whl/cpu
+--index-url https://download.pytorch.org/whl/cpu
+torch --extra-index-url https://pypi.org/simple
 sentence-transformers
-gpt4all
 underthesea
-pydantic_settings
 
-# --- Utilities ---
 pandas
-asyncio
-dotenv

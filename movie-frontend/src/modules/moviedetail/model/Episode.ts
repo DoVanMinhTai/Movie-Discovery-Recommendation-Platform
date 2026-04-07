@@ -1,7 +1,10 @@
 export interface Episode {
     id: number;
+    seasonNumber: number;
+    episodeNumber: number;
     title: string;
-    duration: number;
+    overview: string;   
     videoUrl: string;
-    description?: string;
+    stillPath: string;  
+    duration?: number; 
 }

@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { getAuthData } from '../AuthUtils';
 
 interface Props {
@@ -7,19 +7,17 @@ interface Props {
 
 const ProtectedRoute = ({ allowedRoles }: Props) => {
     const auth = getAuthData();
-    const isNewUser = auth?.isNewUser;
-    
+    const location = useLocation();
+
     if (!auth) {
         return <Navigate to="/login" replace />;
     }
 
     if (!allowedRoles.includes(auth.role)) {
-        console.log(1)
         return <Navigate to="/" replace />;
     }
 
-    if (auth.role === 'USER' && isNewUser && window.location.pathname !== '/onboarding') {
-        console.log(2)
+    if (auth.role !== 'ADMIN' && auth.isNewUser && location.pathname !== '/onboarding') {
         return <Navigate to="/onboarding" replace />;
     }
 

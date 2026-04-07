@@ -1,15 +1,14 @@
 package nlu.fit.movie_backend.repository.jpa;
 
 import nlu.fit.movie_backend.model.User;
+import nlu.fit.movie_backend.model.WatchHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Long> {
-    Optional<User> findByEmail(String email);
+public interface WatchHistoryRepository extends JpaRepository<WatchHistory,Long> {
 
-    boolean existsByEmailAndIsDeletedFalse(String email);
+    boolean existsByUserIdAndMediaContentId(Long userId, Long mediaContentId);
 }

@@ -7,6 +7,7 @@ import nlu.fit.movie_backend.service.RateService;
 import nlu.fit.movie_backend.service.UserService;
 import nlu.fit.movie_backend.viewmodel.rate.RatingPostVm;
 import nlu.fit.movie_backend.viewmodel.user.OnboardingPostVm;
+import nlu.fit.movie_backend.viewmodel.user.UserWatchHistoryPostVm;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -65,12 +66,19 @@ public class UserInteractionController {
     }
 
     @PostMapping("/onboarding")
-    public ResponseEntity<Map<String ,String>> onBoardingUser(
+    public ResponseEntity<Map<String, String>> onBoardingUser(
             @RequestBody OnboardingPostVm request,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String email = userDetails.getUsername();
-        String newToken = userService.processOnBoarding(email,request.genres());
+        String newToken = userService.processOnBoarding(email, request.genres());
         return ResponseEntity.ok(Collections.singletonMap("token", newToken));
+    }
+
+    @GetMapping("/api/checkWatchHistory/{mediaContentId}")
+    public ResponseEntity<Boolean> checkWatchHistory(@RequestHeader("Authorization") String token, @PathVariable Long mediaContentId) {
+        String tokenSub = token.substring(7);
+        Long userId = jwtService.extractUserId(tokenSub);
+        return ResponseEntity.ok(rateService.checkWatchHistory(userId, mediaContentId));
     }
 }

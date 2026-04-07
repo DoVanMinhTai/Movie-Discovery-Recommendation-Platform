@@ -1,13 +1,41 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { register } from "../../modules/auth/service/AuthService";
+import { Link, useNavigate } from "react-router-dom";
+import { existEmail, register } from "../../modules/auth/service/AuthService";
+
+const AuthInput = ({ label, ...props }: any) => (
+  <div className="relative w-full mb-4">
+    <input
+      {...props}
+      className="w-full bg-[#333] text-white h-[60px] px-5 pt-4 pb-1 rounded outline-none focus:bg-[#454545] border-b-2 border-transparent focus:border-b-[#e87c03] transition-all peer"
+      placeholder=" "
+    />
+    <label className="absolute left-5 top-4 text-[#8c8c8c] duration-150 transform -translate-y-3 scale-75 z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3 pointer-events-none">
+      {label}
+    </label>
+  </div>
+);
 
 export default function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
   function handleRegister() {
+    existEmail(email)
+      .then((exists) => {
+        if (exists) {
+          alert('Email đã tồn tại. Vui lòng sử dụng email khác.');
+        } else {
+          doRegister();
+        }
+      })
+      .catch((error: { message: string; }) => {
+        alert('Đã xảy ra lỗi: ' + error.message);
+      });
+  }
+
+  function doRegister() {
     if (!username || !email || !password) {
       alert('Vui lòng điền tất cả các trường.');
       return;
@@ -23,39 +51,49 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-[#300000] to-black">
-      <div className="min-h-screen z-40 overflow-hidden flex flex-col items-center justify-center px-4">
-        <div className="max-w-[440px] text-center bg-black p-10 rounded-lg bg-opacity-75">
-          <h1 className="text-3xl font-bold mb-4 text-[#333]">Chương trình truyền hình, phim không giới hạn và nhiều nội dung khác.</h1>
-          <p className="text-lg mb-6 text-[#333]">Sẵn sàng xem chưa? Nhập email để tạo hoặc kích hoạt lại tư cách thành viên của bạn.</p>
+    <div className="relative min-h-screen w-full bg-[url('https://assets.nflxext.com/ffe/siteui/vlv3/f841d4c7-10e1-40af-bcae-07a3f8cf141a/vn-en-20220502-popsignuptwoweeks-perspective_alpha_website_medium.jpg')] bg-cover bg-no-repeat">
 
-          <div className="flex flex-col gap-2">
-            <input
+      <div className="absolute inset-0 bg-black/60 bg-gradient-to-t from-black via-transparent to-black" />
+
+      <div className="relative flex justify-center items-center min-h-screen px-4">
+        <div className="bg-black/80 p-10 md:p-16 self-center w-full max-w-[450px] rounded-xl shadow-2xl">
+
+          <h1 className="text-white text-3xl font-bold mb-8 text-center">Đăng ký</h1>
+
+          <div className="flex flex-col space-y-4">
+            <AuthInput
+              label="Tên người dùng"
               type="text"
-              placeholder="Tên người dùng"
-              className="p-4 border text-white rounded-sm outline-none focus:border-white"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e: any) => setUsername(e.target.value)}
             />
-            <input
+
+            <AuthInput
+              label="Địa chỉ email"
               type="email"
-              placeholder="Địa chỉ email"
-              className="p-4 border text-white rounded-sm outline-none focus:border-white"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: any) => setEmail(e.target.value)}
             />
-            <input
+
+            <AuthInput
+              label="Mật khẩu"
               type="password"
-              placeholder="Mật khẩu"
-              className="p-4 border text-white rounded-sm outline-none focus:border-white"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: any) => setPassword(e.target.value)}
             />
-            <button 
-            onClick={handleRegister}
-            className=" text-white text-xl px-8 py-4 rounded-sm bg-red-700 flex items-center justify-center">
-              Bắt đầu {'>'}
+
+            <button
+              onClick={handleRegister}
+              className="bg-[#e50914] text-white text-xl font-bold px-8 py-4 rounded mt-4 hover:bg-[#c11119] transition-all active:scale-[0.98] flex items-center justify-center">
+              Đăng ký
             </button>
+          </div>
+
+          <div className="mt-10 text-[#737373] text-center">
+            Bạn đã có tài khoản?
+            <Link to="/login" className="text-white hover:underline ml-1 font-semibold">
+              Đăng nhập ngay.
+            </Link>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import Chatbot from "../../modules/chatbot/components/Chatbot";
 
 const MainLayout = () => {
     return (<>
-        <div className="bg-[#141414] min-h-screen text-white overflow-x-hidden">
+        <div className="bg-[#141414] min-h-screen text-white overflow-x-hidden z-[100]">
             <Header />
             <Outlet />
             <Chatbot />

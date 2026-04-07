@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { Star, Lock, CheckCircle2 } from "lucide-react";
+import { Star, Lock, PlayCircle, Heart } from "lucide-react";
+import { canRateMovie, rateMovie } from "../services/MovieService";
 
 export const RatingSection = ({ mediaId }: { mediaId: number }) => {
     const [hover, setHover] = useState(0);
@@ -9,21 +10,27 @@ export const RatingSection = ({ mediaId }: { mediaId: number }) => {
     const [hasWatched, setHasWatched] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
+    const labels: { [key: number]: string } = {
+        1: "Không thích",
+        2: "Tạm được",
+        3: "Khá hay",
+        4: "Rất tuyệt",
+        5: "Cực phẩm!"
+    };
+
     useEffect(() => {
-        const checkWatchedStatus = async () => {
+        const checkStatus = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/user/api/hasWatched/${mediaId}`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
-                });
-                const data = await response.json();
-                setHasWatched(data.watched);
+                const watched = await canRateMovie(mediaId);
+                setHasWatched(watched);
             } catch (error) {
+                console.error("Lỗi kiểm tra lịch sử xem:", error);
                 setHasWatched(false);
             } finally {
                 setIsLoading(false);
             }
         };
-        checkWatchedStatus();
+        checkStatus();
     }, [mediaId]);
 
     const handleRate = async (score: number) => {
@@ -34,20 +41,13 @@ export const RatingSection = ({ mediaId }: { mediaId: number }) => {
 
         setIsSubmitting(true);
         try {
-            const response = await fetch("http://localhost:8080/user/api/rateMovie", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`
-                },
-                body: JSON.stringify({
-                    movieId: mediaId,
-                    score: score,
-                    comment: ""
-                })
+            const success = await rateMovie({
+                movieId: mediaId,
+                score: score,
+                comment: ""
             });
 
-            if (response.ok) {
+            if (success) {
                 setRating(score);
                 toast.success(`Tuyệt vời! ${score} sao đã được ghi nhận.`);
             } else {
@@ -63,84 +63,77 @@ export const RatingSection = ({ mediaId }: { mediaId: number }) => {
     if (isLoading) return <div className="animate-pulse h-32 bg-white/5 rounded-lg mt-10" />;
 
     return (
-        <div className="container mx-auto  mb-8">
-            <div className={`relative overflow-hidden p-8 rounded-2xl border transition-all duration-500 w-full max-w-2xl mt-12 ${hasWatched
-                ? "bg-gradient-to-br from-zinc-900/90 to-black border-zinc-800 shadow-2xl"
-                : "bg-zinc-900/40 border-zinc-800/50 backdrop-blur-sm"
+        <div className="w-full mt-6">
+            <div className={`relative overflow-hidden p-6 rounded-xl border transition-all duration-500 ${hasWatched
+                    ? "bg-[#181818] border-zinc-800 shadow-xl"
+                    : "bg-zinc-900/30 border-zinc-800/50"
                 }`}>
 
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-red-600/10 rounded-full blur-3xl"></div>
-
                 <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-4">
-                        <h3 className="text-xl font-medium text-white tracking-tight">
-                            Đánh giá trải nghiệm
-                        </h3>
-                        {hasWatched ? (
-                            <span className="flex items-center gap-1 text-[10px] bg-green-500/10 text-green-500 px-2 py-0.5 rounded-full border border-green-500/20">
-                                <CheckCircle2 size={12} /> Đã xem
-                            </span>
-                        ) : (
-                            <span className="flex items-center gap-1 text-[10px] bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded-full border border-amber-500/20">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-2">
+                            <Heart size={18} className={hasWatched ? "text-red-500" : "text-zinc-500"} fill={hasWatched ? "currentColor" : "none"} />
+                            <h3 className="text-lg font-semibold text-white">Bạn thấy phim thế nào?</h3>
+                        </div>
+
+                        {!hasWatched && (
+                            <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
                                 <Lock size={12} /> Chưa xem
                             </span>
                         )}
                     </div>
 
                     {!hasWatched ? (
-                        <div className="py-4">
-                            <p className="text-zinc-400 text-sm leading-relaxed max-w-md">
-                                Tính năng đánh giá chỉ dành cho những người đã thưởng thức bộ phim này.
-                                Hãy xem phim để mở khóa và giúp AI hiểu gu của bạn hơn nhé!
+                        <div className="space-y-4">
+                            <p className="text-zinc-400 text-sm leading-relaxed">
+                                Đánh giá phim chỉ dành cho thành viên đã thưởng thức nội dung này.
+                                Hãy xem phim để có thể chia sẻ cảm nhận của bạn với cộng đồng nhé!
                             </p>
-                            <button className="mt-6 px-6 py-2 bg-white text-black font-bold rounded-md text-sm hover:bg-zinc-200 transition">
-                                Xem phim ngay
+                            <button className="flex items-center gap-2 px-5 py-2 bg-white text-black font-bold rounded-md text-sm hover:bg-zinc-200 transition active:scale-95">
+                                <PlayCircle size={18} /> Xem ngay
                             </button>
                         </div>
                     ) : (
-                        <>
-                            <p className="text-zinc-500 text-sm mb-6">
-                                Đánh giá của bạn giúp chúng tôi gợi ý những bộ phim phù hợp hơn.
+                        <div className="flex flex-col items-center sm:items-start">
+                            <p className="text-zinc-400 text-sm mb-4 text-center sm:text-left">
+                                Lựa chọn của bạn giúp chúng mình gợi ý những phim bạn sẽ thích hơn.
                             </p>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-3">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <button
                                         key={star}
                                         disabled={isSubmitting}
-                                        className="relative group p-1 outline-none"
+                                        className="relative group outline-none"
                                         onMouseEnter={() => setHover(star)}
                                         onMouseLeave={() => setHover(0)}
                                         onClick={() => handleRate(star)}
                                     >
                                         <Star
-                                            size={42}
+                                            size={38}
                                             strokeWidth={1.5}
                                             className={`transition-all duration-300 transform ${star <= (hover || rating)
-                                                ? "fill-yellow-400 text-yellow-400 scale-110 drop-shadow-[0_0_15px_rgba(250,204,21,0.4)]"
-                                                : "text-zinc-600 group-hover:text-zinc-400"
+                                                    ? "fill-red-600 text-red-600 scale-110 drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+                                                    : "text-zinc-700 group-hover:text-zinc-500"
                                                 } ${isSubmitting ? "animate-pulse" : "active:scale-90"}`}
                                         />
-                                        <span className={`absolute -top-8 left-1/2 -translate-x-1/2 text-xs font-bold transition-all ${hover === star ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-                                            } text-yellow-500`}>
-                                            {star}
-                                        </span>
                                     </button>
                                 ))}
                             </div>
 
-                            <div className="mt-6 h-6">
-                                <p className={`text-sm transition-all duration-500 ${rating > 0 ? "text-green-400 font-medium" : "text-zinc-500"}`}>
+                            <div className="mt-5 h-5 flex justify-center sm:justify-start w-full">
+                                <p className={`text-sm font-medium transition-all duration-300 ${rating > 0 ? "text-green-500" : "text-red-500"
+                                    }`}>
                                     {rating > 0
-                                        ? "Cảm ơn! Hệ thống AI đang cập nhật sở thích của bạn..."
-                                        : hover > 0 ? `Tặng ${hover} sao cho phim này?` : "Bạn thấy phim thế nào?"}
+                                        ? `Đã lưu: ${labels[rating]}`
+                                        : hover > 0 ? labels[hover] : ""
+                                    }
                                 </p>
                             </div>
-                        </>
+                        </div>
                     )}
                 </div>
             </div>
-
         </div>
     );
 };

@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nlu.fit.movie_backend.model.*;
 import nlu.fit.movie_backend.model.enumeration.CONTENTTYPE;
 import nlu.fit.movie_backend.model.enumeration.SORTBY;
-import nlu.fit.movie_backend.repository.jpa.GenreRepository;
-import nlu.fit.movie_backend.repository.jpa.MediaContentRepository;
-import nlu.fit.movie_backend.repository.jpa.MovieRepository;
-import nlu.fit.movie_backend.repository.jpa.UserRepository;
+import nlu.fit.movie_backend.repository.jpa.*;
 import nlu.fit.movie_backend.viewmodel.movie.*;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -26,7 +23,6 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final GenreRepository genreRepository;
     private final MediaContentRepository mediaContentRepository;
-    private final RecommendationService recommendationService;
     private final UserRepository userRepository;
 
     public List<MovieThumbnailVms> getAllMovies() {
@@ -34,7 +30,7 @@ public class MovieService {
         return fromListMoviesToListMovieThumbnailVms(movies);
     }
 
-    public MovieDetailVm addMovie(MoviePostVm moviePostVm) {
+    public MovieDetailGetVm addMovie(MoviePostVm moviePostVm) {
         Movie movie = new Movie();
         movie.setTmDBId(moviePostVm.tmDBId());
         movie.setTitle(moviePostVm.title());
@@ -53,10 +49,10 @@ public class MovieService {
 
         movie.setGenres(genres);
         Movie savedMovie = movieRepository.save(movie);
-        return fromMovieToMovieDetailVm(savedMovie);
+        return fromMovieToMovieGetVm(savedMovie);
     }
 
-    public MovieDetailVm putMovie(MoviePutVm request) {
+    public MovieDetailGetVm putMovie(MoviePutVm request) {
         Movie movie = movieRepository.findById(request.id()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         MoviePostVm moviePostVm = request.moviePostVm();
         movie.setTmDBId(moviePostVm.tmDBId());
@@ -72,7 +68,7 @@ public class MovieService {
         movie.setVoteCount(moviePostVm.voteCount());
         movie.setPopularity(moviePostVm.popularity());
         Movie movieSaved = movieRepository.save(movie);
-        return fromMovieToMovieDetailVm(movieSaved);
+        return fromMovieToMovieGetVm(movieSaved);
     }
 
     public Void deleteMovie(Long id) {
@@ -82,21 +78,24 @@ public class MovieService {
         return null;
     }
 
-    public Page<MediaContentVm> getMovieById(Long id) {
+    public MediaContentGetVm getMediaContentById(Long id) {
         MediaContent mediaContent = mediaContentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        MovieDetailVm movieDetailVm = null;
-        SeriesDetailVm seriesDetailVm = null;
         if (mediaContent instanceof Movie movie) {
-            movieDetailVm = fromMovieToMovieDetailVm(movie);
+            return MediaContentGetVm.builder()
+                    .movieDetailVm(fromMovieToMovieGetVm(movie))
+                    .seriesDetailVm(null)
+                    .type("MOVIE")
+                    .build();
         } else if (mediaContent instanceof Series series) {
-            seriesDetailVm = fromSeriesToSeriesDetailVm(series);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown media type");
+            return MediaContentGetVm.builder()
+                    .movieDetailVm(null)
+                    .seriesDetailVm(fromSeriesToSeriesDetailVm(series))
+                    .type("SERIES")
+                    .build();
         }
-        return new PageImpl<>(Collections.singletonList(new MediaContentVm(
-                movieDetailVm, seriesDetailVm, null
-        )), PageRequest.of(0, 1), 1);
+
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown media type");
     }
 
     private SeriesDetailVm fromSeriesToSeriesDetailVm(Series series) {
@@ -106,7 +105,7 @@ public class MovieService {
                 .collect(Collectors.joining(", "));
         List<SeasonVm> seasonVms = series.getSeasons().stream().map(item -> {
             List<EpisodeVm> episodeVmList = item.getEpisodes().stream().map(episode -> new EpisodeVm(
-                    episode.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), episode.getTitle(), episode.getOverview(), episode.getStillPath()
+                    episode.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), episode.getTitle(), episode.getVideoUrl(), episode.getStillPath()
             )).collect(Collectors.toList());
             return new SeasonVm(
                     item.getId(), item.getSeasonNumber(), item.getAirDate(), episodeVmList
@@ -127,13 +126,13 @@ public class MovieService {
         );
     }
 
-    private MovieDetailVm fromMovieToMovieDetailVm(Movie movie) {
+    private MovieDetailGetVm fromMovieToMovieGetVm(Movie movie) {
         String genresName = movie.getGenres()
                 .stream()
                 .map(Genre::getName)
                 .collect(Collectors.joining(", "));
 
-        return new MovieDetailVm(
+        return new MovieDetailGetVm(
                 movie.getId(),
                 movie.getTitle(),
                 movie.getBackdropPath(),
@@ -144,7 +143,9 @@ public class MovieService {
                 movie.getOverview(),
                 "cast",
                 "director",
-                movie.getVoteAverage()
+                movie.getVoteAverage(),
+                movie.getVideoUrl(),
+                movie.getPosterPath()
         );
     }
 
@@ -233,4 +234,5 @@ public class MovieService {
                                 .collect(Collectors.toList())
                 ));
     }
+
 }

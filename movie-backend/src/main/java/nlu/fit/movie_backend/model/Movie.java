@@ -19,4 +19,6 @@ public class Movie extends MediaContent {
     @Column(name = "trailer_key")
     private String trailerKey;
 
+    @Column(name = "video_url")
+    private String videoUrl;
 }

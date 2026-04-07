@@ -23,43 +23,44 @@ def get_data(url):
         print(f"Lỗi call API: {e}")
     return None
 
-def process_item(tmdb_id):
+def process_item(tmdb_id, media_type=None):
     movie_url = f"{BASE_URL}/movie/{tmdb_id}?api_key={TMDB_API_KEY}&append_to_response=videos"
     data = get_data(movie_url)
-    
-    if data:
-        return format_media_content(data, "MOVIE")
+    if data and 'title' in data:
+        item = format_media_content(data, "MOVIE")
+        item['videoUrl'] = f'https://vidsrc.to/embed/movie/{tmdb_id}'
+        return item
     
     tv_url = f"{BASE_URL}/tv/{tmdb_id}?api_key={TMDB_API_KEY}&append_to_response=videos"
     data = get_data(tv_url)
-    
-    if data:
-        series_info = format_media_content(data, "SERIES")
-        series_info['seasons'] = []
+    if data and 'name' in data:
+            series_info = format_media_content(data, "SERIES")
+            series_info['seasons'] = []
+            series_info['videoUrl'] = ""
+            for s in data.get('seasons', []):
+                if s['season_number'] == 0: continue 
+                
+                season_url = f"{BASE_URL}/tv/{tmdb_id}/season/{s['season_number']}?api_key={TMDB_API_KEY}"
+                s_data = get_data(season_url)
+                if s_data:
+                    season_obj = {
+                        "tmdbId": s_data.get('id'),
+                        "seasonNumber": s_data.get('season_number'),
+                        "name": s_data.get('name'),
+                        "episodes": [
+                            {
+                                "tmdbId": ep.get('id'),
+                                "episodeNumber": ep.get('episode_number'),
+                                "name": ep.get('name'),
+                                "overview": ep.get('overview'),
+                                "stillPath": ep.get('still_path'),
+                                "videoUrl": f'https://vidsrc.to/embed/tv/{tmdb_id}/{s["season_number"]}/{ep["episode_number"]}'
+                            } for ep in s_data.get('episodes', [])
+                        ]
+                    }
+                    series_info['seasons'].append(season_obj)
+            return series_info
         
-        for s in data.get('seasons', []):
-            if s['season_number'] == 0: continue 
-            
-            season_url = f"{BASE_URL}/tv/{tmdb_id}/season/{s['season_number']}?api_key={TMDB_API_KEY}"
-            s_data = get_data(season_url)
-            if s_data:
-                season_obj = {
-                    "tmdbId": s_data.get('id'),
-                    "seasonNumber": s_data.get('season_number'),
-                    "name": s_data.get('name'),
-                    "episodes": [
-                        {
-                            "tmdbId": ep.get('id'),
-                            "episodeNumber": ep.get('episode_number'),
-                            "name": ep.get('name'),
-                            "overview": ep.get('overview'),
-                            "stillPath": ep.get('still_path')
-                        } for ep in s_data.get('episodes', [])
-                    ]
-                }
-                series_info['seasons'].append(season_obj)
-        return series_info
-    
     return None
 
 def format_media_content(data, media_type):
@@ -67,22 +68,28 @@ def format_media_content(data, media_type):
     trailer_key = next((v['key'] for v in videos if v['type'] == 'Trailer' and v['site'] == 'YouTube'), None)
     genres_name = [g['name'] for g in data.get('genres', [])]
     return {
-        "tmdbId": data.get('id'),
+        "tmdbId": clean(data.get('id')),
         "type": media_type,
-        "title": data.get('title') if media_type == "MOVIE" else data.get('name'),
-        "originalTitle": data.get('original_title') if media_type == "MOVIE" else data.get('original_name'),
-        "overview": data.get('overview'),
-        "releaseDate": data.get('release_date') if media_type == "MOVIE" else data.get('first_air_date'),
-        "posterPath": data.get('poster_path'),
-        "backdropPath": data.get('backdrop_path'),
-        "voteAverage": data.get('vote_average'),
-        "voteCount": data.get('vote_count'),
-        "popularity": data.get('popularity'),
-        "status": data.get('status'),
+        "title": clean(data.get('title')) if media_type == "MOVIE" else clean(data.get('name')),
+        "originalTitle": clean(data.get('original_title')) if media_type == "MOVIE" else clean(data.get('original_name')),
+        "overview": clean(data.get('overview')),
+        "releaseDate": clean(data.get('release_date')) if media_type == "MOVIE" else clean(data.get('first_air_date')),
+        "posterPath": clean(data.get('poster_path')),
+        "backdropPath": clean(data.get('backdrop_path')),
+        "voteAverage": clean(data.get('vote_average')),
+        "voteCount": clean(data.get('vote_count')),
+        "popularity": clean(data.get('popularity')),
+        "status": clean(data.get('status')),
         "trailerKey": trailer_key,
-        "originalLanguage": data.get('original_language'),
+        "originalLanguage": clean(data.get('original_language')),
         "genres": genres_name,
+        "runtime": clean(data.get('runtime')) if media_type == "MOVIE" else None
     }
+
+def clean(value):
+    if value is None or pd.isna(value):
+        return ""
+    return str(value).strip()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -98,23 +105,23 @@ df_merged = pd.merge(df_movies, df_links, on='movieId', how='left')
 df_merged = df_merged.dropna(subset=['tmdbId'])
 
 FILES = {
-    'media': os.path.join(EXTRACTED_DIR, "mediacontent_1.csv"),
-    'genres': os.path.join(EXTRACTED_DIR, "genres_1.csv"),
-    'media_genres': os.path.join(EXTRACTED_DIR, "media_genres_1.csv"),
-    'movie': os.path.join(EXTRACTED_DIR, "movies_1.csv"),
-    'series': os.path.join(EXTRACTED_DIR, "series_1.csv"),
-    'seasons': os.path.join(EXTRACTED_DIR, "seasons_1.csv"),
-    'episodes': os.path.join(EXTRACTED_DIR, "episodes_1.csv"),
+    'media': os.path.join(EXTRACTED_DIR, "mediacontent.csv"),
+    'genres': os.path.join(EXTRACTED_DIR, "genres.csv"),
+    'media_genres': os.path.join(EXTRACTED_DIR, "media_genres.csv"),
+    'movie': os.path.join(EXTRACTED_DIR, "movies.csv"),
+    'series': os.path.join(EXTRACTED_DIR, "series.csv"),
+    'seasons': os.path.join(EXTRACTED_DIR, "seasons.csv"),
+    'episodes': os.path.join(EXTRACTED_DIR, "episodes.csv"),
 }
 
 HEADERS = {
     'media': ['movieId', 'tmdbId', 'title', 'original_title', 'overview', 'release_date', 'poster_path', 'backdrop_path', 'tmdb_vote', 'vote_count', 'popularity', 'dtype','originalLanguage'],
     'genres': ['id', 'name'],
     'media_genres': ['mediaContentId', 'genreId'],
-    'movie': ['movieId', 'runtime', 'trailerKey'],
+    'movie': ['movieId', 'runtime', 'trailerKey','videoUrl'],
     'series': ['movieId', 'status'],
     'seasons': ['id', 'seasonNumber', 'name', 'series_id'],
-    'episodes': ['id', 'episodeNumber', 'name', 'overview', 'stillPath', 'season_id'],
+    'episodes': ['id', 'episodeNumber', 'title', 'overview', 'stillPath', 'season_id', 'videoUrl'],
 }
 
 for key, path in FILES.items():
@@ -131,7 +138,6 @@ def getGenreIdsByListName(item):
     for _, row in df_genres_name.iterrows():
         if row['name'] in item.get('genres', []):
             genre_ids.append(row['genre_id'])
-            # Lưu vào bảng media_genres
             print(f"Saving genre mapping: mediaContentId={item['tmdbId']}, genreId={row['genre_id']}, genre_ids={genre_ids}")
             save_row('media_genres', {'mediaContentId': item['tmdbId'], 'genreId': row['genre_id']})
     return genre_ids
@@ -160,9 +166,9 @@ def start_crawl():
         tmdb_id = str(int(row['tmdbId']))
 
         item = process_item(tmdb_id) 
-        getGenreIdsByListName(item)
         
         if item:
+            getGenreIdsByListName(item)
             save_row('media', {
                 'movieId': item['tmdbId'], 'tmdbId': item['tmdbId'],
                 'title': item['title'], 'original_title': item['originalTitle'],
@@ -171,12 +177,13 @@ def start_crawl():
                 'tmdb_vote': item['voteAverage'], 'vote_count': item['voteCount'],
                 'popularity': item['popularity'], 'dtype': item['type'], 'originalLanguage': item['originalLanguage']
             })
-            
-            save_row('movie' , {
-                'movieId': item['tmdbId'],
-                'runtime': item.get('runtime', None),
-                'trailerKey': item['trailerKey']
-            })
+            if item['type'] == 'MOVIE':
+                save_row('movie' , {
+                    'movieId': item['tmdbId'],
+                    'runtime': item.get('runtime', None),
+                    'trailerKey': item['trailerKey'],
+                    'videoUrl': item['videoUrl']
+                })
 
             if item['type'] == 'SERIES':
                 save_row('series', {'movieId': item['tmdbId'], 'status': item['status']})
@@ -184,9 +191,10 @@ def start_crawl():
                     save_row('seasons', {'id': sn['tmdbId'], 'seasonNumber': sn['seasonNumber'], 'name': sn['name'], 'series_id': item['tmdbId']})
                     for ep in sn.get('episodes', []):
                         save_row('episodes', {
-                            'id': ep['tmdbId'], 'episodeNumber': ep['episodeNumber'],
-                            'name': ep['name'], 'overview': ep['overview'],
-                            'stillPath': ep['stillPath'], 'season_id': sn['tmdbId']
+                            'id': clean(ep['tmdbId']), 'episodeNumber': ep['episodeNumber'],
+                            'name': clean(ep['name']), 'overview': clean(ep['overview']),
+                            'stillPath': clean(ep['stillPath']), 'season_id': clean(sn['tmdbId']),
+                            'videoUrl': clean(ep['videoUrl'])
                         })
             
             with open(CHECKPOINT_FILE, 'a') as f: f.write(f"{tmdb_id}\n")

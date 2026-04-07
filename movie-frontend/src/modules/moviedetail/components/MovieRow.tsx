@@ -22,7 +22,8 @@ export default function MovieRow({ title, movies, isLarge }: Props) {
         sliderRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
     }
 
-    return <>
+    return <> {movies && movies.length > 0 && (
+
         <div className="group container mx-auto space-y-2 mb-5 mt-5 relative">
             <h2 className="text-xl font-semibold text-white">{title}</h2>
             <div className="relative">
@@ -61,5 +62,7 @@ export default function MovieRow({ title, movies, isLarge }: Props) {
                 </button>
             </div>
         </div>
+    )
+    }
     </>
 }

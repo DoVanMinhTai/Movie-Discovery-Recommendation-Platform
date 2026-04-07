@@ -1,10 +1,12 @@
 ---
-title: Model Movie
-emoji: 🐢
-colorFrom: yellow
-colorTo: indigo
+title: Movie Recommendation LLM
+emoji: 🎬
+colorFrom: blue
+colorTo: red
 sdk: docker
+app_port: 8001
 pinned: false
----
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+app_docker:
+  image: dotai2004/movie-chatbot:v1
+---

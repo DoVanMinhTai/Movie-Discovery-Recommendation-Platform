@@ -7,11 +7,12 @@ import { getAuthData } from "../../common/auth/AuthUtils";
 
 export default function OnBoarding() {
     const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
-    const [genres, setGenres] = useState<Genre[]>();
+    const [genres, setGenres] = useState<Genre[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         getAllGenres().then((data) => {
+            console.log("Fetched genres:", data);
             setGenres(data);
         })
     }, [])
@@ -29,12 +30,11 @@ export default function OnBoarding() {
             return await response.json();
         },
         onSuccess: (data) => {
-            console.log("Dữ liệu nhận được từ server:", data);
             if (data && data.token) {
                 localStorage.setItem('token', data.token);
                 navigate('/');
             } else {
-                console.error("Không tìm thấy token trong response!");
+                console.error("Error: No token received from server");
             }
         }
     });
@@ -57,12 +57,12 @@ export default function OnBoarding() {
         mutation.mutate({ genres: [] });
     };
 
-    const auth = getAuthData();
     useEffect(() => {
+        const auth = getAuthData();
         if (auth && !auth.isNewUser) {
             navigate('/');
         }
-    }, [auth]);
+    }, [navigate]);
 
     return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4">
@@ -80,11 +80,10 @@ export default function OnBoarding() {
                             className={`
                                 cursor-pointer p-6 rounded-xl border-2 transition-all duration-300 transform hover:scale-105
                                 ${selectedGenres.includes(genre.id)
-                                    ? 'border-nfRed bg-nfRed/20 shadow-[0_0_15px_rgba(229,9,20,0.5)]'
-                                    : 'border-nfGrey-700 bg-nfGrey-800 hover:border-nfGrey-400'}
+                                    ? 'border-red-600 bg-red-600/20 shadow-[0_0_15px_rgba(229,9,20,0.5)] scale-105'
+                                    : 'border-gray-500 hover:border-white bg-transparent'}
                             `}
                         >
-                            {/* <span className="text-3xl mb-2 block">{genre.emoji}</span> */}
                             <span className="font-medium">{genre.name}</span>
                         </div>
                     ))}

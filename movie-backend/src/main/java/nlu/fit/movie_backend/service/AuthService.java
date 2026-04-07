@@ -9,7 +9,7 @@ import nlu.fit.movie_backend.repository.jpa.UserRepository;
 import nlu.fit.movie_backend.viewmodel.auth.LoginVm;
 import nlu.fit.movie_backend.viewmodel.auth.RegisterPostVm;
 import nlu.fit.movie_backend.viewmodel.auth.RegisterVm;
-import nlu.fit.movie_backend.viewmodel.user.ProfileVm;
+import nlu.fit.movie_backend.viewmodel.user.ProfileGetVm;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +39,7 @@ public class AuthService {
                 .email(user.getEmail()).build();
     }
 
-    public ProfileVm login(LoginVm loginRequest) {
+    public ProfileGetVm login(LoginVm loginRequest) {
         try {
             String email = loginRequest.email();
             String password = loginRequest.password();
@@ -57,7 +57,7 @@ public class AuthService {
             token.setUser(user);
             token.setRevoked(false);
             tokenRepository.save(token);
-            return ProfileVm.builder()
+            return ProfileGetVm.builder()
                     .id(user.getId())
                     .userName(user.getUserName())
                     .email(user.getEmail())
@@ -70,10 +70,10 @@ public class AuthService {
         }
     }
 
-    public ProfileVm getProfile(Long userId) {
+    public ProfileGetVm getProfile(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
 
-        return ProfileVm.builder().fullName(user.getFullName())
+        return ProfileGetVm.builder().fullName(user.getFullName())
                 .email(user.getEmail())
                 .role(String.valueOf(user.getRole()))
                 .preferences(user.getPreferredGenres().stream().map(item -> item.getName())
@@ -82,4 +82,7 @@ public class AuthService {
 
     }
 
+    public Boolean existEmail(String email) {
+        return userRepository.existsByEmailAndIsDeletedFalse(email);
+    }
 }
