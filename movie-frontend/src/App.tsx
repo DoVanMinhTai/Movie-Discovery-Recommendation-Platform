@@ -30,7 +30,6 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-
     <QueryClientProvider client={queryClient}>
       <Toaster position="top-center" reverseOrder={false} />
       <BrowserRouter>
@@ -57,7 +56,6 @@ function App() {
               <Route path="users" element={<div>Quản lý người dùng</div>} />
             </Route>
           </Route>
-
           <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>
       </BrowserRouter>

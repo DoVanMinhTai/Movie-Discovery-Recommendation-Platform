@@ -1,26 +1,24 @@
 import { useEffect, useState } from "react";
 import Banner from "../../modules/homepage/components/Banner";
-import type { Hero } from "../../modules/homepage/model/Hero.ts";
-import MovieRow from "../../modules/moviedetail/components/MovieRow.tsx";
-import type { MovieThumbnailVm } from "../../modules/moviedetail/model/MovieThumbnailVm.ts";
-import { ContentType } from "../../modules/homepage/model/enum/ContentType.ts";
+import type { MovieHeroGetVm } from "../../modules/homepage/model/MovieHeroGetVm.ts";
+import MovieRow from "../../modules/movie/components/MovieRow.tsx";
+import type { MovieThumbnailGetVm } from "../../modules/movie/model/MovieThumbnailGetVm.ts";
 import { getHeroMovie, getMoviePreferredGenres, getTop10, getTrending } from "../../modules/homepage/service/HomePageService.ts";
 
 export default function HomePage() {
 
 
-  const [moviesTop10, setMoviesTop10] = useState<MovieThumbnailVm[]>([]);
-  const [moviesTrending, setMoviesTrending] = useState<MovieThumbnailVm[]>([]);
-  const [movieHero, setMovieHero] = useState<Hero>();
-  const [preferredGenres, setPreferredGenres] = useState<Record<string, MovieThumbnailVm[]>>({});
+  const [moviesTop10, setMoviesTop10] = useState<MovieThumbnailGetVm[]>([]);
+  const [moviesTrending, setMoviesTrending] = useState<MovieThumbnailGetVm[]>([]);
+  const [movieHero, setMovieHero] = useState<MovieHeroGetVm>();
+  const [preferredGenres, setPreferredGenres] = useState<Record<string, MovieThumbnailGetVm[]>>({});
 
   useEffect(() => {
     getHeroMovie().then((data) => {
       setMovieHero(data);
     });
 
-    const contentType: ContentType = ContentType.MOVIE;
-    getTop10(contentType, 10).then((data) => {
+    getTop10().then((data) => {
       setMoviesTop10(data);
     });
 

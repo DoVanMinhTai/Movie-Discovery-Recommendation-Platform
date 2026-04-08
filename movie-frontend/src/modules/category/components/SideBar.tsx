@@ -9,51 +9,66 @@ type Props = {
 }
 
 export default function SideBar({ genres, activeSort, activeGenre, onSortChange, onGenreChange }: Props) {
+     const sortOptions = [
+        { id: 'POPULARITY', label: 'Phổ biến nhất' },
+        { id: 'NEWEST', label: 'Mới nhất' },
+        { id: 'OLDEST', label: 'Cũ nhất' },
+        { id: 'RATING', label: 'Đánh giá cao' },
+    ];
+
     return (
-        <div className="container flex flex-col w-1/4 mt-4 gap-5 px-12">
-            <div className="flex-col w-full justify-center gap-10 ">
-                <div className="flex w-full justify-center">
-                    <button
-                        className={`px-4 py-2 rounded-full ${activeSort === 'POPULARITY' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300'}`}
-                        onClick={() => onSortChange('POPULARITY')}
-                    >
-                        Most Popular
-                    </button>
-                    <button
-                        className={`px-4 py-2 rounded-full ${activeSort === 'OLDEST' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300'}`}
-                        onClick={() => onSortChange('OLDEST')}
-                    >
-                        Latest
-                    </button>
-                </div>
-                <div className="flex w-full justify-center">
-                    <button
-                        className={`px-4 py-2 rounded-full ${activeSort === 'NEWEST' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300'}`}
-                        onClick={() => onSortChange('NEWEST')}
-                    >
-                        Newest
-                    </button>
-                    <button
-                        className={`px-4 py-2 rounded-full ${activeSort === 'RATING' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300'}`}
-                        onClick={() => onSortChange('RATING')}
-                    >
-                        Top Rated
-                    </button>
+        <div className="flex flex-col gap-8 sticky top-24">
+            <div>
+                <h3 className="text-gray-400 uppercase text-xs font-bold tracking-widest mb-4">Sắp xếp theo</h3>
+                <div className="flex flex-col gap-2">
+                    {sortOptions.map((opt) => (
+                        <button
+                            key={opt.id}
+                            onClick={() => onSortChange(opt.id)}
+                            className={`text-left px-4 py-2 rounded-md transition-all duration-200 text-sm font-medium
+                                ${activeSort === opt.id 
+                                    ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' 
+                                    : 'text-gray-400 hover:bg-[#2f2f2f] hover:text-white'
+                                }`}
+                        >
+                            {opt.label}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            <div className="ml-8 flex flex-wrap flex-col gap-4">
-                {genres.map((genre) => (
+            {/* Divider */}
+            <div className="h-[1px] bg-gray-800 w-full" />
+
+            <div>
+                <h3 className="text-gray-400 uppercase text-xs font-bold tracking-widest mb-4">Thể loại</h3>
+                <div className="flex flex-wrap gap-2">
                     <button
-                        key={genre.id}
-                        className={`px-4 py-2 rounded-full ${activeGenre === genre.id.toString() ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300'}`}
-                        onClick={() => onGenreChange(genre.id.toString())}
+                        onClick={() => onGenreChange('')}
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all
+                            ${activeGenre === '' 
+                                ? 'border-red-600 bg-red-600 text-white' 
+                                : 'border-gray-600 text-gray-400 hover:border-white hover:text-white'
+                            }`}
                     >
-                        {genre.name}
+                        Tất cả
                     </button>
-                ))}
+
+                    {genres.map((genre) => (
+                        <button
+                            key={genre.id}
+                            onClick={() => onGenreChange(genre.id.toString())}
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all
+                                ${activeGenre === genre.id.toString() 
+                                    ? 'border-red-600 bg-red-600 text-white' 
+                                    : 'border-gray-600 text-gray-400 hover:border-white hover:text-white'
+                                }`}
+                        >
+                            {genre.name}
+                        </button>
+                    ))}
+                </div>
             </div>
         </div>
-
-    )
+    );
 }

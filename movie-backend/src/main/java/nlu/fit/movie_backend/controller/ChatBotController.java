@@ -2,7 +2,7 @@ package nlu.fit.movie_backend.controller;
 
 import lombok.AllArgsConstructor;
 import nlu.fit.movie_backend.service.ChatbotService;
-import nlu.fit.movie_backend.viewmodel.chatbot.ChatRequest;
+import nlu.fit.movie_backend.viewmodel.chatbot.ChatPostVm;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.ServerSentEvent;
@@ -17,8 +17,8 @@ public class ChatBotController {
     private final ChatbotService chatbotService;
 
     @PostMapping(value = "/message", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ServerSentEvent<String>> sendMessage(@RequestBody ChatRequest chatRequest) {
-        return chatbotService.sendMessage(chatRequest).map(data -> ServerSentEvent.<String>builder()
+    public Flux<ServerSentEvent<String>> sendMessage(@RequestBody ChatPostVm chatPostVm) {
+        return chatbotService.sendMessage(chatPostVm).map(data -> ServerSentEvent.<String>builder()
                         .data(data)
                         .build())
                 .onErrorResume(e -> Flux.just(ServerSentEvent.<String>builder()

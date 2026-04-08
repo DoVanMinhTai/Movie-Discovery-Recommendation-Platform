@@ -26,8 +26,11 @@ public class ModelRegistry {
     private String modelPath;
 
     private Double rmse;
+
     private Double mae;
+
     private Double precision;
+
     private Double recall;
 
     @Column(name = "f1_score")

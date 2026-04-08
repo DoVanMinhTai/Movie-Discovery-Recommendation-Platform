@@ -1,31 +1,21 @@
+import { API_ENDPOINTS } from "../../../common/constants/ApiEndpoints";
 import apiClientService from "../../../common/services/ApiClientService"
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL + "/movie/";
-
-export async function getMovieByType(type: string) {
-    const response = await apiClientService.get(BASE_URL, {
-        params: { type: type }
-    })
-
-    return response.data;
-}
-
-export async function getAllGenres() {
-    const response = await apiClientService.get(BASE_URL + "movies/genres");
-    console.log("Genres response:", response);
+export async function getAllGenre() {
+    const response = await apiClientService.get(API_ENDPOINTS.CATEGORY.GET_ALL);
     return response.data;
 }
 
 export async function getMoviesFilter({ sortBy, genre, page }: { sortBy: string; genre: string; page: number }) {
-    const params: any = { 
+    const params: any = {
         sortBy: sortBy,
-        page: page, 
-        size: 10   
+        page: page,
+        size: 10
     };
     if (genre) {
         params.genre = genre;
     }
-    const response = await apiClientService.get(BASE_URL + "movies/", {
+    const response = await apiClientService.get(API_ENDPOINTS.MOVIE.FILTER, {
         params: params
     });
     return response.data;

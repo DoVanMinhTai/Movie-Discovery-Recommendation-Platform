@@ -2,7 +2,8 @@ package nlu.fit.movie_backend.service;
 
 import lombok.AllArgsConstructor;
 import nlu.fit.movie_backend.config.ServiceUrlConfig;
-import nlu.fit.movie_backend.viewmodel.chatbot.ChatRequest;
+
+import nlu.fit.movie_backend.viewmodel.chatbot.ChatPostVm;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -20,7 +21,7 @@ public class ChatbotService {
     private final WebClient webClient;
     private final RestClient restClient;
 
-    public Flux<String> sendMessage(ChatRequest chatRequest) {
+    public Flux<String> sendMessage(ChatPostVm chatRequest) {
         URI url = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.chatbot())
                 .path("/chatbot/sendMessage")
                 .build().toUri();

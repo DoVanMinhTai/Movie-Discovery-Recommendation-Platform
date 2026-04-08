@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Hero } from "../model/Hero"
+import type { Hero } from "../model/MovieHeroGetVm"
 
 type Props = {
   movie: Hero;

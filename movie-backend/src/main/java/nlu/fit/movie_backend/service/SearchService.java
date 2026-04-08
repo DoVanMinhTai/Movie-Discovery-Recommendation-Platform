@@ -2,7 +2,7 @@ package nlu.fit.movie_backend.service;
 
 import lombok.RequiredArgsConstructor;
 import nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository;
-import nlu.fit.movie_backend.viewmodel.movie.MovieSearchVm;
+import nlu.fit.movie_backend.viewmodel.movie.MovieSearchGetVm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,26 +19,25 @@ import java.util.stream.Collectors;
 public class SearchService {
     private final MediaContentSearchRepository mediaContentSearchRepository;
 
-    public List<MovieSearchVm> getMovieSuggestionByTitle(String input) {
+    public List<MovieSearchGetVm> getMovieSuggestionByTitle(String input) {
         String sanitized = input.replaceAll("[\\*\\\"\\?\\~]", "").trim();
         return mediaContentSearchRepository.findAllByTitleContaining(sanitized).stream().map(item -> {
             Instant instant = Instant.ofEpochMilli(item.getReleaseDate());
             Long year = (long) LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).getYear();
-            return new MovieSearchVm(item.getId(), item.getTitle(), year, item.getBackdropPath());
+            return new MovieSearchGetVm(item.getId(), item.getTitle(), year, item.getBackdropPath());
         }).limit(3).collect(Collectors.toList());
     }
 
-    public Page<MovieSearchVm> getAllMovieByTitle(String input, Pageable pageable) {
+    public Page<MovieSearchGetVm> getAllMovieByTitle(String input, Pageable pageable) {
         String sanitized = input.replaceAll("[\\*\\\"\\?\\~]", "").trim();
 
         if (sanitized.isEmpty()) return Page.empty();
 
         return mediaContentSearchRepository.findAllByTitleContaining(sanitized, pageable).map(item -> {
                     Instant instant = Instant.ofEpochMilli(item.getReleaseDate());
-                    Long year = (long) LocalDateTime.ofInstant(instant, ZoneId.systemDefault()). getYear();
-                    return new MovieSearchVm(item.getId(), item.getTitle(), year, item.getBackdropPath());
+                    Long year = (long) LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).getYear();
+                    return new MovieSearchGetVm(item.getId(), item.getTitle(), year, item.getBackdropPath());
                 }
         );
-
     }
 }

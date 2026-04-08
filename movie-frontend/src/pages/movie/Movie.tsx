@@ -1,28 +1,35 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMovieDetailById, getMovieSimilarById } from "../../modules/moviedetail/services/MovieService";
-import type { Movie } from "../../modules/moviedetail/model/MovieVm";
-import { MovieHero } from "../../modules/moviedetail/components/MovieHero";
-import { MovieInfo } from "../../modules/moviedetail/components/MovieInfo";
-import { EpisodesSelector } from "../../modules/moviedetail/components/EpisodesSelector";
-import { SimilarMovies } from "../../modules/moviedetail/components/SimilarMovies";
-import VideoOverlay from "../../modules/moviedetail/components/VideoOverlay";
-import type { MovieThumbnailVm } from "../../modules/moviedetail/model/MovieThumbnailVm";
-import type { PageAbleResponse } from "../../common/services/ApiClientService";
-import { RatingSection } from "../../modules/moviedetail/components/RatingSection";
+import { getMediaContentById, getMovieSimilarById } from "../../modules/movie/service/MovieService";
+import type { MediaContentGetVm } from "../../modules/movie/model/MovieVm";
+import { MovieHero } from "../../modules/movie/components/MovieHero";
+import { MovieInfo } from "../../modules/movie/components/MovieInfo";
+import { EpisodesSelector } from "../../modules/movie/components/EpisodesSelector";
+import { SimilarMovies } from "../../modules/movie/components/SimilarMovies";
+import VideoOverlay from "../../modules/movie/components/VideoOverlay";
+import type { MovieThumbnailGetVm } from "../../modules/movie/model/MovieThumbnailGetVm";
+import { RatingSection } from "../../modules/movie/components/RatingSection";
 
 export default function MovieDetail() {
   const { id } = useParams<{ id: string }>();
-  const [movieDetail, setMovieDetail] = useState<Movie | null>(null);
-  const [similarMovies, setSimilarMovies] = useState<MovieThumbnailVm[]>([]);
+  const [mediaContent, setMediaContent] = useState<MediaContentGetVm | null>(null);
+  const [similarMovies, setSimilarMovies] = useState<MovieThumbnailGetVm[]>([]);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [type, setType] = useState<string>("");
+  const [selectedEpisode, setSelectedEpisode] = useState<any>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   useEffect(() => {
     if (id) {
-      getMovieDetailById(Number(id)).then((data: PageAbleResponse) => {
-        if (data && data.content && data.content.length > 0) {
-          const movieData = data.content[0].movieDetailVm;
-          setMovieDetail(movieData);
+      getMediaContentById(Number(id)).then((data: any) => {
+        if (data.type === "MOVIE") {
+          const mediaContent = data.movieDetailVm;
+          setMediaContent(mediaContent);
+          setType("MOVIE");
+        } else if (data.type === "SERIES") {
+          const mediaContent = data.seriesDetailVm;
+          setMediaContent(mediaContent);
+          setType("SERIES");
         }
       });
 
@@ -33,29 +40,49 @@ export default function MovieDetail() {
   }, [id]);
 
   function handlePlay() {
+    if (type === "MOVIE") {
+      setSelectedEpisode(null);
+      setIsPlaying(true);
+    } else if (type === "SERIES") {
+      const firstSeason = mediaContent?.seasons?.[0];
+      const firstEpisode = firstSeason?.episodes?.[0];
+
+      if (firstEpisode) {
+        setSelectedEpisode(firstEpisode);
+        setIsPlaying(true);
+      } else {
+        alert("Thông tin tập phim đang được cập nhật!");
+      }
+    }
+  }
+
+  function handleSelectEpisode(episode: any, seasonIndex?: number) {
+    setSelectedEpisode(episode);
+    setSelectedIndex(seasonIndex ?? 0);
     setIsPlaying(true);
   }
+
   return (<>
-    {/*
-    MovieHero: banner, trailer or backdrop, addtolist, mute/unmute 
-    MovieInfo: title, year, duration, genres, description, cast, director, rating
-    EpisodesSelector: if TV show, list of episodes to select
-    SimilarMovies: list of similar movies
-    VideoOverlay: video player overlay
-    */}
-    <MovieHero movie={movieDetail} onPlayClick={() => handlePlay()} />
-    <MovieInfo movie={movieDetail} />
+
+    <MovieHero movie={mediaContent} onPlayClick={() => handlePlay()} />
+    <MovieInfo movie={mediaContent} />
     {
-      movieDetail && movieDetail.seasons && (
-        <EpisodesSelector movie={movieDetail} />
+      mediaContent && mediaContent.seasons && (
+        <EpisodesSelector movie={mediaContent} onEpisodeClick={handleSelectEpisode} />
       )
     }
-    {movieDetail?.id &&
-        < RatingSection mediaId={movieDetail?.id} />
-  }
+    {mediaContent?.id &&
+      < RatingSection mediaId={mediaContent?.id} />
+    }
     <SimilarMovies similarMovies={similarMovies} />
-    {isPlaying && <VideoOverlay movie={movieDetail} episode={undefined} onClose={function (): void {
-      throw new Error("Function not implemented.");
-    }} />}
+    {isPlaying && (
+      <VideoOverlay
+        movie={mediaContent}
+        episode={selectedEpisode}
+        listEpisode={mediaContent?.seasons?.[selectedIndex].episodes ?? []}
+        onClose={() => setIsPlaying(false)}
+        onSelectEpisode={(ep) => setSelectedEpisode(ep)}
+      />
+    )}
   </>);
 }

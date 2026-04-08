@@ -6,16 +6,18 @@ import os
 
 class LLMService:
     def __init__(self):
-        model_full_path = os.path.join(settings.model_path, settings.llm_model_name)
-            
-        if not os.path.exists(model_full_path):
-                raise FileNotFoundError(f"Không tìm thấy file model tại {model_full_path}. Hãy kiểm tra lại Volume mount!")
+        repo_id = settings.repo_id
+        model_file = settings.llm_model_name
+
         try:
-            self.model = Llama(
-                model_path=model_full_path,
+            self.model = Llama.from_pretrained(
+                repo_id=repo_id,
+                filename=model_file,
                 n_ctx=2048,
-                n_threads=4, 
-                verbose=False
+                n_threads=4,
+                n_gpu_layers=0,
+                use_mlock=True,
+                use_mmap=True,
             )
             print("LLM Loaded successfully.")
         except Exception as e:

@@ -1,4 +1,4 @@
-import type { MovieThumbnailVm } from "../../moviedetail/model/MovieThumbnailVm";
+import type { MovieThumbnailVm } from "../../movie/model/MovieThumbnailGetVm";
 
 export function MovieCard({ movie }: { movie: MovieThumbnailVm }) {
     return <>
