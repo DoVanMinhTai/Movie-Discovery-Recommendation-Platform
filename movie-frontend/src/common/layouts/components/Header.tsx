@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../../public/logo.png";
-import { getMovieSuggestionByTitle } from "../../../modules/search/services/SearchService";
+import { getMovieSuggestionByTitle } from "../../../modules/search/service/SearchService";
 import { getAuthData } from "../../auth/AuthUtils";
 
 const Header = () => {
@@ -11,9 +11,7 @@ const Header = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (searchValue.trim().length === 0) {
-			setSearchResults([]);
-			setShowDropdown(false);
+		if (!searchValue.trim()) {
 			return;
 		}
 
@@ -38,6 +36,11 @@ const Header = () => {
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 		setSearchValue(value);
+
+		if (value.trim().length === 0) {
+			setSearchResults([]);
+			setShowDropdown(false);
+		}
 	}
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

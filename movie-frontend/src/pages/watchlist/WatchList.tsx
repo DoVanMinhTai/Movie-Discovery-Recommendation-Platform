@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Trash2, Play, Plus, Search, Info } from 'lucide-react'; 
+import { Trash2, Play, Plus, Search, Info } from 'lucide-react';
+import { getWatchList, removeFromWatchList } from '../../modules/watchlist/service/WatchListService';
 
 interface Movie {
     id: number;
@@ -12,26 +13,16 @@ interface Movie {
 export default function WatchList() {
     const queryClient = useQueryClient();
 
-    // 1. Fetch Danh sách yêu thích
     const { data: myList = [], isLoading, isError } = useQuery<Movie[]>({
         queryKey: ['watchlist'],
         queryFn: async () => {
-            const response = await fetch("http://localhost:8080/user/api/getAllFavorites", {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
-            });
-            if (!response.ok) throw new Error("Không thể tải danh sách");
-            return response.json();
+            return getWatchList();
         }
     });
 
-    // 2. Xóa phim khỏi danh sách
     const deleteMutation = useMutation({
         mutationFn: async (movieId: number) => {
-            const response = await fetch(`http://localhost:8080/user/api/favorites/${movieId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
-            });
-            if (!response.ok) throw new Error("Không thể xóa phim");
+            return removeFromWatchList(movieId);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['watchlist'] });
@@ -68,8 +59,8 @@ export default function WatchList() {
                         <div key={movie.id} className="relative group">
                             <div className="relative aspect-video rounded-md overflow-hidden bg-zinc-900 border border-white/5 transition-all duration-300 group-hover:scale-110 group-hover:z-30 group-hover:shadow-[0_0_20px_rgba(0,0,0,0.5)]">
                                 <Link to={`/movie/${movie.id}`}>
-                                    <img 
-                                        src={`https://image.tmdb.org/p/w500${movie.backdropPath}`} 
+                                    <img
+                                        src={`https://image.tmdb.org/p/w500${movie.backdropPath}`}
                                         alt={movie.title}
                                         className="w-full h-full object-cover"
                                     />
@@ -83,7 +74,7 @@ export default function WatchList() {
                                     </div>
                                 </Link>
 
-                                <button 
+                                <button
                                     onClick={() => removeFromList(movie.id)}
                                     className="absolute top-2 right-2 p-1.5 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all z-40"
                                     title="Xóa khỏi danh sách"
@@ -91,7 +82,7 @@ export default function WatchList() {
                                     <Trash2 size={14} />
                                 </button>
                             </div>
-                            
+
                             <p className="mt-2 text-xs font-semibold text-zinc-300 truncate group-hover:opacity-0 transition-opacity">
                                 {movie.title}
                             </p>
@@ -107,8 +98,8 @@ export default function WatchList() {
                     <p className="text-zinc-500 max-w-xs mb-8">
                         Hãy thêm những bộ phim bạn yêu thích vào đây để xem lại bất cứ lúc nào.
                     </p>
-                    <Link 
-                        to="/" 
+                    <Link
+                        to="/"
                         className="flex items-center gap-2 bg-white text-black px-8 py-3 rounded font-bold hover:bg-red-600 hover:text-white transition-all duration-300 shadow-lg"
                     >
                         <Search size={18} /> KHÁM PHÁ NGAY

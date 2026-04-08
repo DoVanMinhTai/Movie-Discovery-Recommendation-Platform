@@ -2,8 +2,7 @@ package nlu.fit.movie_backend.controller;
 
 import lombok.AllArgsConstructor;
 import nlu.fit.movie_backend.service.SearchService;
-import nlu.fit.movie_backend.viewmodel.movie.MovieSearchVm;
-import nlu.fit.movie_backend.viewmodel.movie.MovieThumbnailVms;
+import nlu.fit.movie_backend.viewmodel.movie.MovieSearchGetVm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,14 +19,14 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/all")
-    public ResponseEntity<Page<MovieSearchVm>> getAllMovieByTitle(
+    public ResponseEntity<Page<MovieSearchGetVm>> getAllMovieByTitle(
             @RequestParam("q") String query,
             @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(searchService.getAllMovieByTitle(query, pageable));
     }
 
     @GetMapping("/suggest")
-    public ResponseEntity<List<MovieSearchVm>> getMovieSuggestionByTitle(
+    public ResponseEntity<List<MovieSearchGetVm>> getMovieSuggestionByTitle(
             @RequestParam("q") String query) {
         return ResponseEntity.ok(searchService.getMovieSuggestionByTitle(query));
     }

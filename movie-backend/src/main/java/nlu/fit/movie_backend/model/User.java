@@ -3,7 +3,10 @@ package nlu.fit.movie_backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 import nlu.fit.movie_backend.model.enumeration.ROLE;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +17,7 @@ import java.util.Set;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -51,4 +55,7 @@ public class User {
 
     private boolean isDeleted;
 
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime joinedDate;
 }

@@ -4,13 +4,11 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import nlu.fit.movie_backend.model.*;
 import nlu.fit.movie_backend.repository.jpa.*;
-import nlu.fit.movie_backend.viewmodel.movie.MovieFavoritesVm;
+import nlu.fit.movie_backend.viewmodel.movie.MovieFavoritesGetVm;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -22,14 +20,14 @@ public class UserService {
     private final GenreRepository genreRepository;
     private final JWTService jwtService;
 
-    public List<MovieFavoritesVm> getAllMovieFavorites(Long userId) {
+    public List<MovieFavoritesGetVm> getAllMovieFavorites(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
         List<Favorite> favorites = favoriteRepository.findAllByUserId(user.getId(), Pageable.unpaged());
 
         return favorites.stream()
-                .map(item -> new MovieFavoritesVm(
+                .map(item -> new MovieFavoritesGetVm(
                         item.getMediaContent().getId(),
                         item.getMediaContent().getTitle(),
                         item.getMediaContent().getBackdropPath()

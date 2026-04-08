@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 type props = {
-    id: any;
+    id: number;
     children: React.ReactNode
 };
 

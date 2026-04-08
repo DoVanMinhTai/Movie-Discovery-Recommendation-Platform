@@ -1,23 +1,21 @@
 import { useEffect, useState } from 'react';
-import { getAuthData } from '../../common/auth/AuthUtils';
-import { getMyProfile } from '../../modules/profile/service/ProfileService';
-import { 
-    User, 
-    Mail, 
-    Calendar, 
-    Settings, 
-    LogOut, 
-    Trash2, 
-    Film, 
+import {
+    Mail,
+    Calendar,
+    Settings,
+    LogOut,
+    Trash2,
+    Film,
     ShieldCheck,
     ChevronRight,
     Heart
 } from 'lucide-react';
+import { getMyProfile } from '../../modules/auth/service/AuthService';
+import type { ProfileGetVm } from '../../modules/auth/model/ProfileGetVm';
 
 export default function Profile() {
-    const auth = getAuthData();
     const [loading, setLoading] = useState(true);
-    const [userData, setUserData] = useState<any>(null);
+    const [userData, setUserData] = useState<ProfileGetVm | null>(null);
 
     useEffect(() => {
         getMyProfile()
@@ -50,11 +48,11 @@ export default function Profile() {
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-[#181818] border border-white/5 rounded-2xl p-8 flex flex-col items-center text-center shadow-2xl relative overflow-hidden group">
                             <div className="absolute top-0 left-0 w-full h-1 bg-red-600"></div>
-                            
+
                             <div className="relative mb-6">
-                                <img 
-                                    src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" 
-                                    alt="Avatar" 
+                                <img
+                                    src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                                    alt="Avatar"
                                     className="w-28 h-28 rounded-xl object-cover shadow-2xl group-hover:scale-105 transition-transform duration-500"
                                 />
                                 <button className="absolute -bottom-2 -right-2 p-2 bg-zinc-800 rounded-lg border border-zinc-700 hover:bg-zinc-700 transition shadow-lg">
@@ -93,7 +91,7 @@ export default function Profile() {
                     </div>
 
                     <div className="lg:col-span-2 space-y-6">
- 
+
                         <section className="bg-[#181818] border border-white/5 rounded-2xl p-8 relative overflow-hidden">
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
@@ -106,10 +104,10 @@ export default function Profile() {
                             </div>
 
                             <div className="flex flex-wrap gap-3">
-                                {userData?.preferences?.length > 0 ? (
-                                    userData.preferences.map((genre: any, index: number) => (
-                                        <div 
-                                            key={index} 
+                                {userData?.preferences && userData?.preferences?.length > 0 ? (
+                                    userData.preferences.map((genre: string, index: number) => (
+                                        <div
+                                            key={index}
                                             className="group flex items-center gap-2 px-5 py-2.5 bg-zinc-800/50 hover:bg-red-600 transition-all duration-300 rounded-full border border-white/5 cursor-default"
                                         >
                                             <span className="text-sm font-semibold text-zinc-300 group-hover:text-white">{genre}</span>

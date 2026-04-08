@@ -3,19 +3,53 @@ import os
 import re
 from sqlalchemy import create_engine
 import traceback
+from datetime import datetime
+
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 ETL_DIR = os.path.join(DATA_DIR, 'etl')
+MOVIE_DATA_DIR = os.path.join(DATA_DIR, 'movielens')
 EXTRACTED_DATA_DIR = os.path.join(ETL_DIR, 'extracted')
-
+folder_name = datetime.now().strftime("%Y%m%d")
+SESSION_DIR = os.path.join(EXTRACTED_DATA_DIR, folder_name)
 DB_URL = ""
+
+def check_df_for_length(df, table_name, limit=255):
+    """Kiểm tra mọi cột và in ra chính xác dòng nào, giá trị nào bị quá dài"""
+    print(f"\n--- Đang kiểm tra chi tiết bảng: {table_name} ---")
+    found_issue = False
+    
+    for col in df.columns:
+        # Chuyển tất cả về string để đo độ dài thực tế khi insert
+        lengths = df[col].astype(str).str.len()
+        # Loại bỏ các dòng là 'nan' (do Pandas convert từ null)
+        mask = (df[col].notna()) & (lengths > limit)
+        
+        if mask.any():
+            found_issue = True
+            max_val = lengths.max()
+            print(f"CỘT [{col}] CÓ DỮ LIỆU QUÁ DÀI:")
+            print(f"   - Độ dài tối đa trong cột: {max_val} ký tự")
+            print(f"   - Số dòng vi phạm: {mask.sum()}")
+            
+            # In ra 3 dòng đầu tiên bị lỗi để xem thử
+            bad_samples = df.loc[mask, col].head(3)
+            for idx, val in bad_samples.items():
+                print(f"   - Dòng index {idx}: độ dài {len(str(val))} ký tự")
+                print(f"     Nội dung: {str(val)[:100]}...") 
+            print("-" * 20)
+            
+    if not found_issue:
+        print(f"Bảng {table_name}: Tất cả cột đều dưới {limit} ký tự.")
+    return found_issue
 
 def auto_import_data():
     try:
-        file_path = os.path.join(EXTRACTED_DATA_DIR, 'mediacontent.csv')
-        file_path_media_genres = os.path.join(EXTRACTED_DATA_DIR, 'media_genres.csv')
-        file_path_series = os.path.join(EXTRACTED_DATA_DIR, 'series.csv')
-        file_path_season = os.path.join(EXTRACTED_DATA_DIR, 'seasons.csv')
-        file_path_episode = os.path.join(EXTRACTED_DATA_DIR, 'episodes.csv')
+        file_path = os.path.join(SESSION_DIR, 'mediacontent.csv')
+        file_path_media_genres = os.path.join(SESSION_DIR, 'media_genres.csv')
+        file_path_series = os.path.join(SESSION_DIR, 'series.csv')
+        file_path_season = os.path.join(SESSION_DIR, 'seasons.csv')
+        file_path_episode = os.path.join(SESSION_DIR, 'episodes.csv')
+        file_path_genres = os.path.join(MOVIE_DATA_DIR, 'genres.csv')
         print(f"--- Đang đọc dữ liệu từ: {file_path}")
         df = pd.read_csv(file_path)
         df_media_genres = pd.read_csv(file_path_media_genres)
@@ -23,7 +57,8 @@ def auto_import_data():
         df_series = pd.read_csv(file_path_series)
         df_season = pd.read_csv(file_path_season)
         df_episode = pd.read_csv(file_path_episode)
-        df_movies = pd.read_csv(os.path.join(EXTRACTED_DATA_DIR, 'movies.csv'))
+        df_movies = pd.read_csv(os.path.join(SESSION_DIR, 'movies.csv'))
+        df_genres = pd.read_csv(file_path_genres)
         print("--- Đang dọn dẹp dữ liệu...")
         def clean_line_breaks(text):
             if isinstance(text, str):
@@ -32,9 +67,15 @@ def auto_import_data():
         
         # df = df.map(clean_line_breaks)
         # df.drop_duplicates(subset=['movieId'], keep='first', inplace=True)
+        df.drop_duplicates(subset=['movieId'], keep='first', inplace=True)
+        df_movies.drop_duplicates(subset=['movieId'], keep='first', inplace=True)
+        df_series.drop_duplicates(subset=['movieId'], keep='first', inplace=True)
+        df_season.drop_duplicates(subset=['id'], keep='first', inplace=True)
+        df_episode.drop_duplicates(subset=['id'], keep='first', inplace=True)
+
         df.columns = [re.sub(r'(?<!^)(?=[A-Z])', '_', c).lower() for c in df.columns]
-        df_media_genres = df_media_genres.map(clean_line_breaks)
-        df_media_genres.columns = [re.sub(r'(?<!^)(?=[A-Z])', '_', c).lower() for c in df_media_genres.columns]
+        # df_media_genres = df_media_genres.map(clean_line_breaks)
+        # df_media_genres.columns = [re.sub(r'(?<!^)(?=[A-Z])', '_', c).lower() for c in df_media_genres.columns]
         df_series = df_series.map(clean_line_breaks)
         df_series.columns = [re.sub(r'(?<!^)(?=[A-Z])', '_', c).lower() for c in df_series.columns]
         df_season = df_season.map(clean_line_breaks)
@@ -43,15 +84,17 @@ def auto_import_data():
         df_episode.columns = [re.sub(r'(?<!^)(?=[A-Z])', '_', c).lower() for c in df_episode.columns]
         df_movies = df_movies.map(clean_line_breaks)
         df_movies.columns = [re.sub(r'(?<!^)(?=[A-Z])', '_', c).lower() for c in df_movies.columns]
+        
         engine = create_engine(DB_URL)
         
-        # print(f"--- Đang import {len(df)} dòng vào table 'mediacontent'...")
-        
-        # df.to_sql('mediacontent', engine, if_exists='append', index=False)
-        # df_media_genres.to_sql('mediacontent_genres', engine, if_exists='append', index=False)
-        # df_series.to_sql('series', engine, if_exists='append', index=False)
-        # df_season.to_sql('seasons', engine, if_exists='append', index=False)
-        # df_episode.to_sql('episodes', engine, if_exists='append', index=False)
+        df_genres = df_genres.map(clean_line_breaks)
+        df_genres.columns = [re.sub(r'(?<!^)(?=[A-Z])', '_', c).lower() for c in df_genres.columns]
+        df_genres.to_sql('genres', engine, if_exists='append', index=False)
+        df.to_sql('mediacontent', engine, if_exists='append', index=False)
+        df_media_genres.to_sql('mediacontent_genres', engine, if_exists='append', index=False)
+        df_series.to_sql('series', engine, if_exists='append', index=False)
+        df_season.to_sql('seasons', engine, if_exists='append', index=False)
+        df_episode.to_sql('episodes', engine, if_exists='append', index=False)
         df_movies.to_sql('movies', engine, if_exists='append', index=False)
         print("Thành công! Dữ liệu đã nằm gọn trong Database.")
 

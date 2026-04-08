@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { sendMessage } from "../service/ChatBotService";
-import type { MovieThumbnailVm } from "../../moviedetail/model/MovieThumbnailVm";
+import type { MovieThumbnailVm } from "../../movie/model/MovieThumbnailGetVm";
 import { MovieCard } from "./MovieCard";
 import { Bot, MessageCircle, Send, Sparkles, X } from "lucide-react";
 

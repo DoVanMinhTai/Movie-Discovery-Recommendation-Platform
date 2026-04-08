@@ -1,4 +1,4 @@
-import type { Hero } from "./Hero"
+import type { Hero } from "./MovieHeroGetVm"
 import type { Section } from "./Section"
 
 export type AiFeed = {

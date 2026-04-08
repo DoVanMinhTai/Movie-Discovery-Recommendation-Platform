@@ -8,7 +8,8 @@ import java.util.List;
 
 @Entity()
 @Table(name = "mediacontent")
-@Getter @Setter
+@Getter
+@Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public abstract class MediaContent {
@@ -66,7 +67,13 @@ public abstract class MediaContent {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isDeleted = false;
 
-    @Column(insertable=false, updatable=false)
+    @Column(insertable = false, updatable = false)
     String dtype;
+
+    @Column(name = "\"cast\"", columnDefinition = "TEXT")
+    String cast;
+
+    @Column(columnDefinition = "TEXT")
+    String director;
 
 }

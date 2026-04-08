@@ -14,15 +14,5 @@ import java.util.List;
 public interface MediaContentRepository extends JpaRepository<MediaContent,Long> {
     Page<MediaContent> findByGenresId(Long genresId, Pageable pageable);
 
-    List<MediaContent> findAllByDtype(String dtype);
-
-    @Query("SELECT m FROM MediaContent m " +
-            "WHERE m.isDeleted = false " +
-            "ORDER BY m.popularity DESC")
-    List<MediaContent> findGlobalTrending(Pageable pageable);
-
-    @Query("SELECT m FROM MediaContent m JOIN m.genres g WHERE g.id IN :genreIds")
-    List<MediaContent> findAllByGenreIds(@Param("genreIds") List<Long> genreIds);
-
     List<MediaContent> findTop5ByOrderByIdDesc();
 }

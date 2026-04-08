@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
 @Repository
 public interface TrainingJobRepository extends JpaRepository<TrainingJobsLogs, String> {
     List<TrainingJobsLogs> findTop10ByOrderByCreatedAtDesc();

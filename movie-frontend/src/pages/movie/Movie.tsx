@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMediaContentById, getMovieSimilarById } from "../../modules/moviedetail/services/MovieService";
-import type { MediaContentGetVm } from "../../modules/moviedetail/model/MovieVm";
-import { MovieHero } from "../../modules/moviedetail/components/MovieHero";
-import { MovieInfo } from "../../modules/moviedetail/components/MovieInfo";
-import { EpisodesSelector } from "../../modules/moviedetail/components/EpisodesSelector";
-import { SimilarMovies } from "../../modules/moviedetail/components/SimilarMovies";
-import VideoOverlay from "../../modules/moviedetail/components/VideoOverlay";
-import type { MovieThumbnailVm } from "../../modules/moviedetail/model/MovieThumbnailVm";
-import { RatingSection } from "../../modules/moviedetail/components/RatingSection";
+import { getMediaContentById, getMovieSimilarById } from "../../modules/movie/service/MovieService";
+import type { MediaContentGetVm } from "../../modules/movie/model/MovieVm";
+import { MovieHero } from "../../modules/movie/components/MovieHero";
+import { MovieInfo } from "../../modules/movie/components/MovieInfo";
+import { EpisodesSelector } from "../../modules/movie/components/EpisodesSelector";
+import { SimilarMovies } from "../../modules/movie/components/SimilarMovies";
+import VideoOverlay from "../../modules/movie/components/VideoOverlay";
+import type { MovieThumbnailGetVm } from "../../modules/movie/model/MovieThumbnailGetVm";
+import { RatingSection } from "../../modules/movie/components/RatingSection";
 
 export default function MovieDetail() {
   const { id } = useParams<{ id: string }>();
   const [mediaContent, setMediaContent] = useState<MediaContentGetVm | null>(null);
-  const [similarMovies, setSimilarMovies] = useState<MovieThumbnailVm[]>([]);
+  const [similarMovies, setSimilarMovies] = useState<MovieThumbnailGetVm[]>([]);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [type, setType] = useState<string>("");
   const [selectedEpisode, setSelectedEpisode] = useState<any>(null);

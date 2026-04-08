@@ -9,7 +9,7 @@ import nlu.fit.movie_backend.viewmodel.admin.AiStatusResponse;
 import nlu.fit.movie_backend.viewmodel.admin.UserResponse;
 import nlu.fit.movie_backend.viewmodel.movie.MoviePostVm;
 import nlu.fit.movie_backend.viewmodel.movie.MoviePutVm;
-import nlu.fit.movie_backend.viewmodel.movie.MovieThumbnailVms;
+import nlu.fit.movie_backend.viewmodel.movie.MovieThumbnailGetVm;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +42,7 @@ public class AdminController {
     }
 
     @GetMapping("/movies")
-    public ResponseEntity<List<MovieThumbnailVms>> getAllMoviesForAdmin() {
+    public ResponseEntity<List<MovieThumbnailGetVm>> getAllMoviesForAdmin() {
         return ResponseEntity.ok(movieService.getAllMovies());
     }
 
@@ -58,7 +58,8 @@ public class AdminController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
-        return ResponseEntity.ok(movieService.deleteMovie(id));
+        movieService.deleteMovie(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/ai-status")

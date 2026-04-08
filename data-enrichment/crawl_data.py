@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from datetime import datetime
 import pandas as pd
 import requests
 import time
@@ -24,14 +25,14 @@ def get_data(url):
     return None
 
 def process_item(tmdb_id, media_type=None):
-    movie_url = f"{BASE_URL}/movie/{tmdb_id}?api_key={TMDB_API_KEY}&append_to_response=videos"
+    movie_url = f"{BASE_URL}/movie/{tmdb_id}?api_key={TMDB_API_KEY}&append_to_response=videos,credits"
     data = get_data(movie_url)
     if data and 'title' in data:
         item = format_media_content(data, "MOVIE")
         item['videoUrl'] = f'https://vidsrc.to/embed/movie/{tmdb_id}'
         return item
     
-    tv_url = f"{BASE_URL}/tv/{tmdb_id}?api_key={TMDB_API_KEY}&append_to_response=videos"
+    tv_url = f"{BASE_URL}/tv/{tmdb_id}?api_key={TMDB_API_KEY}&append_to_response=videos,credits,seasons"
     data = get_data(tv_url)
     if data and 'name' in data:
             series_info = format_media_content(data, "SERIES")
@@ -67,6 +68,15 @@ def format_media_content(data, media_type):
     videos = data.get('videos', {}).get('results', [])
     trailer_key = next((v['key'] for v in videos if v['type'] == 'Trailer' and v['site'] == 'YouTube'), None)
     genres_name = [g['name'] for g in data.get('genres', [])]
+    
+    credits = data.get('credits', {})
+    cast_list = credits.get('cast', [])
+    cast_names = [c['name'] for c in cast_list[:5]]
+
+    crew_list = credits.get('crew', [])
+    directors = [c['name'] for c in crew_list if c['job'] == 'Director']
+    director_name = ", ".join(directors) if directors else ""
+
     return {
         "tmdbId": clean(data.get('id')),
         "type": media_type,
@@ -83,7 +93,9 @@ def format_media_content(data, media_type):
         "trailerKey": trailer_key,
         "originalLanguage": clean(data.get('original_language')),
         "genres": genres_name,
-        "runtime": clean(data.get('runtime')) if media_type == "MOVIE" else None
+        "runtime": clean(data.get('runtime')) if media_type == "MOVIE" else None,
+        "cast": ", ".join(cast_names),
+        "director": director_name
     }
 
 def clean(value):
@@ -98,6 +110,12 @@ EXTRACTED_DIR = os.path.join(ETL_DIR, "extracted")
 MOVIE_LENS_DIR = os.path.join(DATA_DIR, "movielens")  
 CHECKPOINT_FILE = os.path.join(ETL_DIR, "checkpoint.txt")
 
+folder_name = datetime.now().strftime("%Y%m%d")
+SESSION_DIR = os.path.join(EXTRACTED_DIR, folder_name)
+
+if not os.path.exists(SESSION_DIR):
+    os.makedirs(SESSION_DIR)
+
 df_movies = pd.read_csv(os.path.join(MOVIE_LENS_DIR, "movies.csv"))
 df_links = pd.read_csv(os.path.join(MOVIE_LENS_DIR, "links.csv"))
 df_genres_name = pd.read_csv(os.path.join(MOVIE_LENS_DIR, "genres.csv"))
@@ -105,17 +123,17 @@ df_merged = pd.merge(df_movies, df_links, on='movieId', how='left')
 df_merged = df_merged.dropna(subset=['tmdbId'])
 
 FILES = {
-    'media': os.path.join(EXTRACTED_DIR, "mediacontent.csv"),
-    'genres': os.path.join(EXTRACTED_DIR, "genres.csv"),
-    'media_genres': os.path.join(EXTRACTED_DIR, "media_genres.csv"),
-    'movie': os.path.join(EXTRACTED_DIR, "movies.csv"),
-    'series': os.path.join(EXTRACTED_DIR, "series.csv"),
-    'seasons': os.path.join(EXTRACTED_DIR, "seasons.csv"),
-    'episodes': os.path.join(EXTRACTED_DIR, "episodes.csv"),
+    'media': os.path.join(SESSION_DIR, "mediacontent.csv"),
+    'genres': os.path.join(SESSION_DIR, "genres.csv"),
+    'media_genres': os.path.join(SESSION_DIR, "media_genres.csv"),
+    'movie': os.path.join(SESSION_DIR, "movies.csv"),
+    'series': os.path.join(SESSION_DIR, "series.csv"),
+    'seasons': os.path.join(SESSION_DIR, "seasons.csv"),
+    'episodes': os.path.join(SESSION_DIR, "episodes.csv"),
 }
 
 HEADERS = {
-    'media': ['movieId', 'tmdbId', 'title', 'original_title', 'overview', 'release_date', 'poster_path', 'backdrop_path', 'tmdb_vote', 'vote_count', 'popularity', 'dtype','originalLanguage'],
+    'media': ['movieId', 'tmdbId', 'title', 'original_title', 'overview', 'release_date', 'poster_path', 'backdrop_path', 'tmdb_vote', 'vote_count', 'popularity', 'dtype','originalLanguage', 'cast', 'director'],
     'genres': ['id', 'name'],
     'media_genres': ['mediaContentId', 'genreId'],
     'movie': ['movieId', 'runtime', 'trailerKey','videoUrl'],
@@ -175,7 +193,8 @@ def start_crawl():
                 'overview': item['overview'], 'release_date': item['releaseDate'],
                 'poster_path': item['posterPath'], 'backdrop_path': item['backdropPath'],
                 'tmdb_vote': item['voteAverage'], 'vote_count': item['voteCount'],
-                'popularity': item['popularity'], 'dtype': item['type'], 'originalLanguage': item['originalLanguage']
+                'popularity': item['popularity'], 'dtype': item['type'], 'originalLanguage': item['originalLanguage'],
+                'cast': item['cast'], 'director': item['director']
             })
             if item['type'] == 'MOVIE':
                 save_row('movie' , {
@@ -192,7 +211,7 @@ def start_crawl():
                     for ep in sn.get('episodes', []):
                         save_row('episodes', {
                             'id': clean(ep['tmdbId']), 'episodeNumber': ep['episodeNumber'],
-                            'name': clean(ep['name']), 'overview': clean(ep['overview']),
+                            'title': clean(ep['name']), 'overview': clean(ep['overview']),
                             'stillPath': clean(ep['stillPath']), 'season_id': clean(sn['tmdbId']),
                             'videoUrl': clean(ep['videoUrl'])
                         })

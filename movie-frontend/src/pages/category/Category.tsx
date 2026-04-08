@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query";
-import { getAllGenres, getMoviesFilter } from "../../modules/category/service/CategoryService";
+import { getAllGenre, getMoviesFilter } from "../../modules/category/service/CategoryService";
 import MovieGrid from "../../common/components/MovieGrid";
 import SideBar from "../../modules/category/components/SideBar";
 import { useState } from "react";
@@ -13,7 +13,7 @@ export default function Category() {
 
     const genresQuery = useQuery({
         queryKey: ['genres'],
-        queryFn: getAllGenres,
+        queryFn: getAllGenre,
         staleTime: Infinity,
     });
     const movieQuery = useQuery({
@@ -33,13 +33,13 @@ export default function Category() {
 
     const banner_category_image = "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1280";
 
-     return (
+    return (
         <div className="flex flex-col w-full bg-[#141414] min-h-screen text-white">
             <div className="relative w-full h-[50vh] overflow-hidden">
-                <img 
-                    className="w-full h-full object-cover opacity-50" 
-                    src={banner_category_image} 
-                    alt="Banner" 
+                <img
+                    className="w-full h-full object-cover opacity-50"
+                    src={banner_category_image}
+                    alt="Banner"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-black/60" />
                 <div className="absolute bottom-10 left-12">
@@ -61,10 +61,10 @@ export default function Category() {
 
                 {/* Movie Grid bên phải */}
                 <main className="flex-1">
-                    <MovieGrid 
-                        data={movieQuery.data || []} 
-                        loading={movieQuery.isLoading} 
-                        onPageChange={setPage} 
+                    <MovieGrid
+                        data={movieQuery.data || []}
+                        loading={movieQuery.isLoading}
+                        onPageChange={setPage}
                     />
                 </main>
             </div>

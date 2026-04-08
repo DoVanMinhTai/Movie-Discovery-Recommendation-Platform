@@ -4,8 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record MediaContentGetVm(
-        MovieDetailGetVm movieDetailVm,
-        SeriesDetailVm seriesDetailVm,
+        MovieGetVm movieVm,
+        SeriesGetVm seriesVm,
         String type
 ) {
 }
