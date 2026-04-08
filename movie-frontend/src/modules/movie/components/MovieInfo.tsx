@@ -1,5 +1,5 @@
 import { Star, Clock, Globe } from "lucide-react";
-import type { MediaContentGetVm } from "../model/MovieVm";
+import type { MediaContentGetVm } from "../model/MediaContentGetVm";
 
 export const MovieInfo = ({ movie }: { movie: MediaContentGetVm | null }) => {
     if (!movie) return (
@@ -59,7 +59,7 @@ export const MovieInfo = ({ movie }: { movie: MediaContentGetVm | null }) => {
                             <Info size={20} className="text-red-500" /> Nội dung phim
                         </h3>
                         <p className="text-gray-300 leading-relaxed text-base">
-                            {movie.description || movie.overview}
+                            {movie.description}
                         </p>
                     </div>
 

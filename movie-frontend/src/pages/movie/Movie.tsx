@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getMediaContentById, getMovieSimilarById } from "../../modules/movie/service/MovieService";
-import type { MediaContentGetVm } from "../../modules/movie/model/MovieVm";
 import { MovieHero } from "../../modules/movie/components/MovieHero";
 import { MovieInfo } from "../../modules/movie/components/MovieInfo";
 import { EpisodesSelector } from "../../modules/movie/components/EpisodesSelector";
@@ -9,6 +8,7 @@ import { SimilarMovies } from "../../modules/movie/components/SimilarMovies";
 import VideoOverlay from "../../modules/movie/components/VideoOverlay";
 import type { MovieThumbnailGetVm } from "../../modules/movie/model/MovieThumbnailGetVm";
 import { RatingSection } from "../../modules/movie/components/RatingSection";
+import type { MediaContentGetVm } from "../../modules/movie/model/MediaContentGetVm";
 
 export default function MovieDetail() {
   const { id } = useParams<{ id: string }>();

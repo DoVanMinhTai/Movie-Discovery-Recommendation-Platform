@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { MediaContentGetVm } from "../model/MovieVm";
+import type { MediaContentGetVm } from "../model/MediaContentGetVm";
 
 interface Episode {
     id: number;
