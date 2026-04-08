@@ -1,7 +1,7 @@
-import type { Hero } from "./MovieHeroGetVm"
+import type { MovieHeroGetVm } from "./MovieHeroGetVm"
 import type { Section } from "./Section"
 
 export type AiFeed = {
-    hero: Hero,
+    hero: MovieHeroGetVm,
     sections: Section[]
 }

@@ -1,6 +1,5 @@
 import { Play, Plus } from "lucide-react";
-import type { MediaContentGetVm } from "../model/MovieVm";
-
+import type { MediaContentGetVm } from "../model/MediaContentGetVm";
 
 export const MovieHero = ({ movie, onPlayClick }: { movie: MediaContentGetVm | null, onPlayClick: () => void }) => {
     const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/original";

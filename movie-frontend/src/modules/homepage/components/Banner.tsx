@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Hero } from "../model/MovieHeroGetVm"
+import type { MovieHeroGetVm } from "../model/MovieHeroGetVm"
 
 type Props = {
-  movie: Hero;
+  movie: MovieHeroGetVm;
 }
 
 export default function Banner(hero: Props) {
@@ -22,7 +22,7 @@ export default function Banner(hero: Props) {
   return <>
     <div className="relative h-[85vh] w-full">
       <img
-        src={hero.movie.backdrop_url ? `https://image.tmdb.org/t/p/w500${hero.movie.backdrop_url}` : "https://via.placeholder.com/500x750?text=No+Poster"}
+        src={hero.movie.backdropUrl ? `https://image.tmdb.org/t/p/w500${hero.movie.backdropUrl}` : "https://via.placeholder.com/500x750?text=No+Poster"}
         alt={hero.movie.title}
         className="w-full h-full object-cover"
       />

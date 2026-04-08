@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import type { MediaContentGetVm } from "../model/MovieVm";
 import type { Episode } from "../model/Episode";
+import type { MediaContentGetVm } from "../model/MediaContentGetVm";
 
 type Props = {
     movie: MediaContentGetVm | null;

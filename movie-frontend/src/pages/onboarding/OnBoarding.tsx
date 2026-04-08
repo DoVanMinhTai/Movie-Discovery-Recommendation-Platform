@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Genre } from "../../modules/category/model/Genre";
-import { getAllGenres } from "../../modules/category/service/CategoryService";
+import { getAllGenre } from "../../modules/category/service/CategoryService";
 import { getAuthData } from "../../common/auth/AuthUtils";
 
 export default function OnBoarding() {
@@ -11,7 +11,7 @@ export default function OnBoarding() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        getAllGenres().then((data) => {
+        getAllGenre().then((data) => {
             console.log("Fetched genres:", data);
             setGenres(data);
         })

@@ -13,7 +13,7 @@ interface Movie {
 export default function WatchList() {
     const queryClient = useQueryClient();
 
-    const { data: myList = [], isLoading, isError } = useQuery<Movie[]>({
+    const { data: myList = [], isLoading } = useQuery<Movie[]>({
         queryKey: ['watchlist'],
         queryFn: async () => {
             return getWatchList();

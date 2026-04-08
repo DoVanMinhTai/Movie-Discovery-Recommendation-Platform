@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { sendMessage } from "../service/ChatBotService";
-import type { MovieThumbnailVm } from "../../movie/model/MovieThumbnailGetVm";
+import type { MovieThumbnailGetVm } from "../../movie/model/MovieThumbnailGetVm";
 import { MovieCard } from "./MovieCard";
 import { Bot, MessageCircle, Send, Sparkles, X } from "lucide-react";
 
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
-        { id: 1, role: 'bot', text: 'Chào bạn! Hôm nay bạn muốn tìm cảm giác mạnh hay một chút lãng mạn? Hãy nói cho mình gu phim của bạn nhé!', movies: [] as MovieThumbnailVm[] },
+        { id: 1, role: 'bot', text: 'Chào bạn! Hôm nay bạn muốn tìm cảm giác mạnh hay một chút lãng mạn? Hãy nói cho mình gu phim của bạn nhé!', movies: [] as MovieThumbnailGetVm[] },
     ]);
     const [input, setInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const accumulatedTextRef = useRef("");
-    const currentMoviesRef = useRef<MovieThumbnailVm[]>([]);
+    const currentMoviesRef = useRef<MovieThumbnailGetVm[]>([]);
     const lastUpdateRef = useRef(0);
 
     useEffect(() => {
@@ -25,14 +25,14 @@ export default function Chatbot() {
     const handleSend = async () => {
         if (!input.trim()) return;
 
-        const userMsg = { id: Date.now(), role: 'user', text: input, movies: [] as MovieThumbnailVm[] };
+        const userMsg = { id: Date.now(), role: 'user', text: input, movies: [] as MovieThumbnailGetVm[] };
         setMessages(prev => [...prev, userMsg]);
-        const currentInput = input;
+        const currentInput = { message: input, userId: 123 };
         setInput("");
         setIsTyping(true);
 
         const botMsgId = Date.now() + 1;
-        setMessages(prev => [...prev, { id: botMsgId, role: 'bot', text: "", movies: [] as MovieThumbnailVm[] }]);
+        setMessages(prev => [...prev, { id: botMsgId, role: 'bot', text: "", movies: [] as MovieThumbnailGetVm[] }]);
 
         try {
             const response = await sendMessage(currentInput)
@@ -157,8 +157,8 @@ export default function Chatbot() {
                         {messages.map((msg) => (
                             <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                                 <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-[14px] leading-relaxed shadow-sm ${msg.role === 'user'
-                                        ? 'bg-red-600 text-white rounded-tr-none'
-                                        : 'bg-[#232323] text-zinc-100 rounded-tl-none border border-white/5'
+                                    ? 'bg-red-600 text-white rounded-tr-none'
+                                    : 'bg-[#232323] text-zinc-100 rounded-tl-none border border-white/5'
                                     }`}>
                                     {msg.text || (msg.role === 'bot' && isTyping && "...")}
                                 </div>

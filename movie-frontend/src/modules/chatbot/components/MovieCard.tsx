@@ -1,6 +1,6 @@
-import type { MovieThumbnailVm } from "../../movie/model/MovieThumbnailGetVm";
+import type { MovieThumbnailGetVm } from "../../movie/model/MovieThumbnailGetVm";
 
-export function MovieCard({ movie }: { movie: MovieThumbnailVm }) {
+export function MovieCard({ movie }: { movie: MovieThumbnailGetVm }) {
     return <>
             <div
                 onClick={() => window.location.href = `/movie/${movie.id}`}
