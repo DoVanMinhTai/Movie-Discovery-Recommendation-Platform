@@ -2,7 +2,6 @@ import subprocess
 import time
 import os
 
-# Danh sách các service
 services = [
     {
         "name": "Chatbot",

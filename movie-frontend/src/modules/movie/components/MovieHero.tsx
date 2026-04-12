@@ -1,5 +1,6 @@
 import { Play, Plus } from "lucide-react";
 import type { MediaContentGetVm } from "../model/MediaContentGetVm";
+import { API_ENDPOINTS } from "../../../constants/ApiEndpoints";
 
 export const MovieHero = ({ movie, onPlayClick }: { movie: MediaContentGetVm | null, onPlayClick: () => void }) => {
     const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/original";
@@ -8,7 +9,7 @@ export const MovieHero = ({ movie, onPlayClick }: { movie: MediaContentGetVm | n
         if (!movie) return;
 
         try {
-            const response = await fetch("http://localhost:8080/user/api/favorites/add", {
+            const response = await fetch(API_ENDPOINTS.USER.ADD_FAVORITE, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

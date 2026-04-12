@@ -20,7 +20,7 @@ async def chatbot(
         async def token_generator():
             try:
                 async for token in bot.process_query_stream(request.message, request.userId):
-                    yield f"data: {json.dumps(token)}\n\n"  
+                    yield f"data: {json.dumps(token, ensure_ascii=False)}\n\n"  
                     await asyncio.sleep(0.01)  
             
             except Exception as e:

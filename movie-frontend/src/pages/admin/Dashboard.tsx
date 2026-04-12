@@ -1,9 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
+import { API_ENDPOINTS } from '../../constants/ApiEndpoints';
 
 export default function Dashboard() {
   const { data: stats, isLoading, error } = useQuery({
     queryKey: ['admin-stats'],
-    queryFn: () => fetch('http://localhost:8080/admin/statistics').then(res => res.json())
+    queryFn: () => fetch(API_ENDPOINTS.ADMIN.DASHBOARD, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}`
+      }
+    }).then(res => res.json())
   });
 
   if (isLoading) return <div className="p-6 text-white animate-pulse">Đang tải dữ liệu...</div>;

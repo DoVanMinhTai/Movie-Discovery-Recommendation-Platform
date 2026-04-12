@@ -23,7 +23,7 @@ from fastapi.responses import JSONResponse
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
-    print(f"❌ Chi tiết lỗi 422: {exc.errors()}") 
+    print(f"Chi tiết lỗi 422: {exc.errors()}") 
     return JSONResponse(
         status_code=422,
         content={"detail": exc.errors(), "body": exc.body},

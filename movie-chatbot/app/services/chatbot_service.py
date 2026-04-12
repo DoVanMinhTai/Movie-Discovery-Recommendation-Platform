@@ -1,8 +1,4 @@
-from click import prompt
-from sqlalchemy import text
 from elasticsearch import Elasticsearch
-from gpt4all import GPT4All
-from underthesea import pos_tag
 from app.config.config import settings
 from app.services.nlp_service import NLPService
 from app.services.search_service import SearchService
@@ -26,36 +22,37 @@ class ChatBotService:
         self.es_client = Elasticsearch(settings.es_host)
         self.recommendation_service = RecommendationService()
 
-               
+    def _format_response(self, intent: str, message: str, data: list = None, suggestions: list = None):
+        return {
+            "status": "success",
+            "metadata": {
+                "intent": intent,
+                "model": "llama-3.3-70b-versatile",
+                "timestamp": logging.time.time()
+            },
+            "message": message,
+            "data": data,
+            "suggestions": suggestions
+        }
+
     async def process_query_stream(self, message: str, userId: int):
         
         intent = self.nlp.detect_intent(message)
 
         if intent == "SEARCH":
-            search_params = self.llm_service.extract_search_params(message)
-            movies_data = self.search_service.search_movies(search_params)
-            
-            if movies_data:
-                natural_answer = self.llm_service.generate_natural_response(message, movies_data, intent)
-            else:
-                natural_answer = "Xin lỗi, tôi không tìm thấy phim này trong hệ thống."
-                
-            yield {"intent": "SEARCH", "message": natural_answer, "data": movies_data}
-        
+            result = self.handle_search(message)
         elif intent == "RECOMMEND":
-            rec_result = self.handle_recommendation(message, userId, intent)
-            yield rec_result
-            
+            result = self.handle_recommendation(message, userId, intent)        
         elif intent == "CHAT":
-            chat_result = self.handle_chat(message)
-            yield {"intent": "CHAT", **chat_result}
-            
+            result = self.handle_chat(message)
         else:
-            yield {
-                "intent": "UNKNOWN",
+            result = {
                 "message": "Xin lỗi, tôi chưa hiểu rõ ý bạn. Bạn muốn tìm thông tin phim hay cần gợi ý phim?",
-                "data": None
             } 
+
+        suggestions = self.llm_service.generate_suggestions(user_query=message, bot_response=result["message"], intent=intent)
+    
+        yield self._format_response(intent, result["message"], data=result.get("data"), suggestions=suggestions)
 
     def handle_recommendation(self, message: str, userId: int, intent: str):
         extracted = extract_genres_by_regex(message)
@@ -80,7 +77,7 @@ class ChatBotService:
         rec_results = self.recommendation_service.call_recommendation(rec_inputs)
             
         msg = self.llm_service.generate_natural_response(message, rec_results, intent)
-        return {"intent": "RECOMMEND", "message": msg, "data": rec_results}
+        return {"message": msg, "data": rec_results}
     
     def handle_chat(self, message: str):
         answer = self.llm_service.handle_generic_chat(message)
@@ -92,7 +89,6 @@ class ChatBotService:
         natural_answer = self.llm_service.generate_natural_response(message, movies_data)
             
         return {
-            "intent": "SEARCH",
             "message": natural_answer,
             "data": movies_data
         }

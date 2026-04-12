@@ -1,4 +1,4 @@
-from llama_cpp import Llama
+from groq import Groq
 from app.config.config import settings
 from app.config.prompts import Prompts
 from app.services.helpers import clean_json_response, format_movie_summary
@@ -6,74 +6,85 @@ import os
 
 class LLMService:
     def __init__(self):
-        repo_id = settings.repo_id
-        model_file = settings.llm_model_name
+        api_key = os.getenv("GROQ_API_KEY")
+        self.model_name = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
         try:
-            self.model = Llama.from_pretrained(
-                repo_id=repo_id,
-                filename=model_file,
-                n_ctx=2048,
-                n_threads=4,
-                n_gpu_layers=0,
-                use_mlock=True,
-                use_mmap=True,
-            )
-            print("LLM Loaded successfully.")
+            self.client = Groq(api_key=api_key)
+            print(f"Initialized LLMService with model: {self.model_name}")
         except Exception as e:
             print(f"LLM Error: {e}")
-            self.model = None
+            self.client = None
+
+    def generate_suggestions(self, user_query: str, bot_response: str, intent: str):
+        prompt = f"""
+        Bạn là một chuyên gia tư vấn phim ảnh. 
+        Dựa trên câu hỏi của người dùng: "{user_query}" 
+        Và câu trả lời của hệ thống: "{bot_response}"
+        Với mục đích (intent): "{intent}"
+
+        Hãy đưa ra chính xác 3 câu hỏi gợi ý ngắn gọn (dưới 10 từ mỗi câu) mà người dùng có thể muốn hỏi tiếp theo.
+        Yêu cầu:
+        1. Trả về dưới dạng danh sách JSON: ["gợi ý 1", "gợi ý 2", "gợi ý 3"]
+        2. Không giải thích gì thêm, chỉ trả về JSON.
+        3. Các gợi ý phải tự nhiên, kích thích sự tò mò.
+        """
+        try:
+            response_json = self._call_groq_api(
+                system_prompt=prompt,
+                user_message="",
+                temperature=0.7,
+            )
+            import json
+            suggestions = json.loads(response_json)
+            return suggestions if isinstance(suggestions, list) else []
+
+        except Exception as e:
+            print(f"Error generating suggestions: {e}")
+            return []
+
+    def _call_groq_api(self, system_prompt: str, user_message: str, max_tokens: int = 150, temperature: float = 0.7, stop: list = None):
+        if not self.client:
+            return ""
+        try:
+            completion = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ],
+                max_tokens=max_tokens,
+                temperature=temperature,
+            )
+            return completion.choices[0].message.content.strip()
+        except Exception as e:
+            print(f"Groq API Error: {e}")
+            return ""
 
     def generate_natural_response(self, message: str, movies_data: list, intent: str):
-        if not self.model:
+        if not self.client:
             return f"Tìm thấy {len(movies_data)} phim: " + ", ".join([m.get('title') for m in movies_data])
             
         summary = format_movie_summary(movies_data)
-        prompt = Prompts.get_natural_answer_prompt(message, summary, intent)
+        system_prompt = "Bạn là trợ lý ảo về phim ảnh thân thiện. Hãy dựa vào danh sách phim được cung cấp để trả lời người dùng bằng tiếng Việt tự nhiên."
+        user_prompt = f"Câu hỏi của người dùng: {message}\n\nDanh sách phim: {summary}\n\nÝ định (Intent): {intent}\n\nHãy trả lời một cách lôi cuốn."
         
-        try:
-            response = self.model(prompt, max_tokens=200, stop=["<|eot_id|>", "User:"])
-            
-            answer = response['choices'][0]['text'].strip()
-            return answer
-        except:
-            return f"Kết quả: {summary}"
+        return self._call_groq_api(system_prompt, user_prompt, max_tokens=1000)
 
     def extract_search_params(self, text: str):
-        if not self.model: return {"title": text}
+        system_prompt = "Bạn là chuyên gia trích xuất thực thể từ câu lệnh tìm kiếm phim. Chỉ trả về JSON, không giải thích gì thêm."
+        user_prompt = f"Trích xuất các tham số tìm kiếm (title, genre, year, actor, director) từ câu sau: '{text}'"
         
-        prompt = Prompts.get_search_param_prompt(text)
-        try:
-            response = self.model(prompt, max_tokens=100)
-            raw_output = response['choices'][0]['text'].strip()
-            return clean_json_response(raw_output) or {"title": text}
-        except:
-            return {"title": text}
+        raw_output = self._call_groq_api(system_prompt, user_prompt, max_tokens=150, temperature=0.1)
+        return clean_json_response(raw_output) or {"title": text}
 
     def extract_reference_movie(self, text: str):
-        if not self.model: return None
+        system_prompt = "Nhiệm vụ của bạn là trích xuất duy nhất tên bộ phim mà người dùng đang nhắc tới. Nếu không thấy, hãy trả về 'None'."
+        user_prompt = f"Trích xuất tên phim từ câu: '{text}'"
         
-        prompt = Prompts.get_recommend_extract_prompt(text)
-        return self._get_text_from_model(prompt, max_tokens=30)
+        result = self._call_groq_api(system_prompt, user_prompt, max_tokens=50, temperature=0.1)
+        return None if "None" in result else result
 
     def handle_generic_chat(self, message: str):
-        if not self.model: return "Xin chào! Tôi có thể giúp gì cho bạn?"
-        
-        prompt = (
-            f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
-            f"Bạn là trợ lý ảo về phim ảnh thân thiện. Trả lời ngắn gọn bằng tiếng Việt.<|eot_id|>"
-            f"<|start_header_id|>user<|end_header_id|>\n\n"
-            f"{message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
-        )        
-        stop = ["<|eot_id|>", "<|start_header_id|>", "User:", "Assistant:"]
-        return self._get_text_from_model(prompt, max_tokens=200, stop=stop)
-
-    def _get_text_from_model(self, prompt: str, max_tokens: int = 150, stop: list = None):
-        if not self.model:
-            return ""
-        try:
-            response = self.model(prompt, max_tokens=max_tokens, stop=stop)
-            return response['choices'][0]['text'].strip()
-        except Exception as e:
-            print(f"Model Inference Error: {e}")
-            return ""
+        system_prompt = "Bạn là trợ lý ảo về phim ảnh thân thiện. Trả lời ngắn gọn, hóm hỉnh bằng tiếng Việt."
+        return self._call_groq_api(system_prompt, message, max_tokens=500)

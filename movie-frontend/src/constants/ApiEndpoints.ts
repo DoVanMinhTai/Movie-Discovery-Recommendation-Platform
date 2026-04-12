@@ -2,7 +2,9 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const API_ENDPOINTS = {
     ADMIN: {
-        DASHBOARD: `${BASE_URL}/admin/dashboard`,
+        DASHBOARD: `${BASE_URL}/admin/statistics`,
+        AI_STATUS: `${BASE_URL}/admin/ai-status`,
+        RETRAIN_AI: `${BASE_URL}/admin/retrain-ai`,
     },
     AUTH: {
         REGISTER: `${BASE_URL}/auth/register`,

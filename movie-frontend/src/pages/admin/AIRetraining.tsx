@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../../constants/ApiEndpoints';
 
 export default function AIRetraining() {
     const queryClient = useQueryClient();
@@ -9,14 +10,22 @@ export default function AIRetraining() {
     const { data: aiData } = useQuery({
         queryKey: ['ai-status'],
         queryFn: async () => {
-            const res = await axios.get('http://localhost:8080/admin/ai-status');
+            const res = await axios.get(API_ENDPOINTS.ADMIN.AI_STATUS, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                }
+            });
             return res.data;
         },
         refetchInterval: isTraining ? 5000 : false
     });
 
     const trainMutation = useMutation({
-        mutationFn: () => axios.post('http://localhost:8080/admin/retrain-ai'),
+        mutationFn: () => axios.post(API_ENDPOINTS.ADMIN.RETRAIN_AI, {}, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
+            }
+        }),
         onSuccess: () => {
             setIsTraining(true);
             queryClient.invalidateQueries({ queryKey: ['ai-status'] });

@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     model_path_raw: str = Field(default="model-store/chatbot_models", validation_alias="MODEL_PATH")
     
-    es_host: str = Field(default="http://localhost:9200", validation_alias="ES_HOST")
+    es_host: str = os.getenv("ES_HOST", "http://localhost:9200")
     recommendation_service_url: str = Field(default="http://localhost:8080")
     embed_model_name: str = Field(default="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2", validation_alias="EMBED_MODEL_NAME")
 
