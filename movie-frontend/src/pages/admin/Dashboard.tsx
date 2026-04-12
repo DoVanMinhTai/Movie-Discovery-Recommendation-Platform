@@ -4,11 +4,18 @@ import { API_ENDPOINTS } from '../../constants/ApiEndpoints';
 export default function Dashboard() {
   const { data: stats, isLoading, error } = useQuery({
     queryKey: ['admin-stats'],
-    queryFn: () => fetch(API_ENDPOINTS.ADMIN.DASHBOARD, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem("token")}`
+    queryFn: async () => {
+      const res = await fetch(API_ENDPOINTS.ADMIN.DASHBOARD, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Dashboard request failed: ${res.status}`);
       }
-    }).then(res => res.json())
+      return res.json();
+    }
   });
 
   if (isLoading) return <div className="p-6 text-white animate-pulse">Đang tải dữ liệu...</div>;

@@ -1,12 +1,14 @@
 import { API_ENDPOINTS } from "../../../constants/ApiEndpoints";
 
-export async function submitOnBoarding({ preferences }: { preferences: number[] }) {
+export async function submitOnBoarding({ genres }: { genres: number[] }) {
+    const token = localStorage.getItem("token");
     const response = await fetch(API_ENDPOINTS.ONBOARDING.POST, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ preferences })
+        body: JSON.stringify({ genres })
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));

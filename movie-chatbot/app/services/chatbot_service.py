@@ -7,7 +7,6 @@ from app.services.helpers import extract_genres_by_regex
 from app.services.recommendation_service import RecommendationService
 import logging
 
-    
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -40,23 +39,23 @@ class ChatBotService:
         intent = self.nlp.detect_intent(message)
 
         if intent == "SEARCH":
-            result = self.handle_search(message)
+            result = await self.handle_search(message)
         elif intent == "RECOMMEND":
-            result = self.handle_recommendation(message, userId, intent)        
+            result = await self.handle_recommendation(message, userId, intent)
         elif intent == "CHAT":
-            result = self.handle_chat(message)
+            result = await self.handle_chat(message)
         else:
             result = {
                 "message": "Xin lỗi, tôi chưa hiểu rõ ý bạn. Bạn muốn tìm thông tin phim hay cần gợi ý phim?",
             } 
 
         suggestions = self.llm_service.generate_suggestions(user_query=message, bot_response=result["message"], intent=intent)
-    
+
         yield self._format_response(intent, result["message"], data=result.get("data"), suggestions=suggestions)
 
-    def handle_recommendation(self, message: str, userId: int, intent: str):
+    async def handle_recommendation(self, message: str, userId: int, intent: str):
         extracted = extract_genres_by_regex(message)
-        ref_movie = self.llm_service.extract_reference_movie(message)
+        ref_movie = await self.llm_service.extract_reference_movie(message)
             
         rec_inputs = {
                 "user_id": userId,
@@ -67,28 +66,28 @@ class ChatBotService:
         } 
             
         if ref_movie:
-            movie_id = self.search_service.find_movie_id_by_name(ref_movie)
+            movie_id = await self.search_service.find_movie_id_by_name(ref_movie)
             if movie_id:
                 rec_inputs["current_movie_id"] = movie_id
                 rec_inputs["strategy"] = "content_based"
             else:
-                rec_inputs["current_movie_id"] = self.search_service.fall_Back_ElasticSearch(ref_movie)
+                rec_inputs["current_movie_id"] = await self.search_service.fall_Back_ElasticSearch(ref_movie)
         
         rec_results = self.recommendation_service.call_recommendation(rec_inputs)
             
-        msg = self.llm_service.generate_natural_response(message, rec_results, intent)
+        msg = await self.llm_service.generate_natural_response(message, rec_results, intent)
         return {"message": msg, "data": rec_results}
     
-    def handle_chat(self, message: str):
-        answer = self.llm_service.handle_generic_chat(message)
+    async def handle_chat(self, message: str):
+        answer = await self.llm_service.handle_generic_chat(message)
         return {"message": answer, "data": None}
    
-    def handle_search(self, message:str): 
-        params = self.llm_service.extract_search_params(message)
-        movies_data = self.search_service.search_movies(params)
-        natural_answer = self.llm_service.generate_natural_response(message, movies_data)
+    async def handle_search(self, message:str): 
+        params = await self.llm_service.extract_search_params(message)
+        movies_data = await self.search_service.search_movies(params)
+        natural_answer =  await self.llm_service.generate_natural_response(message, movies_data)
             
-        return {
+        return {    
             "message": natural_answer,
             "data": movies_data
         }

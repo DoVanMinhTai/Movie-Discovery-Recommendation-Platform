@@ -6,14 +6,16 @@ import { API_ENDPOINTS } from '../../constants/ApiEndpoints';
 export default function AIRetraining() {
     const queryClient = useQueryClient();
     const [isTraining, setIsTraining] = useState(false);
-
+    const token = localStorage.getItem("token");
+    if (!token) {
+        throw new Error("Missing authentication token");
+    }
+    const authHeaders = { Authorization: `Bearer ${token}` };
     const { data: aiData } = useQuery({
         queryKey: ['ai-status'],
         queryFn: async () => {
             const res = await axios.get(API_ENDPOINTS.ADMIN.AI_STATUS, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`
-                }
+                headers: authHeaders
             });
             return res.data;
         },
@@ -22,9 +24,7 @@ export default function AIRetraining() {
 
     const trainMutation = useMutation({
         mutationFn: () => axios.post(API_ENDPOINTS.ADMIN.RETRAIN_AI, {}, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token")}`
-            }
+            headers: authHeaders
         }),
         onSuccess: () => {
             setIsTraining(true);
@@ -81,7 +81,7 @@ export default function AIRetraining() {
                                         <td className="p-4 font-mono text-xs text-zinc-400">{job.id.substring(0, 8)}...</td>
                                         <td className="p-4">
                                             <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${job.status === 'SUCCESS' ? 'bg-green-500/10 text-green-500' :
-                                                    job.status === 'FAILED' ? 'bg-red-500/10 text-red-500' : 'bg-yellow-500/10 text-yellow-500 animate-pulse'
+                                                job.status === 'FAILED' ? 'bg-red-500/10 text-red-500' : 'bg-yellow-500/10 text-yellow-500 animate-pulse'
                                                 }`}>
                                                 {job.status}
                                             </span>

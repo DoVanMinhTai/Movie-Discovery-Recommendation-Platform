@@ -20,7 +20,7 @@ export default function OnBoarding() {
 
     const mutation = useMutation({
         mutationFn: async (data: { genres: number[] }) => {
-            return submitOnBoarding({ preferences: data.genres });
+            return submitOnBoarding({ genres: data.genres });
         },
         onSuccess: (data) => {
             if (data && data.token) {
