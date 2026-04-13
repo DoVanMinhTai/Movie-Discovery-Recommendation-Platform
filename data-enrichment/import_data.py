@@ -10,9 +10,8 @@ ETL_DIR = os.path.join(DATA_DIR, 'etl')
 MOVIE_DATA_DIR = os.path.join(DATA_DIR, 'movielens')
 EXTRACTED_DATA_DIR = os.path.join(ETL_DIR, 'extracted')
 folder_name = datetime.now().strftime("%Y%m%d")
-# SESSION_DIR = os.path.join(EXTRACTED_DATA_DIR, folder_name)
-SESSION_DIR = os.path.join(EXTRACTED_DATA_DIR, '20260408')
-DB_URL =
+SESSION_DIR = os.path.join(EXTRACTED_DATA_DIR, folder_name)
+DB_URL = os.getenv("DB_URL")
 
 def auto_import_data():
     try:
