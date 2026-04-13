@@ -9,6 +9,7 @@ export default function Dashboard() {
       if (!token) {
         throw new Error("Unauthorized");
       }
+
       const res = await fetch(API_ENDPOINTS.ADMIN.DASHBOARD, {
         headers: {
           'Authorization': `Bearer ${token}`
