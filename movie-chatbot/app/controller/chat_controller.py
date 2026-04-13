@@ -6,6 +6,13 @@ from app.model.ChatResponse import ChatResponse
 from app.model.ChatRequest import ChatRequest
 from app.dependencies.chatbot_container import get_chatbot 
 import json
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("ChatController")
 
 router = APIRouter(prefix="/chatbot", tags=["Chatbot"])
 @router.post("/sendMessage") 
@@ -18,17 +25,14 @@ async def chatbot(
         if not request.message.strip():
             raise HTTPException(status_code=400, detail="Message cannot be empty")
         
-        async def token_generator():
-            try:
-                async for token in bot.process_query_stream(request.message, request.userId):
-                    yield f"data: {json.dumps(token, ensure_ascii=False)}\n\n"  
-                    await asyncio.sleep(0.01)  
-            
-            except Exception as e:
-                error = {"error": str(e)}
-                yield json.dumps(error) + "\n"
-                        
-        return StreamingResponse(token_generator(), media_type="text/event-stream")
+        try:
+            response_data = await bot.process_query(request.message, request.userId)
+        
+            return response_data
+        except Exception as e:
+                logger.error(f"Error in streaming response: {e}")
+                raise HTTPException(status_code=500, detail="Error processing the request")
+
     except Exception as e:
-        print(f"Error in controller: {e}")
+        logger.error(f"Error in controller: {e}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -34,7 +34,7 @@ class ChatBotService:
             "suggestions": suggestions
         }
 
-    async def process_query_stream(self, message: str, userId: int):
+    async def process_query(self, message: str, userId: int):
         logger.info(f"Starting process_query_stream for user {userId}")
         try:
             intent = self.nlp.detect_intent(message)
@@ -52,10 +52,10 @@ class ChatBotService:
 
             suggestions = await self.llm_service.generate_suggestions(user_query=message, bot_response=result["message"], intent=intent)
 
-            yield self._format_response(intent, result["message"], data=result.get("data"), suggestions=suggestions)
+            return self._format_response(intent, result["message"], data=result.get("data"), suggestions=suggestions)
         except Exception as e:
             logger.error(f"Error processing query: {e}")
-            yield self._format_response("ERROR", "Đã có lỗi xảy ra. Vui lòng thử lại sau.")
+            return self._format_response("ERROR", "Đã có lỗi xảy ra. Vui lòng thử lại sau.")
 
     async def handle_recommendation(self, message: str, userId: int, intent: str):
         extracted = extract_genres_by_regex(message)

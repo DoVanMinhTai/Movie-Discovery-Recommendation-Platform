@@ -18,12 +18,19 @@ public class ChatBotController {
 
     @PostMapping(value = "/message", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> sendMessage(@RequestBody ChatPostVm chatPostVm) {
-        return chatbotService.sendMessage(chatPostVm).map(data -> ServerSentEvent.<String>builder()
-                        .data(data)
-                        .build())
-                .onErrorResume(e -> Flux.just(ServerSentEvent.<String>builder()
-                        .data("{\"error\": \"" + e.getMessage() + "\"}")
-                        .build()));
+        return Flux.defer(() -> {
+            try {
+                String jsonResponse = chatbotService.sendMessage(chatPostVm);
+
+                return Flux.just(ServerSentEvent.<String>builder()
+                        .data(jsonResponse)
+                        .build());
+            } catch (Exception e) {
+                return Flux.error(e);
+            }
+        }).onErrorResume(e -> Flux.just(ServerSentEvent.<String>builder()
+                .data("{\"error\": \"" + e.getMessage() + "\"}")
+                .build()));
     }
 
     @GetMapping("/history")
