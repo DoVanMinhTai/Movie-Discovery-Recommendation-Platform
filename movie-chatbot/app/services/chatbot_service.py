@@ -87,7 +87,7 @@ class ChatBotService:
         return {"message": answer, "data": None}
    
     async def handle_search(self, message:str): 
-        params = self.llm_service.extract_search_params(message)
+        params = await self.llm_service.extract_search_params(message)
         movies_data = await self.search_service.search_movies(params)
         natural_answer =  await self.llm_service.generate_natural_response(message, movies_data)
             

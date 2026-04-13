@@ -85,7 +85,9 @@ class LLMService:
         user_prompt = f"Trích xuất tên phim từ câu: '{text}'"
         
         result = await self._call_groq_api(system_prompt, user_prompt, max_tokens=50, temperature=0.1)
-        return None if "None" in result else result
+        if not result:
+            return None
+        return None if result.strip() == "None" else result
 
     async def handle_generic_chat(self, message: str):
         system_prompt = "Bạn là trợ lý ảo về phim ảnh thân thiện. Trả lời ngắn gọn, hóm hỉnh bằng tiếng Việt."
