@@ -4,6 +4,7 @@ import type { MovieHeroGetVm } from "../../modules/homepage/model/MovieHeroGetVm
 import MovieRow from "../../modules/movie/components/MovieRow.tsx";
 import type { MovieThumbnailGetVm } from "../../modules/movie/model/MovieThumbnailGetVm.ts";
 import { getHeroMovie, getMoviePreferredGenres, getTop10, getTrending } from "../../modules/homepage/service/HomePageService.ts";
+import { ContentType } from "../../modules/homepage/model/enum/ContentType.ts";
 
 export default function HomePage() {
 
@@ -18,7 +19,7 @@ export default function HomePage() {
       setMovieHero(data);
     });
 
-    getTop10().then((data) => {
+    getTop10(ContentType.MOVIE, 10).then((data) => {
       setMoviesTop10(data);
     });
 

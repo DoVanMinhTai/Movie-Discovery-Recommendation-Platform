@@ -4,35 +4,39 @@ import lombok.AllArgsConstructor;
 import nlu.fit.movie_backend.config.ServiceUrlConfig;
 
 import nlu.fit.movie_backend.viewmodel.chatbot.ChatPostVm;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Flux;
 
 import java.net.URI;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class ChatbotService {
     private final ServiceUrlConfig serviceUrlConfig;
-    private final WebClient webClient;
     private final RestClient restClient;
 
-    public Flux<String> sendMessage(ChatPostVm chatRequest) {
-        URI url = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.chatbot())
-                .path("/chatbot/sendMessage")
-                .build().toUri();
-
-        return webClient.post().uri(url).bodyValue(chatRequest)
-                .accept(MediaType.TEXT_EVENT_STREAM)
-                .retrieve()
-                .bodyToFlux(String.class)
-                .map(data -> data)
-                .filter(data -> !data.isBlank())
-                ;
+    public String sendMessage(ChatPostVm chatRequest) {
+        try {
+            return restClient.post()
+                    .uri(serviceUrlConfig.chatbot() + "/chatbot/sendMessage")
+                    .header("Authorization", "Bearer " + serviceUrlConfig.chatbotToken())
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                    .header("Accept", "application/json")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(chatRequest)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, (request, response) -> {
+                        System.err.println("Mã lỗi: " + response.getStatusCode());
+                    })
+                    .body(String.class);
+        } catch (Exception e) {
+            return "{\"error\": \"Không thể kết nối đến Hugging Face: " + e.getMessage() + "\"}";
+        }
     }
 
     public Object getMessages(Long userId) {

@@ -36,7 +36,7 @@ export default function Chatbot() {
 
         try {
             const response = await sendMessage(currentInput)
-
+            console.log("Response received:", response);
             if (!response.ok) throw new Error("Network response was not ok");
             if (!response.body) throw new Error("ReadableStream not supported");
 

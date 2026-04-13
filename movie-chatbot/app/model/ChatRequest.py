@@ -10,6 +10,3 @@ class ChatRequest(BaseModel):
     userId: Optional[int] = Field(default=0)
     message: str = Field()
     historyMessageList: Optional[List[HistoryMessage]] = Field(default_factory=list)
-    
-    
-

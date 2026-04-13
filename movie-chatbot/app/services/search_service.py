@@ -1,11 +1,12 @@
-from elasticsearch import Elasticsearch
+from elasticsearch import AsyncElasticsearch
 from app.config.config import settings
 
 class SearchService:
     def __init__(self):
-        self.es_client = Elasticsearch(hosts=settings.es_host)
+        self.es_client = AsyncElasticsearch(hosts=settings.es_host,     
+        headers={"Accept": "application/json", "Content-Type": "application/json"})
 
-    def search_movies(self, params: dict):
+    async def search_movies(self, params: dict):
         must_queries = []
         field_mapping = {"title": "title", "director": "director_name", "genre": "genres", "year": "releaseDate"}
 
@@ -18,13 +19,13 @@ class SearchService:
                             "fuzziness": 1,
                             "operator": "or"
                         }}})
-
+    
         query = {
             "query": {"bool": {"must": must_queries if must_queries else [{"match_all": {}}]}},
             "size": 5
         }
         try:
-            res = self.es_client.search(index="mediacontent", body=query)
+            res =  await self.es_client.search(index="mediacontent", body=query)
             return [hit["_source"] for hit in res["hits"]["hits"]]
         except Exception as e:
             print(f"ES Error: {e}")

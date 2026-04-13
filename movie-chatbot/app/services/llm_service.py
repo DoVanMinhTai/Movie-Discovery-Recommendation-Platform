@@ -1,4 +1,4 @@
-from groq import Groq
+from groq import AsyncGroq
 from app.config.config import settings
 from app.config.prompts import Prompts
 from app.services.helpers import clean_json_response, format_movie_summary
@@ -7,16 +7,18 @@ import os
 class LLMService:
     def __init__(self):
         api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            print("Warning: GROQ_API_KEY is not set. LLM functionalities will be limited.")
         self.model_name = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
         try:
-            self.client = Groq(api_key=api_key)
+            self.client = AsyncGroq(api_key=api_key)
             print(f"Initialized LLMService with model: {self.model_name}")
         except Exception as e:
             print(f"LLM Error: {e}")
             self.client = None
 
-    def generate_suggestions(self, user_query: str, bot_response: str, intent: str):
+    async def generate_suggestions(self, user_query: str, bot_response: str, intent: str):
         prompt = f"""
         Bạn là một chuyên gia tư vấn phim ảnh. 
         Dựa trên câu hỏi của người dùng: "{user_query}" 
@@ -30,7 +32,7 @@ class LLMService:
         3. Các gợi ý phải tự nhiên, kích thích sự tò mò.
         """
         try:
-            response_json = self._call_groq_api(
+            response_json = await self._call_groq_api(
                 system_prompt=prompt,
                 user_message="",
                 temperature=0.7,
@@ -43,11 +45,11 @@ class LLMService:
             print(f"Error generating suggestions: {e}")
             return []
 
-    def _call_groq_api(self, system_prompt: str, user_message: str, max_tokens: int = 150, temperature: float = 0.7, stop: list = None):
+    async def _call_groq_api(self, system_prompt: str, user_message: str, max_tokens: int = 150, temperature: float = 0.7, stop: list = None):
         if not self.client:
-            return ""
+            return None
         try:
-            completion = self.client.chat.completions.create(
+            completion = await self.client.chat.completions.create(
                 model=self.model_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -59,9 +61,9 @@ class LLMService:
             return completion.choices[0].message.content.strip()
         except Exception as e:
             print(f"Groq API Error: {e}")
-            return ""
+            return None
 
-    def generate_natural_response(self, message: str, movies_data: list, intent: str):
+    def generate_natural_response(self, message: str, movies_data: list, intent: str | None = None):
         if not self.client:
             return f"Tìm thấy {len(movies_data)} phim: " + ", ".join([m.get('title') for m in movies_data])
             
