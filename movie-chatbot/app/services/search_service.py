@@ -31,7 +31,7 @@ class SearchService:
             print(f"ES Error: {e}")
             return []
         
-    def fall_Back_ElasticSearch(self, movie_name: str):
+    async def fall_Back_ElasticSearch(self, movie_name: str):
         """Tìm kiếm mờ khi không tìm thấy tên phim chính xác"""
         query = {
             "query": {
@@ -41,13 +41,13 @@ class SearchService:
             "size": 3
         }
         try:
-            res = self.es_client.search(index="movies", body=query)
+            res = await self.es_client.search(index="movies", body=query)
             return [hit["_source"]["id"] for hit in res["hits"]["hits"]]
         except Exception as e:
             print(f"Fallback ES Error: {e}")
         return []
     
-    def find_movie_id_by_name(self, movie_name: str):
+    async def find_movie_id_by_name(self, movie_name: str):
         query = {
             "query": {
                 "match_phrase": { "title": movie_name }
@@ -56,7 +56,7 @@ class SearchService:
             "size": 1
         }
         try:
-            res = self.es_client.search(index="movies", body=query)
+            res = await self.es_client.search(index="movies", body=query)
             hits = res["hits"]["hits"]
             if hits:
                 return hits[0]["_source"]["id"]

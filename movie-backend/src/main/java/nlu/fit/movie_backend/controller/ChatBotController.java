@@ -28,9 +28,11 @@ public class ChatBotController {
             } catch (Exception e) {
                 return Flux.error(e);
             }
-        }).onErrorResume(e -> Flux.just(ServerSentEvent.<String>builder()
-                .data("{\"error\": \"" + e.getMessage() + "\"}")
-                .build()));
+        }).onErrorResume(e -> {
+            return Flux.just(ServerSentEvent.<String>builder()
+                    .data("{\"error\": \"Đã có lỗi xảy ra, vui lòng thử lại sau.\"}")
+                    .build());
+        });
     }
 
     @GetMapping("/history")

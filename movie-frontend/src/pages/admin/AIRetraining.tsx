@@ -7,10 +7,8 @@ export default function AIRetraining() {
     const queryClient = useQueryClient();
     const [isTraining, setIsTraining] = useState(false);
     const token = localStorage.getItem("token");
-    if (!token) {
-        throw new Error("Missing authentication token");
-    }
     const authHeaders = { Authorization: `Bearer ${token}` };
+
     const { data: aiData } = useQuery({
         queryKey: ['ai-status'],
         queryFn: async () => {
@@ -31,6 +29,10 @@ export default function AIRetraining() {
             queryClient.invalidateQueries({ queryKey: ['ai-status'] });
         }
     });
+
+    if (!token) {
+        return <div className="text-sm text-red-400">Missing authentication token. Please sign in again.</div>;
+    }
 
     return (
         <div className="space-y-6">

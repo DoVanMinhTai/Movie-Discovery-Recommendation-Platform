@@ -31,7 +31,7 @@ public class ChatbotService {
                     .body(chatRequest)
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, (request, response) -> {
-                        System.err.println("Mã lỗi: " + response.getStatusCode());
+                        throw new IllegalStateException("Chatbot service returned " + response.getStatusCode());
                     })
                     .body(String.class);
         } catch (Exception e) {

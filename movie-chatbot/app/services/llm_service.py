@@ -63,7 +63,7 @@ class LLMService:
             print(f"Groq API Error: {e}")
             return None
 
-    def generate_natural_response(self, message: str, movies_data: list, intent: str | None = None):
+    async def generate_natural_response(self, message: str, movies_data: list, intent: str | None = None):
         if not self.client:
             return f"Tìm thấy {len(movies_data)} phim: " + ", ".join([m.get('title') for m in movies_data])
             
@@ -71,22 +71,22 @@ class LLMService:
         system_prompt = "Bạn là trợ lý ảo về phim ảnh thân thiện. Hãy dựa vào danh sách phim được cung cấp để trả lời người dùng bằng tiếng Việt tự nhiên."
         user_prompt = f"Câu hỏi của người dùng: {message}\n\nDanh sách phim: {summary}\n\nÝ định (Intent): {intent}\n\nHãy trả lời một cách lôi cuốn."
         
-        return self._call_groq_api(system_prompt, user_prompt, max_tokens=1000)
+        return await self._call_groq_api(system_prompt, user_prompt, max_tokens=1000)
 
-    def extract_search_params(self, text: str):
+    async def extract_search_params(self, text: str):
         system_prompt = "Bạn là chuyên gia trích xuất thực thể từ câu lệnh tìm kiếm phim. Chỉ trả về JSON, không giải thích gì thêm."
         user_prompt = f"Trích xuất các tham số tìm kiếm (title, genre, year, actor, director) từ câu sau: '{text}'"
         
-        raw_output = self._call_groq_api(system_prompt, user_prompt, max_tokens=150, temperature=0.1)
+        raw_output = await self._call_groq_api(system_prompt, user_prompt, max_tokens=150, temperature=0.1)
         return clean_json_response(raw_output) or {"title": text}
 
-    def extract_reference_movie(self, text: str):
+    async def extract_reference_movie(self, text: str):
         system_prompt = "Nhiệm vụ của bạn là trích xuất duy nhất tên bộ phim mà người dùng đang nhắc tới. Nếu không thấy, hãy trả về 'None'."
         user_prompt = f"Trích xuất tên phim từ câu: '{text}'"
         
-        result = self._call_groq_api(system_prompt, user_prompt, max_tokens=50, temperature=0.1)
+        result = await self._call_groq_api(system_prompt, user_prompt, max_tokens=50, temperature=0.1)
         return None if "None" in result else result
 
-    def handle_generic_chat(self, message: str):
+    async def handle_generic_chat(self, message: str):
         system_prompt = "Bạn là trợ lý ảo về phim ảnh thân thiện. Trả lời ngắn gọn, hóm hỉnh bằng tiếng Việt."
-        return self._call_groq_api(system_prompt, message, max_tokens=500)
+        return await self._call_groq_api(system_prompt, message, max_tokens=500)

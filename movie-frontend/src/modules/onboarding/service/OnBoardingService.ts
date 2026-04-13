@@ -2,6 +2,9 @@ import { API_ENDPOINTS } from "../../../constants/ApiEndpoints";
 
 export async function submitOnBoarding({ genres }: { genres: number[] }) {
     const token = localStorage.getItem("token");
+    if (!token) {
+        throw new Error("Missing authentication token");
+    }
     const response = await fetch(API_ENDPOINTS.ONBOARDING.POST, {
         method: "POST",
         headers: {

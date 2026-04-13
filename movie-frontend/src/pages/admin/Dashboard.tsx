@@ -5,9 +5,13 @@ export default function Dashboard() {
   const { data: stats, isLoading, error } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Unauthorized");
+      }
       const res = await fetch(API_ENDPOINTS.ADMIN.DASHBOARD, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem("token")}`
+          'Authorization': `Bearer ${token}`
         }
       });
 
