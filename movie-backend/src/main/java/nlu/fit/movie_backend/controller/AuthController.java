@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
 public class AuthController {
     private final AuthService authService;
     private final JWTService jWTService;
