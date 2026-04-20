@@ -11,10 +11,12 @@ import nlu.fit.movie_backend.viewmodel.auth.RegisterGetVm;
 import nlu.fit.movie_backend.viewmodel.auth.RegisterPostVm;
 import nlu.fit.movie_backend.viewmodel.user.ProfileGetVm;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.AccountLockedException;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
@@ -40,17 +42,27 @@ public class AuthService {
                 .email(user.getEmail()).build();
     }
 
-    public ProfileGetVm login(LoginPostVm loginPostVm) {
+    public ProfileGetVm login(LoginPostVm loginPostVm) throws AccountLockedException {
+        String email = loginPostVm.email();
+        String password = loginPostVm.password();
+        User user = authRepository.findByEmail(email);
+
+        if (user == null) {
+//                throw new ResourceNotFoundException("Email/username không tồn tại");
+        }
+
+        if (!user.isActive()) {
+            throw new AccountLockedException("Tài khoản của bạn đã bị khóa");
+        }
+
         try {
-            String email = loginPostVm.email();
-            String password = loginPostVm.password();
+
             var authentication = authenticationManager.authenticate(
                     new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
                             email,
                             password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            User user = authRepository.findByEmail(email);
 
             String jwt = JwtService.generateJWTToken(user);
             UserToken token = new UserToken();
@@ -65,9 +77,9 @@ public class AuthService {
                     .role(String.valueOf(user.getRole()))
                     .token(jwt)
                     .build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Mật khẩu không chính xác");
+
         }
     }
 

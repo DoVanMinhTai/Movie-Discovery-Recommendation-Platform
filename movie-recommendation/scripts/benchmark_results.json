@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-04-15 18:56:48",
+  "tfidf_performance": {
+    "avg_latency_ms": 1.6797256469726562,
+    "median_latency_ms": 1.4128684997558594,
+    "p95_latency_ms": 2.6327610015869136,
+    "p99_latency_ms": 3.190250396728514,
+    "min_latency_ms": 1.3060569763183594,
+    "max_latency_ms": 3.6678314208984375
+  },
+  "elasticsearch_performance": {
+    "avg_latency_ms": 264.4504117965698,
+    "median_latency_ms": 263.5476589202881,
+    "p95_latency_ms": 268.48716735839844,
+    "p99_latency_ms": 297.33867883682245,
+    "min_latency_ms": 259.48333740234375,
+    "max_latency_ms": 309.36360359191895
+  },
+  "latency_improvement_percent": -15643.666965684826,
+  "num_requests": 50,
+  "dataset_size": 9742
+}

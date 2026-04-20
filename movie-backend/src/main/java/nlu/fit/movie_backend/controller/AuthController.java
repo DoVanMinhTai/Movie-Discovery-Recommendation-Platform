@@ -1,5 +1,6 @@
 package nlu.fit.movie_backend.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import nlu.fit.movie_backend.service.AuthService;
 import nlu.fit.movie_backend.service.JWTService;
@@ -11,21 +12,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.AccountLockedException;
+
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class AuthController {
     private final AuthService authService;
     private final JWTService jWTService;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterGetVm> registerUser(@RequestBody RegisterPostVm registerRequest) {
+    public ResponseEntity<RegisterGetVm> registerUser(@RequestBody @Valid RegisterPostVm registerRequest) {
         RegisterGetVm registerResponse = authService.register(registerRequest);
         return ResponseEntity.ok(registerResponse);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ProfileGetVm> loginUser(@RequestBody LoginPostVm loginPostVm) {
+    public ResponseEntity<ProfileGetVm> loginUser(@RequestBody @Valid LoginPostVm loginPostVm) throws AccountLockedException {
         ProfileGetVm loginResponse = authService.login(loginPostVm);
         return ResponseEntity.ok(loginResponse);
     }

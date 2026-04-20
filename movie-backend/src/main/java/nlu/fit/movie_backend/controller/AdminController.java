@@ -20,54 +20,54 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class AdminController {
     private final MovieService movieService;
     private final UserService userService;
     private final AdminService adminService;
 
-    @GetMapping("/statistics")
+    @GetMapping("/movie/statistics")
     public ResponseEntity<AdminStatsResponse> getStatistics() {
         return ResponseEntity.ok(adminService.getStatistics());
     }
 
-    @GetMapping("/users")
+    @GetMapping("/movie/users")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(adminService.getAllUsers());
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/movie/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.deleteUser(id));
     }
 
-    @GetMapping("/movies")
+    @GetMapping("/movie/movies")
     public ResponseEntity<List<MovieThumbnailGetVm>> getAllMoviesForAdmin() {
         return ResponseEntity.ok(movieService.getAllMovies());
     }
 
-    @PostMapping("/addMovie")
+    @PostMapping("/movie/addMovie")
     public ResponseEntity<?> addMovie(@RequestBody @Validated MoviePostVm movieRequest) {
         return ResponseEntity.ok(movieService.addMovie(movieRequest));
     }
 
-    @PutMapping("/putMovie")
+    @PutMapping("/movie/putMovie")
     public ResponseEntity<?> updateMovie(@RequestBody @Validated MoviePutVm request) {
         return ResponseEntity.ok(movieService.putMovie(request));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/movie/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
         movieService.deleteMovie(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/ai-status")
+    @GetMapping("/movie/ai-status")
     public ResponseEntity<AiStatusResponse> getAiStatus() {
         return ResponseEntity.ok(adminService.getAiStatus());
     }
 
-    @PostMapping("/retrain-ai")
+    @PostMapping("/movie/retrain-ai")
     public ResponseEntity<Map<String, String>> retrainAi() {
         return ResponseEntity.ok(adminService.triggerRetrain());
     }

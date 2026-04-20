@@ -20,11 +20,7 @@ async def chatbot(
     request: ChatRequest,
     bot: ChatBotService = Depends(get_chatbot)
 ):
-    logger.info(
-        "Controller received chat request for userId=%s history_count=%s",
-        request.userId,
-       len(request.historyMessageList or []),
-     )
+    logger.info(f"Controller received: {request.dict()}")
     try:
         if not request.message.strip():
             raise HTTPException(status_code=400, detail="Message cannot be empty")
@@ -34,8 +30,8 @@ async def chatbot(
         
             return response_data
         except Exception as e:
-            logger.error(f"Error in streaming response: {e}")
-            raise HTTPException(status_code=500, detail="Error processing the request")
+                logger.error(f"Error in streaming response: {e}")
+                raise HTTPException(status_code=500, detail="Error processing the request")
 
     except Exception as e:
         logger.error(f"Error in controller: {e}")

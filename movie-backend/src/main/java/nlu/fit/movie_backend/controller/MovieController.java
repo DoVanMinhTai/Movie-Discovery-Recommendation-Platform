@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/movie")
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class MovieController {
     private final MovieService movieService;
     private final JWTService jWTService;
@@ -35,17 +35,17 @@ public class MovieController {
     }
 
     @GetMapping("/movies/latest")
-    public ResponseEntity<List<MovieThumbnailGetVm>> getMovieLatest(
+    public ResponseEntity<List<MovieThumbnailGetVm>> getLatestMovies(
             @RequestParam int page, @RequestParam int size
     ) {
         return ResponseEntity.ok(movieService.getLatestMovies(page, size));
     }
 
     @GetMapping("/movies/trending")
-    public ResponseEntity<List<MovieThumbnailGetVm>> getMovieTrending(
+    public ResponseEntity<List<MovieThumbnailGetVm>> getTrendingMovies(
             @RequestParam int limit
     ) {
-        return ResponseEntity.ok(movieService.getMovieTrending(limit));
+        return ResponseEntity.ok(movieService.getTrendingMovies(limit));
     }
 
     @GetMapping("/movies/top10")
@@ -81,6 +81,5 @@ public class MovieController {
     ) {
         return ResponseEntity.ok(movieService.getMovieHero());
     }
-
 
 }

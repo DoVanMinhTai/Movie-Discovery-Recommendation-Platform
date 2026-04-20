@@ -80,7 +80,7 @@ public class MovieService {
         return movieMapper.toThumbnailGetVmList(movieRepository.findAllByIsDeletedFalse(false, pageable));
     }
 
-    public List<MovieThumbnailGetVm> getMovieTrending(int limit) {
+    public List<MovieThumbnailGetVm> getTrendingMovies(int limit) {
         MovieSortStrategy strategy = MovieSortStrategy.POPULARITY;
 
         Pageable pageable = PageRequest.of(0, limit, strategy.getSortConfig());

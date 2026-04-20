@@ -7,14 +7,12 @@ import nlu.fit.movie_backend.service.RateService;
 import nlu.fit.movie_backend.service.UserService;
 import nlu.fit.movie_backend.viewmodel.rate.RatingPostVm;
 import nlu.fit.movie_backend.viewmodel.user.OnboardingPostVm;
-import nlu.fit.movie_backend.viewmodel.user.UserWatchHistoryPostVm;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,7 +31,7 @@ public class UserInteractionController {
     }
 
     @PostMapping("/api/favorites/add")
-    public ResponseEntity<Void> addFavorite(
+    public ResponseEntity<Map<String, String>> addFavorite(
             @RequestHeader("Authorization") String token,
             @RequestBody Long movieId) {
 
@@ -41,17 +39,17 @@ public class UserInteractionController {
         Long userId = jwtService.extractUserId(jwt);
 
         userService.addFavorite(userId, movieId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("message", "Favorite added successfully"));
     }
 
     @DeleteMapping("/api/favorites/{movieId}")
-    public ResponseEntity<Void> deleteFavorite(@RequestHeader("Authorization") String token,
-                                               @PathVariable Long movieId) {
+    public ResponseEntity<Map<String, String>> deleteFavorite(@RequestHeader("Authorization") String token,
+                                                              @PathVariable Long movieId) {
         String jwt = token.substring(7);
         Long userId = jwtService.extractUserId(jwt);
 
         userService.deleteFavorite(userId, movieId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("message", "Favorite deleted successfully"));
     }
 
     @PostMapping("/api/rateMovie")
@@ -81,4 +79,5 @@ public class UserInteractionController {
         Long userId = jwtService.extractUserId(tokenSub);
         return ResponseEntity.ok(rateService.checkWatchHistory(userId, mediaContentId));
     }
+
 }
