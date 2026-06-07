@@ -1,69 +1,130 @@
 import os
-import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field, field_validator
+from pydantic import Field
 from dotenv import load_dotenv
 
-current_file = Path(__file__).resolve()
-env_path = None
-for parent in current_file.parents:
-    check_path = parent / ".env"
-    if check_path.exists():
-        env_path = check_path
-        break
 
-if env_path:
-    load_dotenv(env_path)
+def load_project_env():
+    current_dir = Path(__file__).resolve().parent
+    
+    # Navigate to project root (2 levels up: app/config -> app -> movie-chatbot -> project root)
+    project_root = current_dir.parent.parent.parent
+    
+    env_mode = os.getenv('ENV', 'dev')  
+    env_file = project_root / f'.env.{env_mode}'
+    
+    if not env_file.exists():
+        env_file = project_root / '.env'
+    
+    if env_file.exists():
+        load_dotenv(env_file, override=True)
+        print(f"[OK] Loaded environment from: {env_file}")
+        return env_file
+    else:
+        print(f"[WARNING] No environment file found at: {env_file}")
+        print(f"   Searched in: {project_root}")
+        return None
+
+
+load_project_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
+
 class Settings(BaseSettings):
-    hf_token: str = Field(default="", validation_alias="HF_TOKEN")
-
-    model_path_raw: str = Field(default="model-store/chatbot_models", validation_alias="MODEL_PATH")
+    chatbot_port: int = Field(default=8001, validation_alias="CHATBOT_PORT")
+    host: str = Field(default="0.0.0.0")
+    debug: bool = Field(default=False)
     
-    es_host: str = os.getenv("ES_HOST", "http://localhost:9200")
-    recommendation_service_url: str = Field(default="http://localhost:8080")
-    embed_model_name: str = Field(default="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2", validation_alias="EMBED_MODEL_NAME")
-
-    repo_id: str = Field(default="hugging-quants/Llama-3.2-3B-Instruct-Q4_K_M-GGUF")
-    llm_model_name: str = Field(default="llama-3.2-3b-instruct-q4_k_m.gguf", validation_alias="LLM_MODEL_NAME")
-
-    intent_anchors: Dict[str, List[str]] = Field(default_factory=dict)
-    genre_map: Dict[str, str] = Field(default_factory=dict)
-
-    @property
-    def model_path(self) -> str:
-        p = Path(self.model_path_raw)
-        if not p.is_absolute():
-            full_path = (BASE_DIR / p).resolve()
-        else:
-            full_path = p.resolve()
-        
-        if not full_path.exists():
-            print(f"Warning: Model folder not found at {full_path}")
-        return str(full_path)
-
-    @field_validator("intent_anchors", "genre_map", mode="before")
-    @classmethod
-    def parse_json_strings(cls, v):
-        if isinstance(v, str):
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                return {}
-        return v
-
+    hf_token: str = Field(default="", validation_alias="HF_TOKEN")
+    groq_api_key: str = Field(default="", validation_alias="GROQ_API_KEY")
+    groq_model: str = Field(default="llama3-70b-8192", validation_alias="GROQ_MODEL")
+    groq_project_id: Optional[str] = Field(default=None, validation_alias="GROQ_PROJECT_ID")
+    
+    es_host: str = Field(default="http://localhost:9200", validation_alias="ES_HOST")
+    es_username: Optional[str] = Field(default=None, validation_alias="ES_USERNAME")
+    es_password: Optional[str] = Field(default=None, validation_alias="ES_PASSWORD")
+    es_url: Optional[str] = Field(default=None, validation_alias="ES_URL")
+    
+    recommendation_service_url: str = Field(
+        default="http://localhost:8002", 
+        validation_alias="RECO_URL"
+    )
+    backend_service_url: str = Field(
+        default="http://localhost:8080",
+        validation_alias="BACKEND_URL"
+    )
+    
+    embed_model_name: str = Field(
+        default="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        validation_alias="EMBED_MODEL_NAME"
+    )
+    repo_id: str = Field(
+        default="hugging-quants/Llama-3.2-3B-Instruct-Q4_K_M-GGUF",
+        validation_alias="REPO_ID"
+    )
+    llm_model_name: str = Field(
+        default="llama-3.2-3b-instruct-q4_k_m.gguf",
+        validation_alias="LLM_MODEL_NAME"
+    )
+    
     model_config = SettingsConfigDict(
-        env_file=env_path,
+        env_file=".env",
         env_file_encoding="utf-8",
+        case_sensitive=False,
         extra="ignore"
     )
+    
+    @property
+    def elasticsearch_config(self) -> dict:
+        """Get Elasticsearch configuration as dict"""
+        if self.es_url:
+            return {"hosts": [self.es_url]}
+        elif self.es_username and self.es_password:
+            return {
+                "hosts": [self.es_host],
+                "basic_auth": (self.es_username, self.es_password)
+            }
+        else:
+            return {"hosts": [self.es_host]}
+    
+    def get_groq_config(self) -> dict:
+        """Get Groq API configuration"""
+        config = {
+            "api_key": self.groq_api_key,
+            "model": self.groq_model
+        }
+        if self.groq_project_id:
+            config["project_id"] = self.groq_project_id
+        return config
+
 
 settings = Settings()
 
 if __name__ == "__main__":
+    print("=" * 60)
+    print("CHATBOT SERVICE CONFIGURATION")
+    print("=" * 60)
     print(f"Project Root: {BASE_DIR}")
-    print(f"Final Model Path: {settings.model_path}")
+    print(f"Model Directory: {get_model_dir()}")
+    print(f"Cache Directory: {get_cache_dir()}")
+    print(f"\nService Configuration:")
+    print(f"  Port: {settings.chatbot_port}")
+    print(f"  Host: {settings.host}")
+    print(f"\nElasticsearch:")
+    print(f"  Host: {settings.es_host}")
+    print(f"  URL: {settings.es_url or 'Not set'}")
+    print(f"\nService URLs:")
+    print(f"  Recommendation: {settings.recommendation_service_url}")
+    print(f"  Backend: {settings.backend_service_url}")
+    print(f"\nAPI Keys:")
+    print(f"  HF Token: {'Set' if settings.hf_token else 'Not set'}")
+    print(f"  Groq API Key: {'Set' if settings.groq_api_key else 'Not set'}")
+    print(f"  Groq Model: {settings.groq_model}")
+    print(f"\nModel Configuration:")
+    print(f"  Embed Model: {settings.embed_model_name}")
+    print(f"  LLM Model: {settings.llm_model_name}")
+    print(f"  Repo ID: {settings.repo_id}")
+    print("=" * 60)

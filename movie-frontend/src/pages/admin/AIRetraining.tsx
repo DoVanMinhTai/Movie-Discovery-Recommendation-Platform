@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { API_ENDPOINTS } from '../../constants/ApiEndpoints';
-import { Brain, Database, Search, RefreshCw, CheckCircle, AlertCircle, Clock, Sparkles } from 'lucide-react';
+import { Brain, Database, Search, RefreshCw, CheckCircle, AlertCircle, Clock, Sparkles, Info } from 'lucide-react';
 
 export default function AIRetraining() {
     const queryClient = useQueryClient();
@@ -23,7 +23,7 @@ export default function AIRetraining() {
     });
 
     const trainMutation = useMutation({
-        mutationFn: () => axios.post(API_ENDPOINTS.ADMIN.RETRAIN_AI, {}, {
+        mutationFn: () => axios.post(API_ENDPOINTS.RECOMMENDATION.CF.UPDATE_RECOMMENDATIONS, {}, {
             headers: authHeaders
         }),
         onSuccess: () => {

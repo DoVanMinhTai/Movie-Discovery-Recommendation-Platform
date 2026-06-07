@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { existEmail, register } from "../../modules/auth/service/AuthService";
+import { toast } from "react-hot-toast";
 
 const AuthInput = ({ label, ...props }: any) => (
   <div className="relative w-full mb-4">
@@ -24,6 +25,7 @@ export default function Register() {
   function handleRegister() {
     existEmail(email)
       .then((exists) => {
+        console.log('Email exists:', exists);
         if (exists) {
           alert('Email đã tồn tại. Vui lòng sử dụng email khác.');
         } else {
@@ -37,16 +39,17 @@ export default function Register() {
 
   function doRegister() {
     if (!username || !email || !password) {
-      alert('Vui lòng điền tất cả các trường.');
+      toast.error('Vui lòng điền tất cả các trường.');
       return;
     }
     register(username, email, password)
       .then(() => {
-        alert('Đăng ký thành công!');
+        toast.success('Đăng ký thành công!');
         navigate('/login');
       })
       .catch((error: { message: string; }) => {
-        alert('Đăng ký thất bại: ' + error.message);
+        console.error("Register Error:", error.message);
+        toast.error('Đăng ký thất bại. Vui lòng thử lại.');
       });
   }
 

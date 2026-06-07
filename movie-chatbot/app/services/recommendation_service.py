@@ -1,22 +1,48 @@
-import requests
-from app.services.search_service import SearchService
+import httpx
+import logging
 from app.config.config import settings
-import asyncio
+
+logger = logging.getLogger("RecommendationService")
 
 class RecommendationService:
-    def __init__(self) -> None:
-        self.search_service = SearchService()
+    def __init__(self):
+        self.base_url = settings.recommendation_service_url 
 
-    async def call_recommendation(self, inputs: dict):
-        REC_SERVICE_URL = settings.recommendation_service_url 
-        
+    async def get_user_recommendations(self, user_id: int, top_n: int = 5):
         try:
-            response =  await asyncio.to_thread(requests.post, REC_SERVICE_URL, json=inputs)
-            if response.status_code == 200:
-                return response.json() 
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{self.base_url}/api/v1/recommendations/cf/user-recommendations/{user_id}",
+                    params={"top_n": top_n}
+                )
+                response.raise_for_status()
+                return response.json()
         except Exception as e:
-            print(f"Failed to call Recommendation Service: {e}")
-            
-            return await self.search_service.search_movies({"genre": inputs["selected_genres"][0] if inputs["selected_genres"] else "Action"})
-        
-        return []
+            logger.error(f"Error calling CF recommendations: {e}")
+            return []
+
+    async def get_similar_movies(self, movie_id: int, top_n: int = 5):
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{self.base_url}/api/v1/recommendations/cf/item-similarity/{movie_id}",
+                    params={"top_n": top_n}
+                )
+                response.raise_for_status()
+                return response.json()
+        except Exception as e:
+            logger.error(f"Error calling similarity recommendations: {e}")
+            return []
+
+    async def get_hybrid_recommendations(self, user_id: int, top_n: int = 5):
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{self.base_url}/api/v1/cf/user-recommendations/{user_id}",
+                    params={"top_n": top_n}
+                )
+                response.raise_for_status()
+                return response.json()
+        except Exception as e:
+            logger.error(f"Error calling hybrid recommendations: {e}")
+            return []

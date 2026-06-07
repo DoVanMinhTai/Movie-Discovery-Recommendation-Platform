@@ -3,6 +3,8 @@ package nlu.fit.movie_backend.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nlu.fit.movie_backend.constants.ErrorCode;
+import nlu.fit.movie_backend.exception.AppException;
 import nlu.fit.movie_backend.mapper.impl.media.MediaMapperFactory;
 import nlu.fit.movie_backend.mapper.impl.movie.MovieMapperStrategy;
 import nlu.fit.movie_backend.mapper.impl.movie.MovieSortStrategy;
@@ -34,6 +36,12 @@ public class MovieService {
         return movieMapper.toThumbnailGetVmList(movies);
     }
 
+    public Page<MovieThumbnailGetVm> getAllMoviesPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Movie> moviesPage = movieRepository.findAll(pageable);
+        return moviesPage.map(movieMapper::toThumbnailGetVm);
+    }
+
     @Transactional
     public MovieGetVm addMovie(MoviePostVm moviePostVm) {
 //      Validate field of Model
@@ -50,7 +58,8 @@ public class MovieService {
 
     @Transactional
     public MovieGetVm putMovie(MoviePutVm moviePutVm) {
-        Movie existingMovie = movieRepository.findById(moviePutVm.id()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Movie existingMovie = movieRepository.findById(moviePutVm.id()).orElseThrow(() ->
+                new AppException(ErrorCode.MOVIE_NOT_FOUND));
 
         movieMapper.updateMovieFromVm(moviePutVm, existingMovie);
 
@@ -68,7 +77,7 @@ public class MovieService {
 
     public MediaContentGetVm getMediaContentById(Long id) {
         MediaContent mediaContent = mediaContentRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                () -> new AppException(ErrorCode.MEDIA_CONTENT_NOT_FOUND));
         return mediaMapperFactory.getVm(mediaContent);
     }
 
@@ -110,7 +119,7 @@ public class MovieService {
 
     public Map<String, List<MovieThumbnailGetVm>> getMoviePreferredGenres(Long userId, int limit) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User không tồn tại"));
+                .orElseThrow(() -> new AppException(ErrorCode.GENRE_NOT_FOUND));
 
         List<Genre> preferredGenres = user.getPreferredGenres().stream().toList();
         Map<String, List<MovieThumbnailGetVm>> result = new LinkedHashMap<>();
@@ -130,19 +139,32 @@ public class MovieService {
         return result;
     }
 
-    public Page<MovieThumbnailGetVm> filterMovies(String sortBy, String genreId, int page, int size) {
+    public Page<MovieThumbnailGetVm> filterMovies(String sortBy, String genreId, String dtype, int page, int size) {
         MovieSortStrategy strategy = MovieSortStrategy.fromString(sortBy);
         Sort sort = strategy.getSortConfig();
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<MediaContent> mediaContents;
-        if (genreId != null) {
+        boolean hasGenre = genreId != null && !genreId.isEmpty();
+        boolean hasDtype = dtype != null && !dtype.isEmpty();
+
+        if (hasGenre && hasDtype) {
+            mediaContents = mediaContentRepository.findByGenresIdAndDtype(Long.valueOf(genreId), dtype, pageable);
+        } else if (hasGenre) {
             mediaContents = mediaContentRepository.findByGenresId(Long.valueOf(genreId), pageable);
+        } else if (hasDtype) {
+            mediaContents = mediaContentRepository.findByDtype(dtype, pageable);
         } else {
             mediaContents = mediaContentRepository.findAll(pageable);
         }
 
-        return mediaContents.map(item -> new MovieThumbnailGetVm(item.getId(), item.getTitle(), item.getBackdropPath()));
+        return mediaContents.map(item -> new MovieThumbnailGetVm(
+                item.getId(),
+                item.getTitle(),
+                item.getBackdropPath(),
+                item.getDtype(),
+                item.getReleaseDate() != null ? String.valueOf(item.getReleaseDate().getYear()) : null
+        ));
     }
 }

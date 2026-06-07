@@ -11,6 +11,8 @@ import Profile from './pages/profile/Profile'
 import WatchList from './pages/watchlist/WatchList'
 import MovieManage from './pages/admin/MovieManage'
 import Category from './pages/category/Category'
+import Series from './pages/series/Series'
+import Movies from './pages/movies/Movies'
 import "./index.css";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ProtectedRoute from './common/auth/components/ProtectedRoute'
@@ -44,6 +46,8 @@ function App() {
               <Route path="movie/:id" element={<MovieDetail />} />
               <Route path="search" element={<SearchResult />} />
               <Route path="category" element={<Category />} />
+              <Route path="movies" element={<Movies />} />
+              <Route path="series" element={<Series />} />
               <Route path="profile" element={<Profile />} />
               <Route path="watchlist" element={<WatchList />} />
             </Route>

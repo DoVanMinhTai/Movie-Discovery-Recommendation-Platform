@@ -134,25 +134,3 @@ class ContentBasedService:
         except Exception as e:
             logger.error(f"Error getting movies by genre '{genre}': {e}")
             raise
-        
-    async def get_trending(
-        self, 
-        top_n: int = 10
-    ) -> Dict[str, Any]:
-        """
-        Since DB is removed, we provide trending based on popularity from ES
-        """
-        try:
-            query = {
-                "size": top_n,
-                "query": {"match_all": {}},
-                "sort": [{"popularity": "desc"}]
-            }
-            results = self.es.search(index=self.index, body=query)
-            return {
-                "strategy": "TRENDING_VIA_POPULARITY",
-                "recommendations": [self._format_hit(h) for h in results['hits']['hits']]
-            }
-        except Exception as e:
-            logger.error(f"Error getting trending movies via ES: {e}")
-            raise

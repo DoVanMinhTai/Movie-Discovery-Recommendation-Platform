@@ -21,9 +21,10 @@ export async function submitOnBoarding({ genres }: { genres: number[] }) {
         },
         body: JSON.stringify({ genres })
     });
+
+    console.log("OnBoarding response:", response);
     if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Lỗi server: ${response.status}`);
+        throw new Error("Failed to submit onboarding");
     }
-    return response.json();
+    return response.text();
 }

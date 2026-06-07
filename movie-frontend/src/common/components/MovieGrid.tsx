@@ -47,9 +47,15 @@ const MovieGrid = ({ data, loading, onPageChange }: MovieGridProps) => {
                                             {movie.title}
                                         </h3>
                                         <div className="flex items-center gap-2 mt-1">
-                                            <span className="text-[10px] text-gray-400 border border-gray-600 px-1 rounded-sm uppercase font-bold">
-                                                HD
-                                            </span>
+                                            {movie.dtype === 'SERIES' ? (
+                                                <span className="text-[10px] text-white border border-red-500 bg-red-600 px-1 rounded-sm uppercase font-bold">
+                                                    SERIES
+                                                </span>
+                                            ) : (
+                                                <span className="text-[10px] text-gray-400 border border-gray-600 px-1 rounded-sm uppercase font-bold">
+                                                    HD
+                                                </span>
+                                            )}
                                             <span className="text-xs text-gray-500">
                                                 {movie.releaseDate ? movie.releaseDate : "N/A"}
                                             </span>

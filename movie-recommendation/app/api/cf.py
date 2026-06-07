@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request, HTTPException
 from app.services.cf_service import CollaborativeService
-from app.api.cbf import get_es_client
+from app.services.es_service import get_es_client
 from opensearchpy import OpenSearch
 import logging
 

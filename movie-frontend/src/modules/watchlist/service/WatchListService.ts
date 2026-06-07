@@ -1,19 +1,14 @@
+import apiClientService from "../../../common/services/ApiClientService";
 import { API_ENDPOINTS } from "../../../constants/ApiEndpoints";
 
 export async function getWatchList(): Promise<any> {
-    const response = await fetch(API_ENDPOINTS.USER.GET_FAVORITES, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
-    });
-    if (!response.ok) throw new Error("Không thể tải danh sách");
-    return response.json();
+    const response = await apiClientService.get(API_ENDPOINTS.USER.GET_FAVORITES);
+    return response;
 }
 
 export async function removeFromWatchList(movieId: number): Promise<void> {
-    const response = await fetch(API_ENDPOINTS.USER.REMOVE_FAVORITE(movieId), {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
-    });
-    if (!response.ok) throw new Error("Không thể xóa phim");
+    const response = await apiClientService.delete(API_ENDPOINTS.USER.REMOVE_FAVORITE(movieId));
+    return response;
 }
 
 export async function addToWatchList(movieId: number): Promise<void> {
@@ -25,5 +20,6 @@ export async function addToWatchList(movieId: number): Promise<void> {
         },
         body: JSON.stringify(movieId)
     });
+    console.log("Response status:", response.status);
     if (!response.ok) throw new Error("Không thể thêm phim");
 }

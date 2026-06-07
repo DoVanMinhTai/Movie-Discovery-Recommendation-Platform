@@ -1,20 +1,17 @@
 package nlu.fit.movie_backend.service;
 
 import lombok.RequiredArgsConstructor;
-import nlu.fit.movie_backend.config.ServiceUrlConfig;
 import nlu.fit.movie_backend.model.User;
 import nlu.fit.movie_backend.repository.jpa.*;
 import nlu.fit.movie_backend.viewmodel.admin.*;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,27 +23,54 @@ public class AdminService {
     private final ModelRegistryRepository modelRegistryRepository;
     private final TrainingJobRepository trainingJobRepository;
     private final WatchHistoryRepository watchHistoryRepository;
-    private final RecommendationService recommendationService;
-    private final RestClient restClient;
-    private final ServiceUrlConfig serviceUrlConfig;
+    private final MovieRepository movieRepository;
 
-    public AdminStatsResponse getStatistics() {
+    public AdminStatsResponse getStatistics(LocalDate from, LocalDate to) {
+        if (from == null) {
+            from = LocalDate.now().minusDays(30);
+        }
+        if (to == null) {
+            to = LocalDate.now();
+        }
+
         long totalUsers = userRepository.count();
         long totalMedia = mediaContentRepository.count();
-        long totalRatings = rateRepository.count();
-        long viewsToday = watchHistoryRepository.count();
+
+        LocalDateTime startRange = from.atStartOfDay();
+        LocalDateTime endRange = to.plusDays(1).atStartOfDay();
+
+        long totalRatings = rateRepository.countByCreatedAtBetween(startRange, endRange);
+
+        LocalDateTime todayStart = LocalDate.now().atStartOfDay();
+        LocalDateTime todayEnd = LocalDate.now().plusDays(1).atStartOfDay();
+        long viewsToday = watchHistoryRepository.countByWatchedAtBetween(todayStart, todayEnd);
 
         List<MovieResponse> recentMovies = mediaContentRepository.findTop5ByOrderByIdDesc()
                 .stream()
                 .map(m -> new MovieResponse(m.getId(), m.getTitle(), m.getReleaseDate().getYear()))
                 .toList();
+
+        List<Object[]> rawDailyViews = watchHistoryRepository.countDailyViewsBetween(startRange, endRange);
+        List<DailyViewDto> dailyViews = rawDailyViews.stream()
+                .map(row -> new DailyViewDto(row[0].toString(), ((Number) row[1]).longValue()))
+                .toList();
+
         return new AdminStatsResponse(
                 totalUsers,
                 totalMedia,
                 totalRatings,
                 viewsToday,
-                recentMovies
+                recentMovies,
+                dailyViews
         );
+    }
+
+    public boolean checkDuplicate(String title, int year, Long excludeId) {
+        if (excludeId != null) {
+            return movieRepository.existsByTitleAndYearExcluding(title, year, excludeId);
+        } else {
+            return movieRepository.existsByTitleAndYear(title, year);
+        }
     }
 
     public List<UserResponse> getAllUsers() {
@@ -77,30 +101,5 @@ public class AdminService {
         return new AiStatusResponse(activeModel, recentJobs, currentJob);
     }
 
-    public Map<String, String> triggerRetrain() {
-        try {
-            Map<String, Object> response = restClient.post()
-                    .uri(serviceUrlConfig.recommendation() + "/retrainingmodel")
-                    .retrieve()
-                    .onStatus(HttpStatusCode::isError, (request, res) -> {
-                        throw new RuntimeException("FastAPI Error: " + res.getStatusCode());
-                    })
-                    .body(new ParameterizedTypeReference<Map<String, Object>>() {});
 
-            if (response != null && response.containsKey("job_id")) {
-                return Map.of(
-                        "job_id", response.get("job_id").toString(),
-                        "status", "started"
-                );
-            }
-            throw new RuntimeException("Không nhận được Job ID từ AI Service");
-
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi gọi AI Service: " + e.getMessage());
-        }
-    }
-
-    public String updateRecommendation() {
-        return recommendationService.updateRecommendations();
-    }
 }

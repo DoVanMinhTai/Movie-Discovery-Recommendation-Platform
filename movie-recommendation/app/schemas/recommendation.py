@@ -5,7 +5,7 @@ from datetime import datetime
 
 class RecommendationItem(BaseModel):
     movie_id: int = Field(..., description="Movie ID", ge=1)
-    title: str = Field(..., description="Movie title")
+    title: str = Field("Unknown", description="Movie title")
     genres: str = Field("", description="Pipe-separated genres (e.g., 'Action|Sci-Fi')")
     score: float = Field(..., description="Recommendation score", ge=0)
     

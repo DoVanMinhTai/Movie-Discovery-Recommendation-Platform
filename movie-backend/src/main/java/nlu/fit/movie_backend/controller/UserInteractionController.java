@@ -1,11 +1,14 @@
 package nlu.fit.movie_backend.controller;
 
 import lombok.AllArgsConstructor;
+import nlu.fit.movie_backend.constants.ApiEndpoints;
 import nlu.fit.movie_backend.model.Rating;
 import nlu.fit.movie_backend.service.JWTService;
 import nlu.fit.movie_backend.service.RateService;
 import nlu.fit.movie_backend.service.UserService;
+import nlu.fit.movie_backend.viewmodel.ApiResponse;
 import nlu.fit.movie_backend.viewmodel.rate.RatingPostVm;
+import nlu.fit.movie_backend.viewmodel.user.MovieInteractionRequest;
 import nlu.fit.movie_backend.viewmodel.user.OnboardingPostVm;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +19,6 @@ import java.util.Collections;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
 @AllArgsConstructor
 @CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class UserInteractionController {
@@ -24,76 +26,77 @@ public class UserInteractionController {
     private final RateService rateService;
     private final JWTService jwtService;
 
-    @GetMapping("/api/getAllFavorites")
-    public ResponseEntity<?> getFavorites(@RequestHeader("Authorization") String token) {
+    @GetMapping(ApiEndpoints.UserInteraction.GET_ALL_FAVORITE)
+    public ResponseEntity<ApiResponse<?>> getFavorites(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         Long userId = jwtService.extractUserId(jwt);
-        return ResponseEntity.ok(userService.getAllMovieFavorites(userId));
+        System.out.println(userService.getAllMovieFavorites(userId));
+        return ResponseEntity.ok(ApiResponse.builder().result(userService.getAllMovieFavorites(userId)).build());
     }
 
-    @PostMapping("/api/favorites/add")
-    public ResponseEntity<Map<String, String>> addFavorite(
+    @PostMapping(ApiEndpoints.UserInteraction.ADD_MOVIE_FAVORITE)
+    public ResponseEntity<ApiResponse<Map<String, String>>> addFavorite(
             @RequestHeader("Authorization") String token,
-            @RequestBody Long movieId) {
+            @RequestBody MovieInteractionRequest request) {
 
         String jwt = token.substring(7);
         Long userId = jwtService.extractUserId(jwt);
 
-        userService.addFavorite(userId, movieId);
-        return ResponseEntity.ok(Map.of("message", "Favorite added successfully"));
+        userService.addFavorite(userId, request.movieId());
+        return ResponseEntity.ok(ApiResponse.<Map<String, String>>builder().result(Map.of("message", "Favorite added successfully")).build());
     }
 
-    @DeleteMapping("/api/favorites/{movieId}")
-    public ResponseEntity<Map<String, String>> deleteFavorite(@RequestHeader("Authorization") String token,
+    @DeleteMapping(ApiEndpoints.UserInteraction.DELETE_MOVIE_FAVORITE)
+    public ResponseEntity<ApiResponse<Map<String, String>>> deleteFavorite(@RequestHeader("Authorization") String token,
                                                               @PathVariable Long movieId) {
         String jwt = token.substring(7);
         Long userId = jwtService.extractUserId(jwt);
 
         userService.deleteFavorite(userId, movieId);
-        return ResponseEntity.ok(Map.of("message", "Favorite deleted successfully"));
+        return ResponseEntity.ok(ApiResponse.<Map<String, String>>builder().result(Map.of("message", "Favorite deleted successfully")).build());
     }
 
-    @PostMapping("/api/rateMovie")
-    public ResponseEntity<Rating> rateMovie(
+    @PostMapping(ApiEndpoints.UserInteraction.ADD_RATE)
+    public ResponseEntity<ApiResponse<Rating>> rateMovie(
             @RequestHeader("Authorization") String token,
             @RequestBody RatingPostVm ratingRequest) {
 
         String jwt = token.substring(7);
         Long userId = jwtService.extractUserId(jwt);
 
-        return ResponseEntity.ok(rateService.rateMovie(userId, ratingRequest));
+        return ResponseEntity.ok(ApiResponse.<Rating>builder().result(rateService.rateMovie(userId, ratingRequest)).build());
     }
 
-    @PostMapping("/onboarding")
-    public ResponseEntity<Map<String, String>> onBoardingUser(
+    @PostMapping(ApiEndpoints.UserInteraction.ONBOARDING)
+    public ResponseEntity<ApiResponse<Map<String, String>> >onBoardingUser(
             @RequestBody OnboardingPostVm request,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String email = userDetails.getUsername();
         String newToken = userService.processOnBoarding(email, request.genres());
-        return ResponseEntity.ok(Collections.singletonMap("token", newToken));
+        return ResponseEntity.ok(ApiResponse.<Map<String, String>>builder().result(Collections.singletonMap("token", newToken)).build());
     }
 
-    @GetMapping("/api/checkWatchHistory/{mediaContentId}")
-    public ResponseEntity<Boolean> checkWatchHistory(@RequestHeader("Authorization") String token, @PathVariable Long mediaContentId) {
+    @GetMapping(ApiEndpoints.UserInteraction.EXISTS_WATCH_HISTORY)
+    public ResponseEntity<ApiResponse<Boolean>> checkWatchHistory(@RequestHeader("Authorization") String token, @PathVariable Long mediaContentId) {
         String tokenSub = token.substring(7);
         Long userId = jwtService.extractUserId(tokenSub);
-        return ResponseEntity.ok(rateService.checkWatchHistory(userId, mediaContentId));
+        return ResponseEntity.ok(ApiResponse.<Boolean>builder().result(rateService.checkWatchHistory(userId, mediaContentId)).build());
     }
 
-    @GetMapping("/api/rating/{mediaContentId}")
-    public ResponseEntity<?> getRating(@RequestHeader("Authorization") String token, @PathVariable Long mediaContentId) {
+    @GetMapping(ApiEndpoints.UserInteraction.GET_RATE)
+    public ResponseEntity<ApiResponse<?>> getRating(@RequestHeader("Authorization") String token, @PathVariable Long mediaContentId) {
         String tokenSub = token.substring(7);
         Long userId = jwtService.extractUserId(tokenSub);
-        return ResponseEntity.ok(rateService.getRating(userId, mediaContentId));
+        return ResponseEntity.ok(ApiResponse.builder().result(rateService.getRating(userId, mediaContentId)).build());
     }
 
-    @PostMapping("/api/watch")
-    public ResponseEntity<Map<String, String>> addToWatchHistory(@RequestHeader("Authorization") String token, @RequestBody Long mediaContentId) {
+    @PostMapping(ApiEndpoints.UserInteraction.ADD_WATCH_HISTORY)
+    public ResponseEntity<ApiResponse<Map<String, String>>> addToWatchHistory(@RequestHeader("Authorization") String token, @RequestBody MovieInteractionRequest request) {
         String tokenSub = token.substring(7);
         Long userId = jwtService.extractUserId(tokenSub);
-        rateService.addToWatchHistory(userId, mediaContentId);
-        return ResponseEntity.ok(Map.of("message", "Watch history updated successfully"));
+        rateService.addToWatchHistory(userId, request.movieId());
+        return ResponseEntity.ok(ApiResponse.<Map<String, String>>builder().result(Map.of("message", "Watch history updated successfully")).build());
     }
 
 }

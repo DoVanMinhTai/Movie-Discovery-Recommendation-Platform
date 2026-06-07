@@ -9,3 +9,6 @@ httpx==0.25.2
 python-multipart==0.0.6
 requests==2.33.1
 aiohttp==3.9.1
+langchain-groq
+langchain-core
+langchain

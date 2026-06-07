@@ -5,6 +5,7 @@ import { getWatchList, removeFromWatchList } from '../../modules/watchlist/servi
 import { getCollaborativeFiltering } from '../../modules/movie/service/MovieService';
 import { getMyProfile } from '../../modules/auth/service/AuthService';
 import ImageFallback from '../../common/components/ImageFallback';
+import { toast } from 'react-hot-toast';
 
 interface Movie {
     id: number;
@@ -13,17 +14,19 @@ interface Movie {
     releaseDate: string;
 }
 
+import type { MovieThumbnailGetVm } from '../../modules/movie/model/MovieThumbnailGetVm';
+
 export default function WatchList() {
     const queryClient = useQueryClient();
 
-    const { data: myList = [], isLoading: isListLoading } = useQuery<Movie[]>({
+    const { data: myList = [], isLoading: isListLoading } = useQuery<MovieThumbnailGetVm[]>({
         queryKey: ['watchlist'],
         queryFn: async () => {
             return getWatchList();
         }
     });
 
-    const { data: recommendedMovies = [], isLoading: isRecoLoading } = useQuery<Movie[]>({
+    const { data: recommendedMovies = [], isLoading: isRecoLoading } = useQuery<MovieThumbnailGetVm[]>({
         queryKey: ['recommendations-cf'],
         queryFn: async () => {
             try {
@@ -37,22 +40,28 @@ export default function WatchList() {
                 return [];
             }
         },
-        staleTime: 1000 * 60 * 10, 
+        staleTime: 1000 * 60 * 10,
     });
 
     const deleteMutation = useMutation({
         mutationFn: async (movieId: number) => {
             return removeFromWatchList(movieId);
         },
-        onSuccess: () => {
+        onMutate: () => {
+            return toast.loading("Đang xóa khỏi danh sách...");
+        },
+        onSuccess: (_data, _variables, context) => {
+            toast.success("Đã xóa bộ phim thành công!", { id: context });
+
             queryClient.invalidateQueries({ queryKey: ['watchlist'] });
+        },
+        onError: (error: any, _variables, context) => {
+            toast.error(error.message || "Không thể xóa phim này", { id: context });
         }
     });
 
     const removeFromList = (id: number) => {
-        if (window.confirm("Xóa bộ phim này khỏi danh sách yêu thích của bạn?")) {
-            deleteMutation.mutate(id);
-        }
+        deleteMutation.mutate(id);
     };
 
     if (isListLoading) return (
@@ -144,7 +153,7 @@ export default function WatchList() {
                     </div>
                 ) : recommendedMovies.length > 0 ? (
                     <div className="flex gap-6 overflow-x-auto pb-10 no-scrollbar">
-                        {recommendedMovies.map((movie) => (
+                        {recommendedMovies.map((movie: any) => (
                             <div key={movie.id} className="min-w-[240px] group cursor-pointer relative">
                                 <Link to={`/movie/${movie.id}`}>
                                     <div className="relative aspect-video rounded-lg overflow-hidden border border-white/5 transition-transform duration-300 group-hover:scale-105">

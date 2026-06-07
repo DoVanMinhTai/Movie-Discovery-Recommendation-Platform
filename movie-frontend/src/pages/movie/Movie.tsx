@@ -29,6 +29,24 @@ export default function MovieDetail() {
           setType("MOVIE");
         } else if (data.type === "SERIES") {
           const mediaContent = data.seriesVm || data.seriesDetailVm;
+          if (mediaContent) {
+            mediaContent.dtype = "SERIES";
+            if (mediaContent.seasonVm) {
+              mediaContent.seasons = mediaContent.seasonVm.map((s: any) => ({
+                id: s.id,
+                seasonNumber: s.seasonNumber,
+                episodes: s.episodeVm ? s.episodeVm.map((e: any) => ({
+                  id: e.id,
+                  seasonNumber: e.seasonNumber,
+                  episodeNumber: e.episodeNumber,
+                  title: e.title,
+                  videoUrl: e.videoUrl,
+                  stillPath: e.stillPath,
+                  overview: e.overview
+                })) : []
+              }));
+            }
+          }
           setMediaContent(mediaContent);
           setType("SERIES");
         }
@@ -44,7 +62,7 @@ export default function MovieDetail() {
     function handlePlay() {
     if (id) {
       addToWatchHistory(Number(id)).then(() => {
-        canRateMovie(Number(id)).then((watched) => {
+        canRateMovie(Number(id)).then(() => {
           window.dispatchEvent(new CustomEvent('watchHistoryUpdated', { detail: { mediaId: Number(id) } }));
         });
       });

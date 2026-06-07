@@ -48,31 +48,28 @@ public class LoggingInterceptor implements HandlerInterceptor {
                 response.getStatus(), 
                 responseTime);
         
-        // Log based on response time
         if (responseTime > SLOW_REQUEST_THRESHOLD) {
-            log.warn("🐌 SLOW REQUEST: {} ({}ms)", request.getRequestURI(), responseTime);
+            log.warn("SLOW REQUEST: {} ({}ms)", request.getRequestURI(), responseTime);
         } else {
             log.info(logMessage);
         }
         
-        // Log errors
         if (ex != null) {
-            log.error("❌ Request failed: {} {} - Error: {}", 
+            log.error("Request failed: {} {} - Error: {}",
                     request.getMethod(), 
                     request.getRequestURI(), 
                     ex.getMessage(), 
                     ex);
         }
         
-        // Log 4xx and 5xx errors
         int status = response.getStatus();
         if (status >= 400 && status < 500) {
-            log.warn("⚠️ Client error: {} {} - Status: {}", 
+            log.warn("Client error: {} {} - Status: {}",
                     request.getMethod(), 
                     request.getRequestURI(), 
                     status);
         } else if (status >= 500) {
-            log.error("💥 Server error: {} {} - Status: {}", 
+            log.error("Server error: {} {} - Status: {}",
                     request.getMethod(), 
                     request.getRequestURI(), 
                     status);

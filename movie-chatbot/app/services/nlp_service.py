@@ -1,101 +1,105 @@
 import os
-import re
 import logging
-from groq import Groq
+from typing import Optional, List, Dict
+from langchain_groq import ChatGroq
+from langchain_core.tools import tool
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_classic.agents import create_openai_tools_agent, AgentExecutor
+from app.services.search_service import SearchService
+from app.services.recommendation_service import RecommendationService
+import time
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger("NLPService")
 
 class NLPService:
     def __init__(self):
+        self.search_service = SearchService()
+        self.rec_service = RecommendationService()
+        
         api_key = os.getenv("GROQ_API_KEY")
-        self.model_name = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-        self.client = Groq(api_key=api_key)
+        self.llm = ChatGroq(groq_api_key=api_key, model_name="llama-3.3-70b-versatile", temperature=0.1)
 
-    def detect_intent(self, text: str, llm_instance=None) -> str:
-        quick_intent = self._detect_via_regex(text)
-        if quick_intent: return quick_intent
+        self.tools = self._setup_tools()
+        
+        self.prompt = ChatPromptTemplate.from_messages([
+            ("system", (
+                "Bạn là trợ lý điện ảnh. "
+                "1. Để tìm kiếm: dùng 'search_movies'. "
+                "2. Để gợi ý cá nhân: dùng 'get_user_recommendations'. "
+                "3. Để tìm phim tương tự: dùng 'get_similar_movies'. "
+                "Nếu không có dữ liệu gợi ý, hãy chủ động tìm phim hot để đề xuất cho khách."
+            )),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{input}"),
+            MessagesPlaceholder(variable_name="agent_scratchpad"),
+        ])
 
-        system_prompt = (
-            "Bạn là bộ phận phân loại ý định người dùng cho hệ thống gợi ý phim. "
-            "Chỉ trả về 1 từ duy nhất trong danh sách: SEARCH, RECOMMEND, CHAT. "
-            "- SEARCH: Khi người dùng muốn tìm thông tin về 1 bộ phim cụ thể, diễn viên, đạo diễn hoặc năm sản xuất. "
-            "- RECOMMEND: Khi người dùng muốn được gợi ý phim theo sở thích, thể loại, hoặc tâm trạng (ví dụ: 'gợi ý cho tôi phim hay', 'nên xem phim gì'). "
-            "- CHAT: Khi người dùng chào hỏi, hỏi về bạn, hoặc nói chuyện phiếm."
+        agent = create_openai_tools_agent(self.llm, self.tools, self.prompt)
+        self.agent_executor = AgentExecutor(
+            agent=agent, 
+            tools=self.tools, 
+            verbose=True, 
+            handle_parsing_errors=True,
+            return_intermediate_steps=True
         )
 
-        try:
-            completion = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": text}
-                ],
-                max_tokens=10,
-                temperature=0.1 
-            )
-            response = completion.choices[0].message.content.strip().upper()
-            
-            for label in ["SEARCH", "RECOMMEND", "CHAT"]:
-                if label in response:
-                    return label
-            return "CHAT" 
-        except Exception as e:
-            logger.error(f"Lỗi phân loại ý định: {e}")
-            return "CHAT"
-       
-    def _detect_via_regex(self, text: str) -> str:
-        patterns = {
-             "CHAT": r"\b(chào|hi|hello|hey)\b",
-            "SEARCH": r"\b(tìm phim|thông tin về|ai đóng vai)\b",
-            "RECOMMEND": r"\b(gợi ý|đề xuất|nên xem phim gì)\b"
+    def _format_response(self, intent: str, message: str, movies: any = None, suggestions: list = None):
+        return {
+            "status": "success",
+            "metadata": {
+                "intent": intent,
+                "model": "llama-3.3-70b-versatile",
+                "timestamp": time.time()
+            },
+            "message": message,
+            "movies": movies,
+            "suggestions": suggestions
         }
-        for intent, pattern in patterns.items():
-            if re.search(pattern, text.lower()):
-                return intent
-        return None
 
-# def _detect_via_embedding(self, text: str):
-#         user_embedding = self.embed_model.encode(text, convert_to_tensor=True)
-#         best_intent = "UNKNOWN"
-#         max_score = 0.0
-        
-#         for intent, anchors in self.anchor_embeddings.items():
-#             scores = util.cos_sim(user_embedding, anchors)
-#             top_val, _ = torch.topk(scores, k=min(2, scores.shape[1]))
-#             current_avg = float(torch.mean(top_val))
+    def _setup_tools(self):
+        @tool("search_movies")
+        async def search_movies(query: str) -> str:
+            """Tìm kiếm phim trong hệ thống."""
+            res = await self.search_service.search_movies(query)
+            return str(res) if res else "Không tìm thấy phim nào."
+
+        @tool("get_user_recommendations")
+        async def get_user_recommendations(user_id: int) -> str:
+            """Lấy danh sách phim gợi ý cho một ID người dùng nhất định."""
+            if user_id <= 0:
+                return "User mới, chưa có lịch sử. Hãy gợi ý phim phổ biến thay thế."
+            res = await self.rec_service.get_hybrid_recommendations(user_id)
+            return str(res) if res else "Không có dữ liệu gợi ý."
+
+        @tool("get_similar_movies")
+        async def get_similar_movies(movie_name: str) -> str:
+            """Tìm phim tương tự phim mà người dùng nhắc tới."""
+            movie_id = await self.search_service.find_movie_id_by_name(movie_name)
+            if movie_id:
+                res = await self.rec_service.get_similar_movies(movie_id)
+                return str(res)
+            return "Không tìm thấy phim tương tự."
+
+        return [search_movies, get_user_recommendations, get_similar_movies]
+
+    async def process_message(self, user_input: str, user_id: int, chat_history: List = []):
+        try:
+            context_input = f"[User_ID: {user_id}] {user_input}"
+            result = await self.agent_executor.ainvoke({
+                "input": context_input,
+                "chat_history": chat_history
+            })
+
+            final_answer = result.get("output")
+
+            raw_data = None
+            steps = result.get("intermediate_steps", [])
             
-#             if current_avg > max_score:
-#                 max_score = current_avg
-#                 best_intent = intent
-        
-#         return best_intent, max_score
+            if steps:
+                last_step_output = steps[-1][1] 
+                raw_data = last_step_output
 
-# def _detect_via_llm(self, text: str, llm) -> str:
-#     prompt = (
-#         f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
-#         f"Bạn là bộ phận phân loại ý định người dùng. Chỉ trả ra 1 từ duy nhất: SEARCH, RECOMMEND, CHAT.\n"
-#         f"SEARCH: Tìm phim/thông tin cụ thể.\n"
-#         f"RECOMMEND: Xin gợi ý phim.\n"
-#         f"CHAT: Chào hỏi/tán gẫu.<|eot_id|>"
-#         f"<|start_header_id|>user<|end_header_id|>\n\n"
-#         f"Câu: '{text}'\n"
-#         f"Intent:<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
-#     )
-    
-#     try:
-#         output = llm(prompt, max_tokens=10, stop=["<|eot_id|>"])
-#         response = output['choices'][0]['text'].strip().upper()
-        
-#         for label in ["SEARCH", "RECOMMEND", "CHAT"]:
-#             if label in response:
-#                 print(f"[Intent] Tầng 3 (LLM) xác định: {label}")
-#                 return label
-#         logger.warning(f"[Tầng 3 - LLM] LLM trả về kết quả lạ: {response}. Default: CHAT")
-#         return "CHAT"
-#     except Exception as e:
-#         print(f"Lỗi Tầng 3: {e}")
-#         return "CHAT"
+            return self._format_response("AUTO", final_answer, movies=raw_data)
+        except Exception as e:
+            logger.error(f"Agent execution error: {e}")
+            return "Chào bạn, tôi chưa rõ ý của bạn lắm. Bạn muốn tìm phim hay nhận gợi ý?"

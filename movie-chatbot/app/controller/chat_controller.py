@@ -1,9 +1,9 @@
 import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
-from app.services.chatbot_service import ChatBotService
-from app.model.ChatResponse import ChatResponse
-from app.model.ChatRequest import ChatRequest
+from app.services.nlp_service import NLPService
+from app.models.ChatResponse import ChatResponse
+from app.models.ChatRequest import ChatRequest
 from app.dependencies.chatbot_container import get_chatbot 
 import json
 import logging
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/chatbot", tags=["Chatbot"])
 @router.post("/sendMessage") 
 async def chatbot(
     request: ChatRequest,
-    bot: ChatBotService = Depends(get_chatbot)
+    bot: NLPService = Depends(get_chatbot)
 ):
     logger.info(f"Controller received: {request.dict()}")
     try:
@@ -26,7 +26,7 @@ async def chatbot(
             raise HTTPException(status_code=400, detail="Message cannot be empty")
         
         try:
-            response_data = await bot.process_query(request.message, request.userId)
+            response_data = await bot.process_message(request.message, request.userId)
         
             return response_data
         except Exception as e:

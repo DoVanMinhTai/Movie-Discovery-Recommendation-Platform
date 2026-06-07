@@ -35,12 +35,11 @@ export default function Login() {
   function handleLogin() {
     login(email, password)
       .then((data) => {
-        alert('Đăng nhập thành công!');
+        console.log('Login successful:', data);
         localStorage.setItem('token', data.token);
         window.location.href = data.role === 'ADMIN' ? '/admin' : '/onboarding';
       })
-      .catch((error: { message: string; }) => {
-        alert('Đăng nhập thất bại: ' + error.message);
+      .catch(() => {
       });
   }
 

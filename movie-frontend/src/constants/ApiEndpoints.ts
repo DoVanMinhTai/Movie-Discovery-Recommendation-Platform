@@ -20,43 +20,45 @@ export const API_ENDPOINTS = {
         MESSAGE: `${BASE_URL}/chatbot/message`,
     },
     HOMEPAGE: {
-        TRENDING: `${BASE_URL}/movie/movies/trending?limit=10`,
-        HERO_MOVIE: `${BASE_URL}/movie/movies/hero`,
-        PREFERRED_GENRES: `${BASE_URL}/movie/movies/preferredGenres?limit=10`,
-        TOP10: `${BASE_URL}/movie/movies/top10`,
+        TRENDING: `${BASE_URL}/movie/trending?limit=10`,
+        HERO_MOVIE: `${BASE_URL}/movie/hero`,
+        PREFERRED_GENRES: `${BASE_URL}/movie/preferredGenres?limit=10`,
+        TOP10: `${BASE_URL}/movie/top10`,
     },
     MOVIE: {
-        GENRES: `${BASE_URL}/movie/movies/genres`,
-        FILTER: `${BASE_URL}/movie/movies/`,
+        GENRES: `${BASE_URL}/category/genres`,
+        FILTER: `${BASE_URL}/movie/filter`,
     },
     MEDIA_CONTENT: {
         GET_BY_ID: (movieId: number) => `${BASE_URL}/mediacontent/${movieId}`,
     },
     USER: {
-        CAN_RATE: (movieId: number) => `${BASE_URL}/user/api/checkWatchHistory/${movieId}`,
-        RATING: (movieId: number) => `${BASE_URL}/user/api/rating/${movieId}`,
-        RATE: `${BASE_URL}/user/api/rateMovie`,
-        WATCH: `${BASE_URL}/user/api/watch`,
-        GET_FAVORITES: `${BASE_URL}/user/api/getAllFavorites`,
-        ADD_FAVORITE: `${BASE_URL}/user/api/favorites/add`,
-        REMOVE_FAVORITE: (movieId: number) => `${BASE_URL}/user/api/favorites/${movieId}`,
+        GET_RATE_BY_MOVIE_ID: (movieId: number) => `${BASE_URL}/user-interaction/rate/${movieId}`,
+        ADD_RATE: `${BASE_URL}/user-interaction/rate`,
+        
+        GET_FAVORITES: `${BASE_URL}/user-interaction/favorites`,
+        ADD_FAVORITE: `${BASE_URL}/user-interaction/favorites/add`,
+        REMOVE_FAVORITE: (movieId: number) => `${BASE_URL}/user-interaction/favorites/delete/${movieId}`,
+        
+        ADD_WATCH_HISTORY: `${BASE_URL}/user-interaction/addWatchHistory`,
+        EXISTS_WATCH_HISTORY: (movieId: number) => `${BASE_URL}/user-interaction/checkWatchHistory/${movieId}`,
     },
     SEARCH: {
-        SUGGEST: `${BASE_URL}/search/suggest`,
+        SUGGEST: `${BASE_URL}/search/suggestion`,
         ALL: `${BASE_URL}/search/all`,
     },
     ONBOARDING: {
-        POST: `${BASE_URL}/user/onboarding`,
+        POST: `${BASE_URL}/user-interaction/onboarding`,
     },
     RECOMMENDATION: {
         CF: {
+            UPDATE_RECOMMENDATIONS: `${BASE_URL}/recommendation/cf/update-recommendations`,
             USER: (userId: number) => `${BASE_URL}/recommendation/cf/user/${userId}`,
             SIMILAR: (movieId: number) => `${BASE_URL}/recommendation/cf/similar/${movieId}`,
         },
         CBF: {
             SEARCH: `${BASE_URL}/recommendation/cbf/search`,
             SIMILAR: (movieId: number) => `${BASE_URL}/recommendation/cbf/similar/${movieId}`,
-            TRENDING: `${BASE_URL}/recommendation/cbf/trending`,
         }
     }
 } as const;

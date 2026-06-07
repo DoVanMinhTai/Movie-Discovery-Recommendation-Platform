@@ -5,38 +5,37 @@ import { MovieCard } from "./MovieCard";
 import { Bot, MessageCircle, Send, Sparkles, X, Loader2, Target } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 
-// Define TypeScript interfaces for the chatbot response structure
 export interface ChatbotMetadata {
-  intent: string;
-  model: string;
-  timestamp: number;
+    intent: string;
+    model: string;
+    timestamp: number;
 }
 
 export interface ChatbotResponse {
-  status: 'success' | 'error';
-  metadata: ChatbotMetadata;
-  message: string;
-  data: any[];
-  suggestions?: string[];
+    status: 'success' | 'error';
+    metadata: ChatbotMetadata;
+    message: string;
+    movies: any[];
+    suggestions?: string[];
 }
 
 export interface ChatMessage {
-  id: number;
-  role: 'user' | 'bot';
-  text: string;
-  movies?: any[];
-  metadata?: ChatbotMetadata;
-  suggestions?: string[];
-  status?: 'loading' | 'success' | 'error';
+    id: number;
+    role: 'user' | 'bot';
+    text: string;
+    movies?: any[];
+    metadata?: ChatbotMetadata;
+    suggestions?: string[];
+    status?: 'loading' | 'success' | 'error';
 }
 
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<ChatMessage[]>([
-        { 
-            id: 1, 
-            role: 'bot', 
-            text: 'Xin chào! Tôi là Trợ lý Phim thông minh. Bạn đang tìm kiếm thể loại phim nào hay cần tôi gợi ý gì không?', 
+        {
+            id: 1,
+            role: 'bot',
+            text: 'Xin chào! Tôi là Trợ lý Phim thông minh. Bạn đang tìm kiếm thể loại phim nào hay cần tôi gợi ý gì không?',
             movies: [] as MovieThumbnailGetVm[],
             suggestions: ["Phim hành động mới", "Top phim bộ Hàn Quốc", "Gợi ý phim cho tôi"]
         },
@@ -55,33 +54,32 @@ export default function Chatbot() {
         const textToSend = overrideText || input;
         if (!textToSend.trim() || isLoading) return;
 
-        const userMsg: ChatMessage = { 
-            id: Date.now(), 
-            role: 'user', 
-            text: textToSend, 
-            movies: [] as MovieThumbnailGetVm[] 
+        const userMsg: ChatMessage = {
+            id: Date.now(),
+            role: 'user',
+            text: textToSend,
+            movies: [] as MovieThumbnailGetVm[]
         };
-        
+
         setMessages(prev => [...prev, userMsg]);
-        const currentInput = { message: textToSend, userId: 123 };
+        const currentInput = { message: textToSend };
         if (!overrideText) setInput("");
         setIsLoading(true);
 
         const botMsgId = Date.now() + 1;
-        setMessages(prev => [...prev, { 
-            id: botMsgId, 
-            role: 'bot', 
-            text: "", 
-            movies: [] as MovieThumbnailGetVm[], 
-            status: 'loading' 
+        setMessages(prev => [...prev, {
+            id: botMsgId,
+            role: 'bot',
+            text: "",
+            movies: [] as MovieThumbnailGetVm[],
+            status: 'loading'
         }]);
 
         try {
             const response = await sendMessage(currentInput);
-            if (!response.ok) throw new Error(`Network response was not ok`);
-            
-            const parsed: ChatbotResponse = await response.json();
-            
+            console.log("Chatbot - API response:", response);
+            const parsed: ChatbotResponse = response;
+            console.log("Chatbot - Received response:", parsed.message, parsed.movies, parsed.suggestions);
             let content = parsed.message || "";
             const suggestions = parsed.suggestions || [];
 
@@ -95,13 +93,21 @@ export default function Chatbot() {
                 if (index === -1) return prev;
 
                 const newMessages = [...prev];
+
+                let moviesData: any[] = [];
+                if (Array.isArray(parsed.movies)) {
+                    moviesData = parsed.movies; 
+                } else {
+                    moviesData = []; 
+                }
+
                 newMessages[index] = {
                     ...newMessages[index],
                     text: content,
-                    movies: parsed.data || [],
+                    movies: moviesData,
                     suggestions: suggestions,
                     metadata: parsed.metadata,
-                    status: 'success'   
+                    status: 'success'
                 };
                 return newMessages;
             });
@@ -109,10 +115,10 @@ export default function Chatbot() {
         } catch (err: any) {
             console.error("Chatbot Error:", err);
             const errorMessage = "Xin lỗi, tôi gặp sự cố khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.";
-            
+
             setMessages(prev => prev.map(m =>
-                m.id === botMsgId 
-                    ? { ...m, text: errorMessage, status: 'error' } 
+                m.id === botMsgId
+                    ? { ...m, text: errorMessage, status: 'error' }
                     : m
             ));
         } finally {
@@ -149,7 +155,7 @@ export default function Chatbot() {
             {/* Chat Window */}
             {isOpen && (
                 <div className="w-[400px] h-[600px] bg-[#141414] border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300">
-                    
+
                     {/* Header */}
                     <div className="p-4 flex justify-between items-center bg-gradient-to-r from-[#1a1a1a] to-[#141414] border-b border-white/5">
                         <div className="flex items-center gap-3">
@@ -172,11 +178,10 @@ export default function Chatbot() {
                     <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide bg-[#0f0f0f]/30">
                         {messages.map((msg) => (
                             <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                                <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-[14px] leading-relaxed shadow-sm ${
-                                    msg.role === 'user'
-                                        ? 'bg-red-600 text-white rounded-tr-none'
-                                        : 'bg-[#232323] text-zinc-100 rounded-tl-none border border-white/5'
-                                }`}>
+                                <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-[14px] leading-relaxed shadow-sm ${msg.role === 'user'
+                                    ? 'bg-red-600 text-white rounded-tr-none'
+                                    : 'bg-[#232323] text-zinc-100 rounded-tl-none border border-white/5'
+                                    }`}>
                                     {msg.status === 'loading' ? (
                                         <div className="flex items-center gap-2 py-1">
                                             <Loader2 className="animate-spin" size={16} />
@@ -187,7 +192,7 @@ export default function Chatbot() {
                                             <ReactMarkdown>{msg.text}</ReactMarkdown>
                                         </div>
                                     )}
-                                    
+
                                     {msg.metadata && msg.role === 'bot' && (
                                         <div className="mt-2 pt-2 border-t border-white/5 text-[10px] text-zinc-500 flex items-center gap-1.5 uppercase tracking-tighter">
                                             <Target size={10} />

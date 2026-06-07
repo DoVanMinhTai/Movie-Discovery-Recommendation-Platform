@@ -78,7 +78,7 @@ def format_media_content(data, media_type):
     director_name = ", ".join(directors) if directors else ""
 
     return {
-        "tmdbId": clean(data.get('id')),
+        "mediaContentId": clean(data.get('id')),
         "type": media_type,
         "title": clean(data.get('title')) if media_type == "MOVIE" else clean(data.get('name')),
         "originalTitle": clean(data.get('original_title')) if media_type == "MOVIE" else clean(data.get('original_name')),
@@ -133,11 +133,11 @@ FILES = {
 }
 
 HEADERS = {
-    'media': ['movieId', 'tmdbId', 'title', 'original_title', 'overview', 'release_date', 'poster_path', 'backdrop_path', 'tmdb_vote', 'vote_count', 'popularity', 'dtype','originalLanguage', 'cast', 'director'],
+    'media': ['mediaContentId', 'tmdbId', 'title', 'original_title', 'overview', 'release_date', 'poster_path', 'backdrop_path', 'tmdb_vote', 'vote_count', 'popularity', 'dtype','originalLanguage', 'cast', 'director'],
     'genres': ['id', 'name'],
     'media_genres': ['mediaContentId', 'genreId'],
-    'movie': ['movieId', 'runtime', 'trailerKey','videoUrl'],
-    'series': ['movieId', 'status'],
+    'movie': ['mediaContentId', 'runtime', 'trailerKey','videoUrl'],
+    'series': ['mediaContentId', 'status'],
     'seasons': ['id', 'seasonNumber', 'name', 'series_id'],
     'episodes': ['id', 'episodeNumber', 'title', 'overview', 'stillPath', 'season_id', 'videoUrl'],
 }
@@ -151,13 +151,12 @@ def save_row(file_key, row_data):
     with open(FILES[file_key], 'a', encoding='utf-8', newline='') as f:
         csv.DictWriter(f, fieldnames=HEADERS[file_key]).writerow(row_data)
  
-def getGenreIdsByListName(item):
+def getGenreIdsByListName(item, movielens_id):
     genre_ids = []
     for _, row in df_genres_name.iterrows():
         if row['name'] in item.get('genres', []):
-            genre_ids.append(row['genre_id'])
-            print(f"Saving genre mapping: mediaContentId={item['tmdbId']}, genreId={row['genre_id']}, genre_ids={genre_ids}")
-            save_row('media_genres', {'mediaContentId': item['tmdbId'], 'genreId': row['genre_id']})
+            genre_ids.append(row['id'])
+            save_row('media_genres', {'mediaContentId': movielens_id, 'genreId': row['id']})
     return genre_ids
 
 def start_crawl():
@@ -182,13 +181,13 @@ def start_crawl():
             start_index = df_merged.index.get_loc(matching_indices[0]) + 1    
     for _, row in df_merged.iloc[start_index:].iterrows():
         tmdb_id = str(int(row['tmdbId']))
-
+        movielens_id = row['movieId']
         item = process_item(tmdb_id) 
         
         if item:
-            getGenreIdsByListName(item)
+            getGenreIdsByListName(item, movielens_id)
             save_row('media', {
-                'movieId': item['tmdbId'], 'tmdbId': item['tmdbId'],
+                'mediaContentId': movielens_id, 'tmdbId': tmdb_id,
                 'title': item['title'], 'original_title': item['originalTitle'],
                 'overview': item['overview'], 'release_date': item['releaseDate'],
                 'poster_path': item['posterPath'], 'backdrop_path': item['backdropPath'],
@@ -198,16 +197,16 @@ def start_crawl():
             })
             if item['type'] == 'MOVIE':
                 save_row('movie' , {
-                    'movieId': item['tmdbId'],
+                    'mediaContentId': movielens_id,
                     'runtime': item.get('runtime', None),
                     'trailerKey': item['trailerKey'],
                     'videoUrl': item['videoUrl']
                 })
 
             if item['type'] == 'SERIES':
-                save_row('series', {'movieId': item['tmdbId'], 'status': item['status']})
+                save_row('series', {'mediaContentId': movielens_id, 'status': item['status']})
                 for sn in item.get('seasons', []):
-                    save_row('seasons', {'id': sn['tmdbId'], 'seasonNumber': sn['seasonNumber'], 'name': sn['name'], 'series_id': item['tmdbId']})
+                    save_row('seasons', {'id': sn['tmdbId'], 'seasonNumber': sn['seasonNumber'], 'name': sn['name'], 'series_id': movielens_id})
                     for ep in sn.get('episodes', []):
                         save_row('episodes', {
                             'id': clean(ep['tmdbId']), 'episodeNumber': ep['episodeNumber'],

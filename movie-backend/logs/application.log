@@ -1,60 +1,556 @@
-2026-04-21T10:50:43.159+07:00  INFO 24868 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Starting MovieBackendApplication using Java 21.0.10 with PID 24868 (F:\project_SW\Media-Recommender-System\movie-backend\target\classes started by dotai in F:\project_SW\Media-Recommender-System\movie-backend)
-2026-04-21T10:50:43.162+07:00 DEBUG 24868 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Running with Spring Boot v3.4.10, Spring v6.2.11
-2026-04-21T10:50:43.162+07:00  INFO 24868 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : No active profile set, falling back to 1 default profile: "default"
-2026-04-21T10:50:45.366+07:00  INFO 24868 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-04-21T10:50:45.369+07:00  INFO 24868 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
-2026-04-21T10:50:45.567+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.AuthRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.568+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.FavoriteRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.570+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.GenreRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.574+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.ItemSimilarityRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.576+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.MediaContentRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.578+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.ModelRegistryRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.584+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.MovieRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.586+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.RateRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.589+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.TokenRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.592+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.TrainingJobRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.595+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.UserRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.599+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.jpa.WatchHistoryRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
-2026-04-21T10:50:45.629+07:00  INFO 24868 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 250 ms. Found 1 Elasticsearch repository interface.
-2026-04-21T10:50:45.648+07:00  INFO 24868 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-04-21T10:50:45.651+07:00  INFO 24868 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-04-21T10:50:45.676+07:00  INFO 24868 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data JPA - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
-2026-04-21T10:50:45.728+07:00  INFO 24868 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 68 ms. Found 12 JPA repository interfaces.
-2026-04-21T10:50:47.279+07:00  INFO 24868 --- [movie-recommendation] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2026-04-21T10:50:47.301+07:00  INFO 24868 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-04-21T10:50:47.301+07:00  INFO 24868 --- [movie-recommendation] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2026-04-21T10:50:47.410+07:00  INFO 24868 --- [movie-recommendation] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-04-21T10:50:47.411+07:00  INFO 24868 --- [movie-recommendation] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3942 ms
-2026-04-21T10:50:47.691+07:00 DEBUG 24868 --- [movie-recommendation] [main] n.f.m.config.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
-2026-04-21T10:50:47.902+07:00  INFO 24868 --- [movie-recommendation] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-04-21T10:50:48.020+07:00  INFO 24868 --- [movie-recommendation] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2026-04-21T10:50:48.088+07:00  INFO 24868 --- [movie-recommendation] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-04-21T10:50:48.570+07:00  INFO 24868 --- [movie-recommendation] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-04-21T10:50:48.631+07:00  INFO 24868 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-04-21T10:50:50.184+07:00  INFO 24868 --- [movie-recommendation] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@44c2e8a8
-2026-04-21T10:50:50.186+07:00  INFO 24868 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-04-21T10:50:50.324+07:00  WARN 24868 --- [movie-recommendation] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-04-21T10:50:50.473+07:00  INFO 24868 --- [movie-recommendation] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+2026-06-04T14:46:40.285+07:00  INFO 136540 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Starting MovieBackendApplication using Java 21.0.10 with PID 136540 (F:\project_SW\Media-Recommender-System\movie-backend\target\classes started by dotai in F:\project_SW\Media-Recommender-System\movie-backend)
+2026-06-04T14:46:40.292+07:00 DEBUG 136540 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Running with Spring Boot v3.4.10, Spring v6.2.11
+2026-06-04T14:46:40.293+07:00  INFO 136540 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : No active profile set, falling back to 1 default profile: "default"
+2026-06-04T14:46:46.335+07:00  INFO 136540 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-04T14:46:46.336+07:00  INFO 136540 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-06-04T14:46:46.543+07:00  INFO 136540 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 200 ms. Found 1 Elasticsearch repository interface.
+2026-06-04T14:46:47.044+07:00  INFO 136540 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-04T14:46:47.046+07:00  INFO 136540 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-04T14:46:47.076+07:00  INFO 136540 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data JPA - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2026-06-04T14:46:47.115+07:00  INFO 136540 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 65 ms. Found 12 JPA repository interfaces.
+2026-06-04T14:46:48.797+07:00  INFO 136540 --- [movie-recommendation] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-06-04T14:46:48.837+07:00  INFO 136540 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-04T14:46:48.837+07:00  INFO 136540 --- [movie-recommendation] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2026-06-04T14:46:48.933+07:00  INFO 136540 --- [movie-recommendation] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-04T14:46:48.933+07:00  INFO 136540 --- [movie-recommendation] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 8514 ms
+2026-06-04T14:46:49.236+07:00 DEBUG 136540 --- [movie-recommendation] [main] n.f.m.config.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-06-04T14:46:49.237+07:00 DEBUG 136540 --- [movie-recommendation] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-06-04T14:46:49.376+07:00  INFO 136540 --- [movie-recommendation] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-04T14:46:49.464+07:00  INFO 136540 --- [movie-recommendation] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2026-06-04T14:46:49.516+07:00  INFO 136540 --- [movie-recommendation] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-04T14:46:49.874+07:00  INFO 136540 --- [movie-recommendation] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-04T14:46:49.906+07:00  INFO 136540 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-04T14:46:56.573+07:00  WARN 136540 --- [movie-recommendation] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: XX000
+2026-06-04T14:46:56.573+07:00 ERROR 136540 --- [movie-recommendation] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found
+2026-06-04T14:46:56.574+07:00  WARN 136540 --- [movie-recommendation] [main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query metadata
+
+org.hibernate.exception.GenericJDBCException: unable to obtain isolated JDBC connection [FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found] [n/a]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:63) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:94) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:116) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:334) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:129) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:81) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:130) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:226) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:194) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:171) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1442) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1513) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:970) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.10.jar:3.4.10]
+	at nlu.fit.movie_backend.MovieBackendApplication.main(MovieBackendApplication.java:37) ~[classes/:na]
+Caused by: org.postgresql.util.PSQLException: FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:777) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:234) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.Driver.makeConnection(Driver.java:448) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.7.jar:42.7.7]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:137) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:360) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:98) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-5.1.0.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:126) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:485) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:61) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	... 35 common frames omitted
+
+2026-06-04T14:46:56.621+07:00  WARN 136540 --- [movie-recommendation] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-04T14:46:56.634+07:00  INFO 136540 --- [movie-recommendation] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (null)']
 	Database driver: undefined/unknown
-	Database version: 17.8
+	Database version: 12.0
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-04-21T10:50:52.689+07:00  WARN 24868 --- [movie-recommendation] [main] o.h.metamodel.internal.MetadataContext   : HHH015011: Unable to locate static metamodel field : nlu.fit.movie_backend.model.User_#joinedDate; this may or may not indicate a problem with the static metamodel
-2026-04-21T10:50:52.700+07:00  INFO 24868 --- [movie-recommendation] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-04-21T10:50:53.069+07:00  INFO 24868 --- [movie-recommendation] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-04-21T10:50:55.551+07:00  INFO 24868 --- [movie-recommendation] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-04-21T10:50:56.730+07:00  WARN 24868 --- [movie-recommendation] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-04-21T10:50:56.774+07:00  INFO 24868 --- [movie-recommendation] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailService
-2026-04-21T10:50:56.944+07:00 DEBUG 24868 --- [movie-recommendation] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-04-21T10:50:57.035+07:00  INFO 24868 --- [movie-recommendation] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
-2026-04-21T10:50:57.775+07:00  INFO 24868 --- [movie-recommendation] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoints beneath base path '/actuator'
-2026-04-21T10:50:57.948+07:00  INFO 24868 --- [movie-recommendation] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2026-04-21T10:50:57.970+07:00  INFO 24868 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Started MovieBackendApplication in 15.728 seconds (process running for 16.872)
-2026-04-21T10:54:19.625+07:00  INFO 24868 --- [movie-recommendation] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2026-04-21T10:54:19.632+07:00  INFO 24868 --- [movie-recommendation] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2026-04-21T10:54:19.658+07:00  INFO 24868 --- [movie-recommendation] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-04-21T10:54:19.660+07:00  INFO 24868 --- [movie-recommendation] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-04-21T10:54:19.745+07:00  INFO 24868 --- [movie-recommendation] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-06-04T14:46:58.371+07:00  WARN 136540 --- [movie-recommendation] [main] o.h.metamodel.internal.MetadataContext   : HHH015011: Unable to locate static metamodel field : nlu.fit.movie_backend.model.User_#joinedDate; this may or may not indicate a problem with the static metamodel
+2026-06-04T14:46:58.381+07:00  INFO 136540 --- [movie-recommendation] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-04T14:46:58.407+07:00  INFO 136540 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-04T14:46:59.540+07:00  WARN 136540 --- [movie-recommendation] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: XX000
+2026-06-04T14:46:59.540+07:00 ERROR 136540 --- [movie-recommendation] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found
+2026-06-04T14:46:59.572+07:00 ERROR 136540 --- [movie-recommendation] [main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.GenericJDBCException: Unable to open JDBC Connection for DDL execution [FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found] [n/a]
+2026-06-04T14:46:59.573+07:00  WARN 136540 --- [movie-recommendation] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.GenericJDBCException: Unable to open JDBC Connection for DDL execution [FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found] [n/a]
+2026-06-04T14:46:59.575+07:00  INFO 136540 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-04T14:46:59.593+07:00  INFO 136540 --- [movie-recommendation] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-04T14:46:59.617+07:00 ERROR 136540 --- [movie-recommendation] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.GenericJDBCException: Unable to open JDBC Connection for DDL execution [FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found] [n/a]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1826) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:970) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.10.jar:3.4.10]
+	at nlu.fit.movie_backend.MovieBackendApplication.main(MovieBackendApplication.java:37) ~[classes/:na]
+Caused by: jakarta.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.GenericJDBCException: Unable to open JDBC Connection for DDL execution [FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found] [n/a]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:431) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 15 common frames omitted
+Caused by: org.hibernate.exception.GenericJDBCException: Unable to open JDBC Connection for DDL execution [FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found] [n/a]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:63) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:94) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:74) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:39) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.internal.exec.ImprovedExtractionContextImpl.getJdbcConnection(ImprovedExtractionContextImpl.java:63) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.extract.spi.ExtractionContext.getQueryResults(ExtractionContext.java:43) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.extract.internal.SequenceInformationExtractorLegacyImpl.extractMetadata(SequenceInformationExtractorLegacyImpl.java:39) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.extract.internal.DatabaseInformationImpl.initializeSequences(DatabaseInformationImpl.java:66) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.extract.internal.DatabaseInformationImpl.<init>(DatabaseInformationImpl.java:60) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.internal.Helper.buildDatabaseInformation(Helper.java:185) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:93) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429) ~[na:na]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:324) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:463) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1517) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.11.jar:6.2.11]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.11.jar:6.2.11]
+	... 19 common frames omitted
+Caused by: org.postgresql.util.PSQLException: FATAL: (ENOTFOUND) tenant/user postgres.howsuhbubvsdafxtymdm not found
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:777) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:234) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:277) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.Driver.makeConnection(Driver.java:448) ~[postgresql-42.7.7.jar:42.7.7]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.7.jar:42.7.7]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:137) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:360) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:98) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-5.1.0.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:126) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:485) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:46) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+	... 39 common frames omitted
+
+2026-06-04T14:50:36.011+07:00  INFO 127828 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Starting MovieBackendApplication using Java 21.0.10 with PID 127828 (F:\project_SW\Media-Recommender-System\movie-backend\target\classes started by dotai in F:\project_SW\Media-Recommender-System\movie-backend)
+2026-06-04T14:50:36.013+07:00 DEBUG 127828 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Running with Spring Boot v3.4.10, Spring v6.2.11
+2026-06-04T14:50:36.013+07:00  INFO 127828 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : No active profile set, falling back to 1 default profile: "default"
+2026-06-04T14:50:37.573+07:00  INFO 127828 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-04T14:50:37.574+07:00  INFO 127828 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-06-04T14:50:37.679+07:00  INFO 127828 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 100 ms. Found 1 Elasticsearch repository interface.
+2026-06-04T14:50:38.021+07:00  INFO 127828 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-04T14:50:38.022+07:00  INFO 127828 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-04T14:50:38.046+07:00  INFO 127828 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data JPA - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2026-06-04T14:50:38.078+07:00  INFO 127828 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 52 ms. Found 12 JPA repository interfaces.
+2026-06-04T14:50:38.710+07:00  INFO 127828 --- [movie-recommendation] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-06-04T14:50:38.722+07:00  INFO 127828 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-04T14:50:38.722+07:00  INFO 127828 --- [movie-recommendation] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2026-06-04T14:50:38.799+07:00  INFO 127828 --- [movie-recommendation] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-04T14:50:38.799+07:00  INFO 127828 --- [movie-recommendation] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2725 ms
+2026-06-04T14:50:38.972+07:00 DEBUG 127828 --- [movie-recommendation] [main] n.f.m.config.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-06-04T14:50:38.973+07:00 DEBUG 127828 --- [movie-recommendation] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-06-04T14:50:39.100+07:00  INFO 127828 --- [movie-recommendation] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-04T14:50:39.147+07:00  INFO 127828 --- [movie-recommendation] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2026-06-04T14:50:39.177+07:00  INFO 127828 --- [movie-recommendation] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-04T14:50:39.436+07:00  INFO 127828 --- [movie-recommendation] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-04T14:50:39.460+07:00  INFO 127828 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-04T14:50:40.171+07:00  INFO 127828 --- [movie-recommendation] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@497fd334
+2026-06-04T14:50:40.173+07:00  INFO 127828 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-04T14:50:40.241+07:00  WARN 127828 --- [movie-recommendation] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-04T14:50:40.339+07:00  INFO 127828 --- [movie-recommendation] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-04T14:50:41.617+07:00  WARN 127828 --- [movie-recommendation] [main] o.h.metamodel.internal.MetadataContext   : HHH015011: Unable to locate static metamodel field : nlu.fit.movie_backend.model.User_#joinedDate; this may or may not indicate a problem with the static metamodel
+2026-06-04T14:50:41.624+07:00  INFO 127828 --- [movie-recommendation] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-04T14:50:44.270+07:00  INFO 127828 --- [movie-recommendation] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-04T14:50:45.725+07:00  WARN 127828 --- [movie-recommendation] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataIndexer': Unsatisfied dependency expressed through field 'mediaContentSearchRepository': Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+2026-06-04T14:50:45.727+07:00  INFO 127828 --- [movie-recommendation] [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-04T14:50:45.729+07:00  INFO 127828 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-06-04T14:50:45.782+07:00  INFO 127828 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-06-04T14:50:45.785+07:00  INFO 127828 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-04T14:50:45.800+07:00  INFO 127828 --- [movie-recommendation] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-04T14:50:45.815+07:00 ERROR 127828 --- [movie-recommendation] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataIndexer': Unsatisfied dependency expressed through field 'mediaContentSearchRepository': Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:788) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:768) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1221) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1187) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1123) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.10.jar:3.4.10]
+	at nlu.fit.movie_backend.MovieBackendApplication.main(MovieBackendApplication.java:37) ~[classes/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1826) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1698) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1643) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:785) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 22 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:223) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.lambda$instantiateClass$5(RepositoryFactorySupport.java:657) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at java.base/java.util.Optional.map(Optional.java:260) ~[na:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.instantiateClass(RepositoryFactorySupport.java:657) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getTargetRepositoryViaReflection(RepositoryFactorySupport.java:622) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactory.getTargetRepository(ElasticsearchRepositoryFactory.java:80) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getRepository(RepositoryFactorySupport.java:377) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.lambda$afterPropertiesSet$4(RepositoryFactoryBeanSupport.java:350) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.util.Lazy.getNullable(Lazy.java:135) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.util.Lazy.get(Lazy.java:113) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.afterPropertiesSet(RepositoryFactoryBeanSupport.java:356) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactoryBean.afterPropertiesSet(ElasticsearchRepositoryFactoryBean.java:69) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 31 common frames omitted
+Caused by: org.springframework.data.elasticsearch.UncategorizedElasticsearchException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.data.client.orhlc.OpenSearchExceptionTranslator.translateExceptionIfPossible(OpenSearchExceptionTranslator.java:96) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.translateException(OpenSearchRestTemplate.java:684) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.execute(OpenSearchRestTemplate.java:667) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.RestIndexTemplate.doExists(RestIndexTemplate.java:107) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.core.AbstractIndexTemplate.exists(AbstractIndexTemplate.java:136) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository.createIndexAndMappingIfNeeded(SimpleElasticsearchRepository.java:93) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository.<init>(SimpleElasticsearchRepository.java:87) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[na:na]
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:210) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 44 common frames omitted
+Caused by: org.opensearch.OpenSearchStatusException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.client.RestHighLevelClient.parseResponseException(RestHighLevelClient.java:2209) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.internalPerformRequest(RestHighLevelClient.java:1931) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.performRequest(RestHighLevelClient.java:1901) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.IndicesClient.exists(IndicesClient.java:920) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.data.client.orhlc.RestIndexTemplate.lambda$doExists$2(RestIndexTemplate.java:107) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.execute(OpenSearchRestTemplate.java:665) ~[spring-data-opensearch-1.6.0.jar:na]
+	... 52 common frames omitted
+Caused by: org.opensearch.client.ResponseException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.client.RestClient.convertResponse(RestClient.java:479) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestClient.performRequest(RestClient.java:371) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestClient.performRequest(RestClient.java:346) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.internalPerformRequest(RestHighLevelClient.java:1918) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	... 56 common frames omitted
+
+2026-06-04T14:51:07.283+07:00  INFO 83004 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Starting MovieBackendApplication using Java 21.0.10 with PID 83004 (F:\project_SW\Media-Recommender-System\movie-backend\target\classes started by dotai in F:\project_SW\Media-Recommender-System\movie-backend)
+2026-06-04T14:51:07.286+07:00 DEBUG 83004 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Running with Spring Boot v3.4.10, Spring v6.2.11
+2026-06-04T14:51:07.287+07:00  INFO 83004 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : No active profile set, falling back to 1 default profile: "default"
+2026-06-04T14:51:08.232+07:00  INFO 83004 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-04T14:51:08.233+07:00  INFO 83004 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-06-04T14:51:08.368+07:00  INFO 83004 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 130 ms. Found 1 Elasticsearch repository interface.
+2026-06-04T14:51:08.835+07:00  INFO 83004 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-04T14:51:08.836+07:00  INFO 83004 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-04T14:51:08.861+07:00  INFO 83004 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data JPA - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2026-06-04T14:51:08.894+07:00  INFO 83004 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 55 ms. Found 12 JPA repository interfaces.
+2026-06-04T14:51:09.584+07:00  INFO 83004 --- [movie-recommendation] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-06-04T14:51:09.598+07:00  INFO 83004 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-04T14:51:09.598+07:00  INFO 83004 --- [movie-recommendation] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2026-06-04T14:51:09.669+07:00  INFO 83004 --- [movie-recommendation] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-04T14:51:09.669+07:00  INFO 83004 --- [movie-recommendation] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2309 ms
+2026-06-04T14:51:09.847+07:00 DEBUG 83004 --- [movie-recommendation] [main] n.f.m.config.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-06-04T14:51:09.849+07:00 DEBUG 83004 --- [movie-recommendation] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-06-04T14:51:09.962+07:00  INFO 83004 --- [movie-recommendation] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-04T14:51:10.009+07:00  INFO 83004 --- [movie-recommendation] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2026-06-04T14:51:10.040+07:00  INFO 83004 --- [movie-recommendation] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-04T14:51:10.304+07:00  INFO 83004 --- [movie-recommendation] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-04T14:51:10.331+07:00  INFO 83004 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-04T14:51:10.879+07:00  INFO 83004 --- [movie-recommendation] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@73baf7f0
+2026-06-04T14:51:10.881+07:00  INFO 83004 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-04T14:51:10.940+07:00  WARN 83004 --- [movie-recommendation] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-04T14:51:11.036+07:00  INFO 83004 --- [movie-recommendation] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-04T14:51:12.259+07:00  WARN 83004 --- [movie-recommendation] [main] o.h.metamodel.internal.MetadataContext   : HHH015011: Unable to locate static metamodel field : nlu.fit.movie_backend.model.User_#joinedDate; this may or may not indicate a problem with the static metamodel
+2026-06-04T14:51:12.267+07:00  INFO 83004 --- [movie-recommendation] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-04T14:51:15.013+07:00  INFO 83004 --- [movie-recommendation] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-04T14:51:15.956+07:00  WARN 83004 --- [movie-recommendation] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataIndexer': Unsatisfied dependency expressed through field 'mediaContentSearchRepository': Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+2026-06-04T14:51:15.958+07:00  INFO 83004 --- [movie-recommendation] [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-04T14:51:15.961+07:00  INFO 83004 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-06-04T14:51:16.011+07:00  INFO 83004 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-06-04T14:51:16.013+07:00  INFO 83004 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-04T14:51:16.028+07:00  INFO 83004 --- [movie-recommendation] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-04T14:51:16.045+07:00 ERROR 83004 --- [movie-recommendation] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataIndexer': Unsatisfied dependency expressed through field 'mediaContentSearchRepository': Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:788) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:768) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1221) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1187) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1123) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.10.jar:3.4.10]
+	at nlu.fit.movie_backend.MovieBackendApplication.main(MovieBackendApplication.java:37) ~[classes/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1826) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1698) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1643) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:785) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 22 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:223) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.lambda$instantiateClass$5(RepositoryFactorySupport.java:657) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at java.base/java.util.Optional.map(Optional.java:260) ~[na:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.instantiateClass(RepositoryFactorySupport.java:657) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getTargetRepositoryViaReflection(RepositoryFactorySupport.java:622) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactory.getTargetRepository(ElasticsearchRepositoryFactory.java:80) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getRepository(RepositoryFactorySupport.java:377) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.lambda$afterPropertiesSet$4(RepositoryFactoryBeanSupport.java:350) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.util.Lazy.getNullable(Lazy.java:135) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.util.Lazy.get(Lazy.java:113) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.afterPropertiesSet(RepositoryFactoryBeanSupport.java:356) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactoryBean.afterPropertiesSet(ElasticsearchRepositoryFactoryBean.java:69) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 31 common frames omitted
+Caused by: org.springframework.data.elasticsearch.UncategorizedElasticsearchException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.data.client.orhlc.OpenSearchExceptionTranslator.translateExceptionIfPossible(OpenSearchExceptionTranslator.java:96) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.translateException(OpenSearchRestTemplate.java:684) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.execute(OpenSearchRestTemplate.java:667) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.RestIndexTemplate.doExists(RestIndexTemplate.java:107) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.core.AbstractIndexTemplate.exists(AbstractIndexTemplate.java:136) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository.createIndexAndMappingIfNeeded(SimpleElasticsearchRepository.java:93) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository.<init>(SimpleElasticsearchRepository.java:87) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[na:na]
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:210) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 44 common frames omitted
+Caused by: org.opensearch.OpenSearchStatusException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.client.RestHighLevelClient.parseResponseException(RestHighLevelClient.java:2209) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.internalPerformRequest(RestHighLevelClient.java:1931) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.performRequest(RestHighLevelClient.java:1901) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.IndicesClient.exists(IndicesClient.java:920) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.data.client.orhlc.RestIndexTemplate.lambda$doExists$2(RestIndexTemplate.java:107) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.execute(OpenSearchRestTemplate.java:665) ~[spring-data-opensearch-1.6.0.jar:na]
+	... 52 common frames omitted
+Caused by: org.opensearch.client.ResponseException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.client.RestClient.convertResponse(RestClient.java:479) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestClient.performRequest(RestClient.java:371) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestClient.performRequest(RestClient.java:346) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.internalPerformRequest(RestHighLevelClient.java:1918) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	... 56 common frames omitted
+
+2026-06-04T14:55:48.294+07:00  INFO 155720 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Starting MovieBackendApplication using Java 21.0.10 with PID 155720 (F:\project_SW\Media-Recommender-System\movie-backend\target\classes started by dotai in F:\project_SW\Media-Recommender-System\movie-backend)
+2026-06-04T14:55:48.296+07:00 DEBUG 155720 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : Running with Spring Boot v3.4.10, Spring v6.2.11
+2026-06-04T14:55:48.296+07:00  INFO 155720 --- [movie-recommendation] [main] n.f.m.MovieBackendApplication            : No active profile set, falling back to 1 default profile: "default"
+2026-06-04T14:55:49.154+07:00  INFO 155720 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-04T14:55:49.154+07:00  INFO 155720 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-06-04T14:55:49.259+07:00  INFO 155720 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 100 ms. Found 1 Elasticsearch repository interface.
+2026-06-04T14:55:49.606+07:00  INFO 155720 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-04T14:55:49.607+07:00  INFO 155720 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-04T14:55:49.632+07:00  INFO 155720 --- [movie-recommendation] [main] .RepositoryConfigurationExtensionSupport : Spring Data JPA - Could not safely identify store assignment for repository candidate interface nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2026-06-04T14:55:49.667+07:00  INFO 155720 --- [movie-recommendation] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 56 ms. Found 12 JPA repository interfaces.
+2026-06-04T14:55:50.327+07:00  INFO 155720 --- [movie-recommendation] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-06-04T14:55:50.340+07:00  INFO 155720 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-04T14:55:50.340+07:00  INFO 155720 --- [movie-recommendation] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2026-06-04T14:55:50.406+07:00  INFO 155720 --- [movie-recommendation] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-04T14:55:50.407+07:00  INFO 155720 --- [movie-recommendation] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2051 ms
+2026-06-04T14:55:50.570+07:00 DEBUG 155720 --- [movie-recommendation] [main] n.f.m.config.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-06-04T14:55:50.571+07:00 DEBUG 155720 --- [movie-recommendation] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-06-04T14:55:50.682+07:00  INFO 155720 --- [movie-recommendation] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-04T14:55:50.729+07:00  INFO 155720 --- [movie-recommendation] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2026-06-04T14:55:50.767+07:00  INFO 155720 --- [movie-recommendation] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-04T14:55:51.019+07:00  INFO 155720 --- [movie-recommendation] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-04T14:55:51.045+07:00  INFO 155720 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-04T14:55:51.618+07:00  INFO 155720 --- [movie-recommendation] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@69a294d8
+2026-06-04T14:55:51.620+07:00  INFO 155720 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-04T14:55:51.675+07:00  WARN 155720 --- [movie-recommendation] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-04T14:55:51.774+07:00  INFO 155720 --- [movie-recommendation] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-04T14:55:53.003+07:00  WARN 155720 --- [movie-recommendation] [main] o.h.metamodel.internal.MetadataContext   : HHH015011: Unable to locate static metamodel field : nlu.fit.movie_backend.model.User_#joinedDate; this may or may not indicate a problem with the static metamodel
+2026-06-04T14:55:53.011+07:00  INFO 155720 --- [movie-recommendation] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-04T14:55:55.436+07:00  INFO 155720 --- [movie-recommendation] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-04T14:55:56.900+07:00  WARN 155720 --- [movie-recommendation] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataIndexer': Unsatisfied dependency expressed through field 'mediaContentSearchRepository': Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+2026-06-04T14:55:56.902+07:00  INFO 155720 --- [movie-recommendation] [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-04T14:55:56.906+07:00  INFO 155720 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-06-04T14:55:56.954+07:00  INFO 155720 --- [movie-recommendation] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-06-04T14:55:56.956+07:00  INFO 155720 --- [movie-recommendation] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-04T14:55:56.971+07:00  INFO 155720 --- [movie-recommendation] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-04T14:55:56.987+07:00 ERROR 155720 --- [movie-recommendation] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataIndexer': Unsatisfied dependency expressed through field 'mediaContentSearchRepository': Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:788) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:768) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1221) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1187) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1123) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.10.jar:3.4.10]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.10.jar:3.4.10]
+	at nlu.fit.movie_backend.MovieBackendApplication.main(MovieBackendApplication.java:37) ~[classes/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mediaContentSearchRepository' defined in nlu.fit.movie_backend.repository.elasticsearchrepository.MediaContentSearchRepository defined in @EnableElasticsearchRepositories declared on OpenSearchConfig: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1826) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1698) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1643) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:785) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 22 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:223) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.lambda$instantiateClass$5(RepositoryFactorySupport.java:657) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at java.base/java.util.Optional.map(Optional.java:260) ~[na:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.instantiateClass(RepositoryFactorySupport.java:657) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getTargetRepositoryViaReflection(RepositoryFactorySupport.java:622) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactory.getTargetRepository(ElasticsearchRepositoryFactory.java:80) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getRepository(RepositoryFactorySupport.java:377) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.lambda$afterPropertiesSet$4(RepositoryFactoryBeanSupport.java:350) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.util.Lazy.getNullable(Lazy.java:135) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.util.Lazy.get(Lazy.java:113) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.afterPropertiesSet(RepositoryFactoryBeanSupport.java:356) ~[spring-data-commons-3.4.10.jar:3.4.10]
+	at org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactoryBean.afterPropertiesSet(ElasticsearchRepositoryFactoryBean.java:69) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 31 common frames omitted
+Caused by: org.springframework.data.elasticsearch.UncategorizedElasticsearchException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.data.client.orhlc.OpenSearchExceptionTranslator.translateExceptionIfPossible(OpenSearchExceptionTranslator.java:96) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.translateException(OpenSearchRestTemplate.java:684) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.execute(OpenSearchRestTemplate.java:667) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.RestIndexTemplate.doExists(RestIndexTemplate.java:107) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.core.AbstractIndexTemplate.exists(AbstractIndexTemplate.java:136) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository.createIndexAndMappingIfNeeded(SimpleElasticsearchRepository.java:93) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository.<init>(SimpleElasticsearchRepository.java:87) ~[spring-data-elasticsearch-5.4.10.jar:5.4.10]
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[na:na]
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:210) ~[spring-beans-6.2.11.jar:6.2.11]
+	... 44 common frames omitted
+Caused by: org.opensearch.OpenSearchStatusException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.client.RestHighLevelClient.parseResponseException(RestHighLevelClient.java:2209) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.internalPerformRequest(RestHighLevelClient.java:1931) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.performRequest(RestHighLevelClient.java:1901) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.IndicesClient.exists(IndicesClient.java:920) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	at org.opensearch.data.client.orhlc.RestIndexTemplate.lambda$doExists$2(RestIndexTemplate.java:107) ~[spring-data-opensearch-1.6.0.jar:na]
+	at org.opensearch.data.client.orhlc.OpenSearchRestTemplate.execute(OpenSearchRestTemplate.java:665) ~[spring-data-opensearch-1.6.0.jar:na]
+	... 52 common frames omitted
+Caused by: org.opensearch.client.ResponseException: method [HEAD], host [https://courteous-cashew-1p3478ac.ap-southeast-2.bonsaisearch.net:443], URI [/mediacontent?ignore_throttled=false&ignore_unavailable=false&expand_wildcards=open%2Cclosed&allow_no_indices=false], status line [HTTP/1.1 403 Forbidden]
+	at org.opensearch.client.RestClient.convertResponse(RestClient.java:479) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestClient.performRequest(RestClient.java:371) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestClient.performRequest(RestClient.java:346) ~[opensearch-rest-client-2.18.0.jar:2.18.0]
+	at org.opensearch.client.RestHighLevelClient.internalPerformRequest(RestHighLevelClient.java:1918) ~[opensearch-rest-high-level-client-2.18.0.jar:2.18.0]
+	... 56 common frames omitted
+

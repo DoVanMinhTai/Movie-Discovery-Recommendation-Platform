@@ -80,6 +80,8 @@ const Header = () => {
 				<Link to="/"><img src={logo} className="w-20 h-10 object-cover " /></Link>
 				<ul className="flex items-center justify-center gap-3 font-bold">
 					<li><Link to="/">Home</Link></li>
+					<li><Link to="/movies">Phim lẻ</Link></li>
+					<li><Link to="/series">Phim bộ</Link></li>
 					<li><Link to="/category">Danh mục</Link></li>
 					<li><Link to="/watchlist">Danh sách của tôi</Link></li>
 				</ul>

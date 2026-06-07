@@ -4,6 +4,9 @@ from typing import List, Optional
 class RecommendationItem(BaseModel):
     movie_id: int
     score: float
+    title: Optional[str] = None
+    poster_path: Optional[str] = None
+    slug: Optional[str] = None
 
 class RecommendationResponse(BaseModel):
     strategy: str

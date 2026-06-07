@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { Star, Lock, PlayCircle, Heart, Send } from "lucide-react";
-import { canRateMovie, rateMovie, getRatingByMovieId } from "../service/MovieService";
+import { canRateMovie, addRateMovie, getRatingByMovieId } from "../service/MovieService";
 
 export const RatingSection = ({ mediaId, onPlayClick }: { mediaId: number; onPlayClick: () => void }) => {
     const [hover, setHover] = useState(0);
@@ -65,7 +65,7 @@ export const RatingSection = ({ mediaId, onPlayClick }: { mediaId: number; onPla
 
         setIsSubmitting(true);
         try {
-            const success = await rateMovie({
+            const success = await addRateMovie({
                 movieId: mediaId,
                 score: rating,
                 comment: comment

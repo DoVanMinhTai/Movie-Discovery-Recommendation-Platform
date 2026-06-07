@@ -1,6 +1,6 @@
 from typing import List, Optional, Generator
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
-from opensearchpy import OpenSearch
+from opensearchpy import OpenSearch, NotFoundError
 from app.services.cbf_service import ContentBasedService
 from app.services.embed_service import EmbeddingProvider
 import logging
@@ -8,21 +8,20 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+def get_embedding_provider() -> EmbeddingProvider:
+    return EmbeddingProvider()
 
 def get_es_client() -> OpenSearch:
-    hosts = [{"host": settings.es_host, "port": 443}]
-    auth = (settings.es_username, settings.es_password)
+    host = settings.ES_HOST.replace("https://", "").replace("http://", "").split(":")[0]
+    
     return OpenSearch(
-        hosts=hosts,
-        http_auth=auth,
+        hosts=[{"host": host, "port": 443}],
+        http_auth=(settings.ES_USERNAME, settings.ES_PASSWORD),
         use_ssl=True,
         verify_certs=True,
         ssl_assert_hostname=False,
         ssl_show_warn=False,
     )
-
-def get_embedding_provider() -> EmbeddingProvider:
-    return EmbeddingProvider()
 
 def get_cbf_service(
     es_client: OpenSearch = Depends(get_es_client),
@@ -40,9 +39,8 @@ async def get_similar_movies(
 ):
     try:
         return await service.find_similar_movies(movie_id, top_n)
-    except Exception as e:
-        logger.error(f"Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    except NotFoundError:
+        return {"error": "Movie not found", "status": 404}
 
 @router.get("/search")
 async def search_movies_by_text(
@@ -55,22 +53,3 @@ async def search_movies_by_text(
     except Exception as e:
         logger.error(f"Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/trending")
-async def get_trending_movies(
-    top_n: int = Query(10, ge=1),
-    service: ContentBasedService = Depends(get_cbf_service)
-):
-    return await service.get_trending(top_n)
-
-@router.get("/health")
-async def health_check(service: ContentBasedService = Depends(get_cbf_service)):
-    try:
-        es_health = service.es.cluster.health()
-        return {
-            "status": "healthy",
-            "elasticsearch": es_health['status'],
-            "mode": "No-DB (Elasticsearch Only)"
-        }
-    except Exception as e:
-        return {"status": "unhealthy", "error": str(e)}

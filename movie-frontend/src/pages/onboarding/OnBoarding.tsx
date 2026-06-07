@@ -23,8 +23,9 @@ export default function OnBoarding() {
             return submitOnBoarding({ genres: data.genres });
         },
         onSuccess: (data) => {
-            if (data && data.token) {
-                localStorage.setItem('token', data.token);
+            if (data) {
+                console.log("Onboarding successful, received token:", data);
+                localStorage.setItem('token', data);
                 navigate('/');
             } else {
                 console.error("Error: No token received from server");

@@ -1,9 +1,9 @@
 from typing import Optional
-from app.services.chatbot_service import ChatBotService
+from app.services.nlp_service import NLPService
 
-chatbot_instance: Optional[ChatBotService] = None
+chatbot_instance: Optional[NLPService] = None
 
-def get_chatbot() -> ChatBotService:
+def get_chatbot() -> NLPService:
     if chatbot_instance is None:
         raise RuntimeError("Chatbot has not been initialized in lifespan!")
     return chatbot_instance
