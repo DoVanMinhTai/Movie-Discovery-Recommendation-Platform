@@ -1,7 +1,8 @@
-from typing import List, Optional
-from sentence_transformers import SentenceTransformer
-import numpy as np
+
 import logging
+from typing import List, Optional
+import numpy as np
+from sentence_transformers import SentenceTransformer
 
 logger = logging.getLogger(__name__)
 
@@ -48,15 +49,3 @@ class EmbeddingProvider:
         if cls._model is not None:
             logger.info("Unloading sentence-transformers model")
             cls._model = None
-
-
-def encode_text(text: str) -> List[float]:
-    return EmbeddingProvider.encode(text)
-
-
-def encode_texts(texts: List[str]) -> List[List[float]]:
-    return EmbeddingProvider.encode_batch(texts)
-
-
-def get_centroid(embeddings: List[List[float]]) -> Optional[List[float]]:
-    return EmbeddingProvider.calculate_centroid(embeddings)

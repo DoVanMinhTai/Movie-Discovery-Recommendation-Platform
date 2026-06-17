@@ -1,0 +1,14 @@
+# Dependencies for the Mage movie_project flows (CBF + CF).
+# Install inside the mage container:  pip install -r requirements.txt
+
+pandas
+numpy
+scipy
+requests
+SQLAlchemy
+psycopg2-binary
+elasticsearch>=8,<9
+scikit-learn
+sentence-transformers
+scikit-surprise        # SVD (explicit ratings)
+implicit               # ALS (implicit interactions)

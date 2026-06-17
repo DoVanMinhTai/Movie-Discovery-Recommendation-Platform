@@ -1,0 +1,34 @@
+blocks:
+- uuid: load_interactions
+  name: load_interactions
+  type: data_loader
+  language: python
+  status: executed
+  upstream_blocks: []
+  downstream_blocks:
+  - train_cf_model
+- uuid: train_cf_model
+  name: train_cf_model
+  type: transformer
+  language: python
+  status: executed
+  upstream_blocks:
+  - load_interactions
+  downstream_blocks:
+  - update_cf_recommendations_es
+- uuid: update_cf_recommendations_es
+  name: update_cf_recommendations_es
+  type: data_exporter
+  language: python
+  status: executed
+  upstream_blocks:
+  - train_cf_model
+  downstream_blocks: []
+name: movie_cf_pipeline
+uuid: movie_cf_pipeline
+type: python
+description: >
+  CF flow: load ratings from Postgres -> train SVD (surprise) + ALS (implicit),
+  normalise both to 0-1 and blend (0.4*SVD + 0.6*ALS), write Top-20/user to
+  data/gold/cf_predictions.csv -> push per-movie cf_recommendations to
+  Elasticsearch.

@@ -1,7 +1,7 @@
 import os
 import pickle
 import logging
-from opensearchpy import OpenSearch, helpers
+from elasticsearch import Elasticsearch, helpers
 from dotenv import load_dotenv
 
 # Configure Logging
@@ -19,13 +19,10 @@ class VectorSyncer:
         # Parse host if it contains https://
         clean_host = host.replace("https://", "").replace("http://", "").split(":")[0]
         
-        self.client = OpenSearch(
-            hosts=[{"host": clean_host, "port": 443}],
-            http_auth=(username, password),
-            use_ssl=True,
+        self.client = Elasticsearch(
+            f"https://{clean_host}:443",
+            basic_auth=(username, password),
             verify_certs=True,
-            ssl_assert_hostname=False,
-            ssl_show_warn=False,
         )
         self.index_name = "movies_cf"
         self.vector_file = "item_vectors.pkl"

@@ -9,10 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.TimeZone;
 
-@SpringBootApplication(exclude = {
-        org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration.class
-})
+@SpringBootApplication
 @EnableConfigurationProperties(ServiceUrlConfig.class)
 @EnableJpaAuditing
 @EnableScheduling

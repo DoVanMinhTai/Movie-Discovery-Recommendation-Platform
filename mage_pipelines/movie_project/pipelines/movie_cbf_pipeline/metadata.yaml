@@ -1,0 +1,41 @@
+blocks:
+- uuid: load_raw_movies
+  name: load_raw_movies
+  type: custom
+  language: python
+  status: executed
+  upstream_blocks: []
+  downstream_blocks:
+  - clean_movies_data
+- uuid: clean_movies_data
+  name: clean_movies_data
+  type: transformer
+  language: python
+  status: executed
+  upstream_blocks:
+  - load_raw_movies
+  downstream_blocks:
+  - upsert_movies_postgres
+- uuid: upsert_movies_postgres
+  name: upsert_movies_postgres
+  type: data_exporter
+  language: python
+  status: executed
+  upstream_blocks:
+  - clean_movies_data
+  downstream_blocks:
+  - index_cbf_embeddings_es
+- uuid: index_cbf_embeddings_es
+  name: index_cbf_embeddings_es
+  type: data_exporter
+  language: python
+  status: executed
+  upstream_blocks:
+  - upsert_movies_postgres
+  downstream_blocks: []
+name: movie_cbf_pipeline
+uuid: movie_cbf_pipeline
+type: python
+description: >
+  CBF flow: crawl TMDB -> clean (silver) -> upsert Postgres -> embed & index to
+  Elasticsearch (gold backup). Source of truth stays in Postgres.

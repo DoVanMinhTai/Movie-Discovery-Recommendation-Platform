@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from app.controller import chat_controller as chat_controller
 from app.dependencies import chatbot_container as chatbot_container 
 from app.services.nlp_service import NLPService
-from app.config.config import settings
+from app.core.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

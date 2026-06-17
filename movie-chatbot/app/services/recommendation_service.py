@@ -1,6 +1,6 @@
 import httpx
 import logging
-from app.config.config import settings
+from app.core.config import settings
 
 logger = logging.getLogger("RecommendationService")
 
@@ -12,7 +12,7 @@ class RecommendationService:
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
-                    f"{self.base_url}/api/v1/recommendations/cf/user-recommendations/{user_id}",
+                    f"{self.base_url}/api/v1/cf/user-recommendations/{user_id}",
                     params={"top_n": top_n}
                 )
                 response.raise_for_status()
@@ -22,17 +22,23 @@ class RecommendationService:
             return []
 
     async def get_similar_movies(self, movie_id: int, top_n: int = 5):
+        # Dùng Content-Based Filtering (CBF) vì index movies_cbf đã có sẵn embeddings.
+        # CBF trả về dạng {movie_id, movie_title, recommendations:[...]}, ta bóc lấy recommendations.
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
-                    f"{self.base_url}/api/v1/recommendations/cf/item-similarity/{movie_id}",
+                    f"{self.base_url}/api/v1/cbf/similar/{movie_id}",
                     params={"top_n": top_n}
                 )
                 response.raise_for_status()
-                return response.json()
+                data = response.json()
+                if isinstance(data, dict):
+                    return data.get("recommendations", [])
+                return data
         except Exception as e:
             logger.error(f"Error calling similarity recommendations: {e}")
             return []
+
 
     async def get_hybrid_recommendations(self, user_id: int, top_n: int = 5):
         try:

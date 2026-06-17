@@ -12,8 +12,12 @@ services:
         - "${DB_PORT}:5432"
       volumes:
          - pgdata:/var/lib/postgresql/data
-         - ./data-enrichment/data/etl/extracted:/docker-entrypoint-initdb.d/extracted
-         - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+         - ./backup_movieDatabase_final.sql:/docker-entrypoint-initdb.d/backup_movieDatabase_final.sql
+      healthcheck: 
+        test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
       networks:
         - movie-net
       deploy:
@@ -22,6 +26,55 @@ services:
             memory: "${MEM_LIMIT_POSTGRES}"
           reservations:
             memory: "512m"
+    initializer:
+      build:
+        context: ./initializer
+        dockerfile: Dockerfile
+      container_name: movie-data-initializer
+      environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
+      - ES_HOST=elasticsearch
+      depends_on:
+        postgres:
+          condition: service_healthy
+        elasticsearch:
+          condition: service_healthy
+      networks:
+        - movie-net
+      deploy:
+        resources:
+          limits:
+            memory: "${MEM_LIMIT_INITIALIZER}"
+        
+    mage:
+      image: mageai/mageai:latest
+      container_name: mageai
+      ports:
+        - "6789:6789"
+      volumes:
+        - ./mage_pipelines:/home/src/mage_pipelines
+        - ./data:/home/src/data
+      environment:
+        - USER_CODE_PATH=/home/src/mage_pipelines/movie_project
+        - PYTHONPATH=/home/src/mage_pipelines:/home/src/mage_pipelines/movie_project
+        - DATA_DIR=/home/src/data
+        - DATA_PROVIDER=postgresql
+        - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
+        - ES_HOST=elasticsearch
+        - ES_PORT_9200=${ES_PORT_9200}
+        - ES_INDEX=media_contents
+        - TMDB_API_KEY=${TMDB_API_KEY}
+      depends_on:
+        postgres:
+          condition: service_healthy
+        elasticsearch:
+          condition: service_started
+      networks:
+        - movie-net
+      deploy:
+        resources:
+          limits:
+            memory: "2g"
 
     elasticsearch:
       image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
@@ -39,13 +92,21 @@ services:
             memory: "${MEM_LIMIT_ES}"
           reservations:
             memory: "1g"
+      healthcheck:
+        test: ["CMD-SHELL", "curl -s http://elasticsearch:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
+        start_period: 90s
       networks:
         - movie-net
     recommendation:
+
       build:
         context: ./movie-recommendation
         dockerfile: Dockerfile
       container_name: movie-recommendation
+      command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8002"]
       ports:
         - "${RECOMMENDATION_PORT}:8002"
       env_file:
@@ -66,6 +127,7 @@ services:
     chatbot:
       build: ./movie-chatbot
       container_name: movie-chatbot
+      command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
       ports:
         - "${CHATBOT_PORT}:8001"
       env_file:
@@ -73,6 +135,7 @@ services:
       environment:
         - PYTHONUNBUFFERED=1
         - ES_HOST=http://elasticsearch:9200
+        - ES_URL=http://elasticsearch:9200
         - HF_TOKEN=${HF_TOKEN}
         - GROQ_API_KEY=${GROQ_API_KEY}
         - GROQ_MODEL=${GROQ_MODEL}    
@@ -80,6 +143,7 @@ services:
         - elasticsearch
       networks:
         - movie-net
+
       deploy:
         resources:
           limits:
@@ -88,19 +152,28 @@ services:
     movie-backend:
       build: ./movie-backend
       container_name: movie-backend
+      restart: on-failure:5
       ports:
         - "${BACKEND_PORT}:8080"
+
       environment:
         - DB_URL=${DB_URL}
         - DB_USER=${DB_USER}
         - DB_PASSWORD=${DB_PASSWORD}
         - ES_URL=${ES_URL}
+        - ES_HOST=${ES_HOST}
         - CHATBOT_URL=${CHATBOT_URL}
         - RECO_URL=${RECO_URL}
+        - APP_CORS_ALLOWED_ORIGINS=${APP_CORS_ALLOWED_ORIGINS}
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
         - JAVA_OPTS=-Xmx350m -Xms256m
       depends_on:
-       - postgres
-       - elasticsearch
+        postgres:
+          condition: service_healthy
+        elasticsearch:
+          condition: service_healthy
+        initializer:
+          condition: service_completed_successfully
       networks:
         - movie-net
       deploy:
@@ -114,7 +187,7 @@ services:
         dockerfile: Dockerfile
       container_name: movie-frontend
       ports:
-        - "${FRONTEND_PORT}:3000"
+        - "${FRONTEND_PORT}:80"
       env_file:
         - .env
       depends_on:
@@ -125,10 +198,20 @@ services:
         resources:
           limits:
             memory: ${MEM_LIMIT_FRONTEND}
-
+    redis:
+      image: redis:7-alpine
+      container_name: movie-redis
+      ports:
+        - "6379:6379"
+      volumes:
+        - redisdata:/data
+      networks:
+        - movie-net
 networks:
   movie-net:
     driver: bridge
+    
 
 volumes:
   pgdata:
+  redisdata:

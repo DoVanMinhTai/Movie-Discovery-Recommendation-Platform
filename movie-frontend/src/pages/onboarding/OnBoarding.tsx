@@ -24,8 +24,8 @@ export default function OnBoarding() {
         },
         onSuccess: (data) => {
             if (data) {
-                console.log("Onboarding successful, received token:", data);
-                localStorage.setItem('token', data);
+                console.log("Onboarding successful, received token:", data.token);
+                localStorage.setItem('token', data.token);
                 navigate('/');
             } else {
                 console.error("Error: No token received from server");

@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
-from opensearchpy import OpenSearch
+from elasticsearch import Elasticsearch
 import random
 from typing import List, Tuple
 import sys
@@ -18,11 +18,11 @@ settings = Settings()
 
 class PerformanceBenchmark:
     def __init__(self):
-        self.es = OpenSearch(
-            hosts=[{'host': settings.es_host, 'port': 443}],
-            http_auth=(settings.es_username, settings.es_password),
-            use_ssl=True,
-            verify_certs=True
+        clean_host = settings.es_host.replace("https://", "").replace("http://", "").split(":")[0]
+        self.es = Elasticsearch(
+            f"https://{clean_host}:443",
+            basic_auth=(settings.es_username, settings.es_password),
+            verify_certs=True,
         )
         self.tfidf_vectorizer = None
         self.tfidf_matrix = None

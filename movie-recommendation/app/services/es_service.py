@@ -1,23 +1,13 @@
-from opensearchpy import OpenSearch
+from elasticsearch import AsyncElasticsearch
 from app.core.config import settings
 import logging
 
 logger = logging.getLogger("EsService")
 
-def get_es_client() -> OpenSearch:
-    hosts = [{"host": settings.ES_HOST, "port": 443}]
-    auth = (settings.ES_USERNAME, settings.ES_PASSWORD)
-    return OpenSearch(
-        hosts=hosts,
-        http_auth=auth,
-        use_ssl=True,
-        verify_certs=True,
-        ssl_assert_hostname=False,
-        ssl_show_warn=False,
-    )
+
 
 class EsService:
-    def __init__(self, client: OpenSearch):
+    def __init__(self, client: AsyncElasticsearch):
         self.client = client
         self.index_name = "mediacontent"
 
@@ -30,7 +20,8 @@ class EsService:
                     }
                 }
             }
-            response = self.client.search(index=self.index_name, body=query)
+            response = await self.client.search(index=self.index_name, body=query)
+
             hits = response.get('hits', {}).get('hits', [])
             
             if hits:
