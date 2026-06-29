@@ -12,8 +12,6 @@ class MovieNotFoundError(Exception):
     """Raised when a movie document cannot be found in Elasticsearch."""
     pass
 
-
-
 class ContentBasedService:
     def __init__(self, es_client: AsyncElasticsearch, embedding_provider: EmbeddingProvider):
         self.es = es_client
@@ -73,21 +71,17 @@ class ContentBasedService:
                 k=top_n + 1,
                 size=top_n + 1,
                 source_fields=[ESFields.MOVIE_ID, ESFields.TITLE, ESFields.GENRES]
-            )
-            
+            )      
             results = await self.es.search(index=self.index, **query)
             
             recommendations = [
                 self._format_hit(h) for h in results['hits']['hits'] 
                 if h['_source'][ESFields.MOVIE_ID] != movie_id
             ]
-
             return {
                 "movie_id": movie_id,
                 "movie_title": movie_doc.get(ESFields.TITLE, "Unknown"),
-                "recommendations": recommendations[:top_n]
-            }
-            
+                "recommendations": recommendations[:top_n]}     
         except Exception as e:
             logger.error(f"Error finding similar movies for {movie_id}: {e}")
             raise
