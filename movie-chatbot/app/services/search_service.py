@@ -1,67 +1,48 @@
 from elasticsearch import AsyncElasticsearch
-from app.config.config import settings
+import logging
+from app.core.config import settings
+
+logger = logging.getLogger("SearchService")
 
 class SearchService:
     def __init__(self):
-        self.es_client = AsyncElasticsearch(hosts=settings.es_host,     
-        headers={"Accept": "application/json", "Content-Type": "application/json"})
+        self.es = AsyncElasticsearch(
+            settings.es_host,
+            headers={'Content-Type': 'application/json'}
+        )
+        self.index_name = "movies_cbf" 
 
-    async def search_movies(self, params: dict):
-        must_queries = []
-        field_mapping = {"title": "title", "director": "director_name", "genre": "genres", "year": "releaseDate"}
-
-        for key, value in params.items():
-            if value and key in field_mapping:
-                must_queries.append({
-                    "match": {field_mapping[key]: 
-                    {
-                            "query": value,
-                            "fuzziness": 1,
-                            "operator": "or"
-                        }}})
-    
-        query = {
-            "query": {"bool": {"must": must_queries if must_queries else [{"match_all": {}}]}},
-            "size": 5
-        }
+    async def search_movies(self, query: str, limit: int = 5):
         try:
-            res =  await self.es_client.search(index="mediacontent", body=query)
-            return [hit["_source"] for hit in res["hits"]["hits"]]
+            search_body = {
+                "size": limit,
+                "query": {
+                    "multi_match": {
+                        "query": query,
+                        "fields": ["title^3", "director", "actors", "description"],
+                        "fuzziness": "AUTO"
+                    }
+                }
+            }
+            
+            response = await self.es.search(index=self.index_name, body=search_body)
+            hits = response['hits']['hits']
+            
+            results = []
+            for hit in hits:
+                source = hit['_source']
+                results.append({
+                    "id": hit['_id'],
+                    "title": source.get('title'),
+                    "slug": source.get('slug'),
+                    "thumbnail_url": source.get('poster_path'), 
+                    "rating": source.get('vote_average')
+                })
+            return results
         except Exception as e:
-            print(f"ES Error: {e}")
+            logger.error(f"Error searching Elasticsearch: {e}")
             return []
-        
-    async def fall_Back_ElasticSearch(self, movie_name: str):
-        """Tìm kiếm mờ khi không tìm thấy tên phim chính xác"""
-        query = {
-            "query": {
-                "match": { "title": { "query": movie_name, "fuzziness": "AUTO" } }
-            },
-            "_source": ["id"],
-            "size": 3
-        }
-        try:
-            res = await self.es_client.search(index="movies", body=query)
-            return [hit["_source"]["id"] for hit in res["hits"]["hits"]]
-        except Exception as e:
-            print(f"Fallback ES Error: {e}")
-        return []
-    
-    async def find_movie_id_by_name(self, movie_name: str):
-        query = {
-            "query": {
-                "match_phrase": { "title": movie_name }
-            },
-            "_source": ["id"],
-            "size": 1
-        }
-        try:
-            res = await self.es_client.search(index="movies", body=query)
-            hits = res["hits"]["hits"]
-            if hits:
-                return hits[0]["_source"]["id"]
-        except Exception as e:
-            print(f"Error finding movie ID: {e}")
-        return None
 
-    
+    async def find_movie_id_by_name(self, movie_name: str):
+        results = await self.search_movies(movie_name, limit=1)
+        return results[0]['id'] if results else None

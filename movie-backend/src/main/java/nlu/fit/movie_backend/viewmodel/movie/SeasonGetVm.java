@@ -8,7 +8,7 @@ import java.util.List;
 @Builder
 public record SeasonGetVm(
         Long id,
-        int seasonNumber,
+        Integer seasonNumber,
         LocalDate airDate,
         List<EpisodeGetVm> episodeVmList
 ) {

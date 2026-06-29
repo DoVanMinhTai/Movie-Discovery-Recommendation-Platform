@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.controller import chat_controller as chat_controller
 from app.dependencies import chatbot_container as chatbot_container 
-from app.services.chatbot_service import ChatBotService
+from app.services.nlp_service import NLPService
+from app.core.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    chatbot_container.chatbot_instance = ChatBotService()
+    chatbot_container.chatbot_instance = NLPService()
     yield
     chatbot_container.chatbot_instance = None
 
@@ -16,7 +17,7 @@ app.include_router(chat_controller.router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=settings.host, port=settings.chatbot_port)
     
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse

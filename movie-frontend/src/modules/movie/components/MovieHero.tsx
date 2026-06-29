@@ -1,12 +1,17 @@
 import { Play, Plus } from "lucide-react";
 import type { MediaContentGetVm } from "../model/MediaContentGetVm";
 import { API_ENDPOINTS } from "../../../constants/ApiEndpoints";
+import { toast } from "react-hot-toast";
 
 export const MovieHero = ({ movie, onPlayClick }: { movie: MediaContentGetVm | null, onPlayClick: () => void }) => {
     const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/original";
     const fullImageUrl = `${TMDB_IMAGE_BASE}${movie?.backdropUrl}`;
+
+
     const handleAddFavorite = async () => {
         if (!movie) return;
+
+        const loadingToast = toast.loading("Đang xử lý...");
 
         try {
             const response = await fetch(API_ENDPOINTS.USER.ADD_FAVORITE, {
@@ -15,16 +20,27 @@ export const MovieHero = ({ movie, onPlayClick }: { movie: MediaContentGetVm | n
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`
                 },
-                body: JSON.stringify(movie.id)
+                body: JSON.stringify({ movieId: movie.id })
+            });
+            console.log("Response status:", response);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Có lỗi xảy ra khi thêm vào yêu thích");
+            }
+
+            const data = await response.json();
+
+            toast.success(data.result.message || "Đã thêm vào yêu thích!", {
+                id: loadingToast,
             });
 
-            if (response.ok) {
-                alert("Đã thêm vào danh sách yêu thích!");
-            } else {
-                alert("Không thể thêm vào danh sách.");
-            }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error adding favorite:", error);
+
+            toast.error(error.message || "Có lỗi xảy ra!", {
+                id: loadingToast,
+            });
         }
     };
     return (

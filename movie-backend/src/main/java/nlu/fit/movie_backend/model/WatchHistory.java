@@ -25,7 +25,7 @@ public class WatchHistory {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "mediaContent_id")
+    @JoinColumn(name = "media_content_id")
     private MediaContent mediaContent;
 
 }

@@ -34,6 +34,7 @@ public class Rating {
 
     @ManyToOne
     @JoinColumn(name = "mediacontent_id")
+    @JsonIgnore
     private MediaContent mediaContent;
     
 }

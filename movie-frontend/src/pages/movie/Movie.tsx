@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMediaContentById, getMovieSimilarById } from "../../modules/movie/service/MovieService";
+import { getMediaContentById, getMovieSimilarById, addToWatchHistory, canRateMovie } from "../../modules/movie/service/MovieService";
 import { MovieHero } from "../../modules/movie/components/MovieHero";
 import { MovieInfo } from "../../modules/movie/components/MovieInfo";
 import { EpisodesSelector } from "../../modules/movie/components/EpisodesSelector";
@@ -22,24 +22,52 @@ export default function MovieDetail() {
   useEffect(() => {
     if (id) {
       getMediaContentById(Number(id)).then((data: any) => {
+        console.log("Media content data:", data);
         if (data.type === "MOVIE") {
-          const mediaContent = data.movieDetailVm;
+          const mediaContent = data.movieVm || data.movieDetailVm;
           setMediaContent(mediaContent);
           setType("MOVIE");
         } else if (data.type === "SERIES") {
-          const mediaContent = data.seriesDetailVm;
+          const mediaContent = data.seriesVm || data.seriesDetailVm;
+          if (mediaContent) {
+            mediaContent.dtype = "SERIES";
+            if (mediaContent.seasonVm) {
+              mediaContent.seasons = mediaContent.seasonVm.map((s: any) => ({
+                id: s.id,
+                seasonNumber: s.seasonNumber,
+                episodes: s.episodeVm ? s.episodeVm.map((e: any) => ({
+                  id: e.id,
+                  seasonNumber: e.seasonNumber,
+                  episodeNumber: e.episodeNumber,
+                  title: e.title,
+                  videoUrl: e.videoUrl,
+                  stillPath: e.stillPath,
+                  overview: e.overview
+                })) : []
+              }));
+            }
+          }
           setMediaContent(mediaContent);
           setType("SERIES");
         }
       });
 
       getMovieSimilarById(Number(id)).then((data) => {
+        console.log("Similar movies data:", data);
         setSimilarMovies(data);
       });
     }
   }, [id]);
 
-  function handlePlay() {
+    function handlePlay() {
+    if (id) {
+      addToWatchHistory(Number(id)).then(() => {
+        canRateMovie(Number(id)).then(() => {
+          window.dispatchEvent(new CustomEvent('watchHistoryUpdated', { detail: { mediaId: Number(id) } }));
+        });
+      });
+    }
+
     if (type === "MOVIE") {
       setSelectedEpisode(null);
       setIsPlaying(true);
@@ -72,7 +100,7 @@ export default function MovieDetail() {
       )
     }
     {mediaContent?.id &&
-      < RatingSection mediaId={mediaContent?.id} />
+      <RatingSection mediaId={mediaContent?.id} onPlayClick={() => handlePlay()} />
     }
     <SimilarMovies similarMovies={similarMovies} />
     {isPlaying && (

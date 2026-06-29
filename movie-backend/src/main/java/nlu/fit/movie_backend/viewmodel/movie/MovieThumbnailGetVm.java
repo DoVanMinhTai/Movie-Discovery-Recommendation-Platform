@@ -4,6 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record MovieThumbnailGetVm(
-        Long id, String title, String backdropPath
+        Long id, String title, String backdropPath, String dtype, String releaseDate
 ) {
 }

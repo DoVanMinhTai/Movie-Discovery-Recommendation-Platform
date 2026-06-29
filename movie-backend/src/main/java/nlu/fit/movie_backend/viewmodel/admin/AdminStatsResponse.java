@@ -7,6 +7,7 @@ public record AdminStatsResponse(
         long totalMedia,
         long totalRatings,
         long viewsToday,
-        List<MovieResponse> recentMovies
+        List<MovieResponse> recentMovies,
+        List<DailyViewDto> dailyViews
 ) {
 }

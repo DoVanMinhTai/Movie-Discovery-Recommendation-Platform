@@ -1,0 +1,39 @@
+{
+  "settings": {
+    "index": {
+      "knn": true,
+      "knn.algo_param.ef_search": 100
+    }
+  },
+  "mappings": {
+    "properties": {
+      "movie_id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "genres": {
+        "type": "keyword"
+      },
+      "tags": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "plot": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "embedding": {
+        "type": "knn_vector",
+        "dimension": 384,
+        "method": {
+          "name": "hnsw",
+          "space_type": "cosinesimil",
+          "engine": "nmslib"
+        }
+      }
+    }
+  }
+}

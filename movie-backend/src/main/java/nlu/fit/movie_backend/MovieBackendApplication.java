@@ -9,10 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.TimeZone;
 
-@SpringBootApplication(exclude = {
-        org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration.class
-})
+@SpringBootApplication
 @EnableConfigurationProperties(ServiceUrlConfig.class)
 @EnableJpaAuditing
 @EnableScheduling
@@ -22,10 +19,16 @@ public class MovieBackendApplication {
     }
 
     public static void main(String[] args) {
+        String envMode = System.getenv("ENV") != null ? System.getenv("ENV") : "dev";
+        String envFileName = ".env." + envMode;
+        
         io.github.cdimascio.dotenv.Dotenv dotenv = io.github.cdimascio.dotenv.Dotenv.configure()
+                .directory("../")
+                .filename(envFileName)
                 .ignoreIfMissing()
                 .load();
 
+        System.out.println("Loaded environment from: ../" + envFileName);
         dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 
         SpringApplication.run(MovieBackendApplication.class, args);

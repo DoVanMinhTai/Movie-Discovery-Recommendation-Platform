@@ -1,7 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Trash2, Play, Plus, Search, Info } from 'lucide-react';
+import { Trash2, Play, Plus, Search, Info, Sparkles } from 'lucide-react';
 import { getWatchList, removeFromWatchList } from '../../modules/watchlist/service/WatchListService';
+import { getCollaborativeFiltering } from '../../modules/movie/service/MovieService';
+import { getMyProfile } from '../../modules/auth/service/AuthService';
+import ImageFallback from '../../common/components/ImageFallback';
+import { toast } from 'react-hot-toast';
 
 interface Movie {
     id: number;
@@ -10,32 +14,57 @@ interface Movie {
     releaseDate: string;
 }
 
+import type { MovieThumbnailGetVm } from '../../modules/movie/model/MovieThumbnailGetVm';
+
 export default function WatchList() {
     const queryClient = useQueryClient();
 
-    const { data: myList = [], isLoading } = useQuery<Movie[]>({
+    const { data: myList = [], isLoading: isListLoading } = useQuery<MovieThumbnailGetVm[]>({
         queryKey: ['watchlist'],
         queryFn: async () => {
             return getWatchList();
         }
     });
 
+    const { data: recommendedMovies = [], isLoading: isRecoLoading } = useQuery<MovieThumbnailGetVm[]>({
+        queryKey: ['recommendations-cf'],
+        queryFn: async () => {
+            try {
+                const profile = await getMyProfile();
+                if (profile && profile.id) {
+                    return getCollaborativeFiltering(profile.id);
+                }
+                return [];
+            } catch (error) {
+                console.error("Lỗi lấy gợi ý CF:", error);
+                return [];
+            }
+        },
+        staleTime: 1000 * 60 * 10,
+    });
+
     const deleteMutation = useMutation({
         mutationFn: async (movieId: number) => {
             return removeFromWatchList(movieId);
         },
-        onSuccess: () => {
+        onMutate: () => {
+            return toast.loading("Đang xóa khỏi danh sách...");
+        },
+        onSuccess: (_data, _variables, context) => {
+            toast.success("Đã xóa bộ phim thành công!", { id: context });
+
             queryClient.invalidateQueries({ queryKey: ['watchlist'] });
+        },
+        onError: (error: any, _variables, context) => {
+            toast.error(error.message || "Không thể xóa phim này", { id: context });
         }
     });
 
     const removeFromList = (id: number) => {
-        if (window.confirm("Xóa bộ phim này khỏi danh sách yêu thích của bạn?")) {
-            deleteMutation.mutate(id);
-        }
+        deleteMutation.mutate(id);
     };
 
-    if (isLoading) return (
+    if (isListLoading) return (
         <div className="bg-[#141414] min-h-screen pt-32 px-12">
             <div className="h-10 w-64 bg-zinc-800 animate-pulse mb-8 rounded"></div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -59,8 +88,8 @@ export default function WatchList() {
                         <div key={movie.id} className="relative group">
                             <div className="relative aspect-video rounded-md overflow-hidden bg-zinc-900 border border-white/5 transition-all duration-300 group-hover:scale-110 group-hover:z-30 group-hover:shadow-[0_0_20px_rgba(0,0,0,0.5)]">
                                 <Link to={`/movie/${movie.id}`}>
-                                    <img
-                                        src={`https://image.tmdb.org/p/w500${movie.backdropPath}`}
+                                    <ImageFallback
+                                        src={movie.backdropPath ? `https://image.tmdb.org/t/p/w500${movie.backdropPath}` : "https://via.placeholder.com/500x750?text=No+Poster"}
                                         alt={movie.title}
                                         className="w-full h-full object-cover"
                                     />
@@ -109,14 +138,50 @@ export default function WatchList() {
 
             <div className="mt-32">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold">Có thể bạn sẽ thích</h2>
-                    <Link to="/category" className="text-red-500 text-sm font-bold hover:underline">Xem tất cả</Link>
+                    <div className="flex items-center gap-2">
+                        <Sparkles size={24} className="text-red-600 fill-red-600" />
+                        <h2 className="text-2xl font-bold">Có thể bạn sẽ thích</h2>
+                    </div>
+                    <Link to="/" className="text-zinc-400 text-sm font-bold hover:text-white transition-colors">Xem thêm</Link>
                 </div>
-                <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="min-w-[200px] aspect-video bg-zinc-800 rounded-md animate-pulse"></div>
-                    ))}
-                </div>
+
+                {isRecoLoading ? (
+                    <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="min-w-[240px] aspect-video bg-zinc-800/50 rounded-md animate-pulse"></div>
+                        ))}
+                    </div>
+                ) : recommendedMovies.length > 0 ? (
+                    <div className="flex gap-6 overflow-x-auto pb-10 no-scrollbar">
+                        {recommendedMovies.map((movie: any) => (
+                            <div key={movie.id} className="min-w-[240px] group cursor-pointer relative">
+                                <Link to={`/movie/${movie.id}`}>
+                                    <div className="relative aspect-video rounded-lg overflow-hidden border border-white/5 transition-transform duration-300 group-hover:scale-105">
+                                        <ImageFallback
+                                            src={movie.backdropPath ? `https://image.tmdb.org/t/p/w500${movie.backdropPath}` : "https://via.placeholder.com/500x750?text=No+Poster"}
+                                            alt={movie.title}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                            <div className="flex items-center gap-2 text-white">
+                                                <Play size={16} fill="currentColor" />
+                                                <span className="text-xs font-bold uppercase">Xem ngay</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h3 className="mt-3 text-sm font-semibold text-zinc-300 group-hover:text-white transition-colors truncate">
+                                        {movie.title}
+                                    </h3>
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="py-10 bg-zinc-900/40 rounded-xl border border-zinc-800/50 flex flex-col items-center justify-center text-center">
+                        <p className="text-zinc-500 text-sm italic mb-2">Đánh giá thêm nhiều phim để nhận gợi ý cá nhân hóa!</p>
+                        <p className="text-zinc-600 text-[11px]">Hệ thống AI đang học hỏi sở thích của bạn...</p>
+                    </div>
+                )}
             </div>
         </div>
     );

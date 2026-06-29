@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { Star, Lock, PlayCircle, Heart } from "lucide-react";
-import { canRateMovie, rateMovie } from "../service/MovieService";
+import { Star, Lock, PlayCircle, Heart, Send } from "lucide-react";
+import { canRateMovie, addRateMovie, getRatingByMovieId } from "../service/MovieService";
 
-export const RatingSection = ({ mediaId }: { mediaId: number }) => {
+export const RatingSection = ({ mediaId, onPlayClick }: { mediaId: number; onPlayClick: () => void }) => {
     const [hover, setHover] = useState(0);
     const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasWatched, setHasWatched] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -18,38 +19,61 @@ export const RatingSection = ({ mediaId }: { mediaId: number }) => {
         5: "Cực phẩm!"
     };
 
+    const fetchRatingStatus = async () => {
+        try {
+            const watched = await canRateMovie(mediaId);
+            setHasWatched(watched);
+
+            if (watched) {
+                const existingRating = await getRatingByMovieId(mediaId);
+                if (existingRating) {
+                    setRating(existingRating.score);
+                    setComment(existingRating.comment || "");
+                }
+            }
+        } catch (error) {
+            console.error("Lỗi kiểm tra trạng thái đánh giá:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const checkStatus = async () => {
-            try {
-                const watched = await canRateMovie(mediaId);
-                setHasWatched(watched);
-            } catch (error) {
-                console.error("Lỗi kiểm tra lịch sử xem:", error);
-                setHasWatched(false);
-            } finally {
-                setIsLoading(false);
+        setIsLoading(true);
+        fetchRatingStatus();
+
+        const handleWatchUpdate = (e: any) => {
+            if (e.detail.mediaId === mediaId) {
+                setHasWatched(true);
             }
         };
-        checkStatus();
+
+        window.addEventListener('watchHistoryUpdated', handleWatchUpdate);
+        return () => window.removeEventListener('watchHistoryUpdated', handleWatchUpdate);
     }, [mediaId]);
 
-    const handleRate = async (score: number) => {
+    const handleRate = async () => {
         if (!hasWatched) {
             toast.error("Bạn cần xem phim trước khi để lại đánh giá!");
             return;
         }
 
+        if (rating === 0) {
+            toast.error("Vui lòng chọn số sao trước khi gửi!");
+            return;
+        }
+
         setIsSubmitting(true);
         try {
-            const success = await rateMovie({
+            const success = await addRateMovie({
                 movieId: mediaId,
-                score: score,
-                comment: ""
+                score: rating,
+                comment: comment
             });
 
             if (success) {
-                setRating(score);
-                toast.success(`Tuyệt vời! ${score} sao đã được ghi nhận.`);
+                toast.success("Đánh giá của bạn đã được ghi nhận!");
+                await fetchRatingStatus();
             } else {
                 toast.error("Gửi đánh giá thất bại.");
             }
@@ -65,8 +89,8 @@ export const RatingSection = ({ mediaId }: { mediaId: number }) => {
     return (
         <div className="w-full mt-6">
             <div className={`relative overflow-hidden p-6 rounded-xl border transition-all duration-500 ${hasWatched
-                    ? "bg-[#181818] border-zinc-800 shadow-xl"
-                    : "bg-zinc-900/30 border-zinc-800/50"
+                ? "bg-[#181818] border-zinc-800 shadow-xl"
+                : "bg-zinc-900/30 border-zinc-800/50"
                 }`}>
 
                 <div className="relative z-10">
@@ -89,17 +113,19 @@ export const RatingSection = ({ mediaId }: { mediaId: number }) => {
                                 Đánh giá phim chỉ dành cho thành viên đã thưởng thức nội dung này.
                                 Hãy xem phim để có thể chia sẻ cảm nhận của bạn với cộng đồng nhé!
                             </p>
-                            <button className="flex items-center gap-2 px-5 py-2 bg-white text-black font-bold rounded-md text-sm hover:bg-zinc-200 transition active:scale-95">
+                            <button className="flex items-center gap-2 px-5 py-2 bg-white text-black font-bold rounded-md text-sm hover:bg-zinc-200 transition active:scale-95"
+                                onClick={onPlayClick}
+                            >
                                 <PlayCircle size={18} /> Xem ngay
                             </button>
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center sm:items-start">
+                        <div className="flex flex-col items-center sm:items-start w-full">
                             <p className="text-zinc-400 text-sm mb-4 text-center sm:text-left">
                                 Lựa chọn của bạn giúp chúng mình gợi ý những phim bạn sẽ thích hơn.
                             </p>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 mb-6">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <button
                                         key={star}
@@ -107,28 +133,44 @@ export const RatingSection = ({ mediaId }: { mediaId: number }) => {
                                         className="relative group outline-none"
                                         onMouseEnter={() => setHover(star)}
                                         onMouseLeave={() => setHover(0)}
-                                        onClick={() => handleRate(star)}
+                                        onClick={() => setRating(star)}
                                     >
                                         <Star
                                             size={38}
                                             strokeWidth={1.5}
                                             className={`transition-all duration-300 transform ${star <= (hover || rating)
-                                                    ? "fill-red-600 text-red-600 scale-110 drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
-                                                    : "text-zinc-700 group-hover:text-zinc-500"
+                                                ? "fill-red-600 text-red-600 scale-110 drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+                                                : "text-zinc-700 group-hover:text-zinc-500"
                                                 } ${isSubmitting ? "animate-pulse" : "active:scale-90"}`}
                                         />
                                     </button>
                                 ))}
                             </div>
 
-                            <div className="mt-5 h-5 flex justify-center sm:justify-start w-full">
-                                <p className={`text-sm font-medium transition-all duration-300 ${rating > 0 ? "text-green-500" : "text-red-500"
-                                    }`}>
-                                    {rating > 0
-                                        ? `Đã lưu: ${labels[rating]}`
-                                        : hover > 0 ? labels[hover] : ""
-                                    }
-                                </p>
+                            <div className="w-full space-y-3">
+                                <textarea
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    placeholder="Chia sẻ cảm nhận của bạn về phim..."
+                                    className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg p-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-red-600 transition-colors resize-none h-24"
+                                />
+                                <div className="flex justify-between items-center">
+                                    <p className={`text-sm font-medium transition-all duration-300 ${rating > 0 ? "text-green-500" : "text-zinc-500"
+                                        }`}>
+                                        {rating > 0
+                                            ? labels[rating]
+                                            : hover > 0 ? labels[hover] : "Chọn số sao để đánh giá"
+                                        }
+                                    </p>
+                                    <button
+                                        onClick={handleRate}
+                                        disabled={isSubmitting || rating === 0}
+                                        className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white font-bold rounded-lg text-sm hover:bg-red-700 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <Send size={16} />
+                                        {isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}

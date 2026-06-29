@@ -1,11 +1,16 @@
+# syntax=docker/dockerfile:1.4
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
+# Copy only the POM first so the dependency layer is cached
+# and only re-runs when pom.xml changes.
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
+RUN --mount=type=cache,target=/root/.m2 mvn dependency:go-offline -B
 
+# Now copy sources and build. The .m2 cache mount means already
+# downloaded dependencies are reused across builds.
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests -B
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app

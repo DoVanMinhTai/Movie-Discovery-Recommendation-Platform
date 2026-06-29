@@ -50,14 +50,14 @@ public class MovieMapperStrategy implements MediaMapper {
 
     public List<MovieThumbnailGetVm> toThumbnailGetVmList(List<Movie> movies) {
         return movies.stream().map(
-                item -> new MovieThumbnailGetVm(item.getId(), item.getTitle(), item.getBackdropPath())).toList();
+                item -> new MovieThumbnailGetVm(item.getId(), item.getTitle(), item.getBackdropPath(), null ,null)).toList();
     }
 
     public MovieThumbnailGetVm toThumbnailGetVm(Movie movie) {
         return new MovieThumbnailGetVm(
                 movie.getId(),
                 movie.getTitle(),
-                movie.getBackdropPath()
+                movie.getBackdropPath(),null,null
         );
     }
 

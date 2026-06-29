@@ -9,7 +9,7 @@ export async function register(userName: string, email: string, password: string
         email,
         password
     });
-    return response.data;
+    return response;
 }
 
 export async function login(email: string, password: string) : Promise<ProfileGetVm> {
@@ -17,17 +17,17 @@ export async function login(email: string, password: string) : Promise<ProfileGe
         email,
         password
     });
-    return response.data;
+    return response;
 }
 
 export async function getMyProfile() : Promise<ProfileGetVm> {
     const response = await apiClientService.get(API_ENDPOINTS.AUTH.GET_PROFILE);
-    return response.data; 
+    return response; 
 }
 
-export async function existEmail(email: string) {
+export async function existEmail(email: string) : Promise<boolean> {
     const response = await apiClientService.get(API_ENDPOINTS.AUTH.EXIST_EMAIL, {
         params: { email }
     });
-    return response.data;
+    return response;
 }

@@ -23,7 +23,8 @@ export default function OnBoarding() {
             return submitOnBoarding({ genres: data.genres });
         },
         onSuccess: (data) => {
-            if (data && data.token) {
+            if (data) {
+                console.log("Onboarding successful, received token:", data.token);
                 localStorage.setItem('token', data.token);
                 navigate('/');
             } else {

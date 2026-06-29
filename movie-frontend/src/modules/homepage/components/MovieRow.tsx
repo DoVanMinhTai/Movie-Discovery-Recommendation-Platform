@@ -1,3 +1,4 @@
+import ImageFallback from "../../../common/components/ImageFallback";
 import MovieWrapper from "../../../common/components/MovieWrapper";
 import { useRef, useState } from "react";
 
@@ -35,11 +36,14 @@ export default function MovieRow({ title, movies }: Props) {
                 {movies.map((movie) => (
                     <div key={movie.id} className="min-w-[16.666%] aspect-video relative">
                         <MovieWrapper key={movie.id} id={movie.id}>
-                            <img
+
+                            <ImageFallback
                                 src={movie.image}
-                                className="rounded-sm object-cover w-full h-full"
                                 alt="movie"
+                                className="rounded-sm object-cover w-full h-full"
+                                fallbackSrc={"/images/image_fallback.png"}
                             />
+
                             {movie.progress && (
                                 <div className="absolute bottom-0 left-0 h-1 bg-nfGrey-400 w-full">
                                     <div className="bg-nfRed h-full" style={{ width: `${movie.progress}%` }} />

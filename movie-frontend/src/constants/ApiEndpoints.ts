@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
         DASHBOARD: `${BASE_URL}/admin/statistics`,
         AI_STATUS: `${BASE_URL}/admin/ai-status`,
         RETRAIN_AI: `${BASE_URL}/admin/retrain-ai`,
+        UPDATE_RECOMMENDATIONS: `${BASE_URL}/admin/update-recommendations`,
     },
     AUTH: {
         REGISTER: `${BASE_URL}/auth/register`,
@@ -19,31 +20,45 @@ export const API_ENDPOINTS = {
         MESSAGE: `${BASE_URL}/chatbot/message`,
     },
     HOMEPAGE: {
-        TRENDING: `${BASE_URL}/movie/movies/trending?limit=10`,
-        HERO_MOVIE: `${BASE_URL}/movie/movies/hero`,
-        PREFERRED_GENRES: `${BASE_URL}/movie/movies/preferredGenres?limit=10`,
-        TOP10: `${BASE_URL}/movie/movies/top10`,
+        TRENDING: `${BASE_URL}/movie/trending?limit=10`,
+        HERO_MOVIE: `${BASE_URL}/movie/hero`,
+        PREFERRED_GENRES: `${BASE_URL}/movie/preferredGenres?limit=10`,
+        TOP10: `${BASE_URL}/movie/top10`,
     },
     MOVIE: {
-        GENRES: `${BASE_URL}/movie/movies/genres`,
-        FILTER: `${BASE_URL}/movie/movies/`,
-        SIMILAR: (movieId: number) => `${BASE_URL}/recommendation/similar/${movieId}`
+        GENRES: `${BASE_URL}/category/genres`,
+        FILTER: `${BASE_URL}/movie/filter`,
     },
     MEDIA_CONTENT: {
         GET_BY_ID: (movieId: number) => `${BASE_URL}/mediacontent/${movieId}`,
     },
     USER: {
-        CAN_RATE: (movieId: number) => `${BASE_URL}/user/api/checkWatchHistory/${movieId}`,
-        RATE: `${BASE_URL}/user/api/rateMovie`,
-        GET_FAVORITES: `${BASE_URL}/user/api/getAllFavorites`,
-        ADD_FAVORITE: `${BASE_URL}/user/api/favorites/add`,
-        REMOVE_FAVORITE: (movieId: number) => `${BASE_URL}/user/api/favorites/${movieId}`,
+        GET_RATE_BY_MOVIE_ID: (movieId: number) => `${BASE_URL}/user-interaction/rate/${movieId}`,
+        ADD_RATE: `${BASE_URL}/user-interaction/rate`,
+        
+        GET_FAVORITES: `${BASE_URL}/user-interaction/favorites`,
+        ADD_FAVORITE: `${BASE_URL}/user-interaction/favorites/add`,
+        REMOVE_FAVORITE: (movieId: number) => `${BASE_URL}/user-interaction/favorites/delete/${movieId}`,
+        
+        ADD_WATCH_HISTORY: `${BASE_URL}/user-interaction/addWatchHistory`,
+        EXISTS_WATCH_HISTORY: (movieId: number) => `${BASE_URL}/user-interaction/checkWatchHistory/${movieId}`,
     },
     SEARCH: {
-        SUGGEST: `${BASE_URL}/search/suggest`,
+        SUGGEST: `${BASE_URL}/search/suggestion`,
         ALL: `${BASE_URL}/search/all`,
     },
     ONBOARDING: {
-        POST: `${BASE_URL}/user/onboarding`,
+        POST: `${BASE_URL}/user-interaction/onboarding`,
+    },
+    RECOMMENDATION: {
+        CF: {
+            UPDATE_RECOMMENDATIONS: `${BASE_URL}/recommendation/cf/update-recommendations`,
+            USER: (userId: number) => `${BASE_URL}/recommendation/cf/user/${userId}`,
+            SIMILAR: (movieId: number) => `${BASE_URL}/recommendation/cf/similar/${movieId}`,
+        },
+        CBF: {
+            SEARCH: `${BASE_URL}/recommendation/cbf/search`,
+            SIMILAR: (movieId: number) => `${BASE_URL}/recommendation/cbf/similar/${movieId}`,
+        }
     }
 } as const;

@@ -3,7 +3,7 @@ package nlu.fit.movie_backend.repository.elasticsearchrepository;
 import nlu.fit.movie_backend.document.MediaContentDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import MovieWrapper from "../../../common/components/MovieWrapper"
 import type { MovieThumbnailGetVm } from "../model/MovieThumbnailGetVm"
+import ImageFallback from "../../../common/components/ImageFallback";
 
 type Props = {
     title: string,
@@ -44,7 +45,7 @@ export default function MovieRow({ title, movies, isLarge }: Props) {
                                 className={`flex-none transition-transform duration-300 hover:scale-105 cursor-pointer ${isLarge ? "h-80 w-56" : "h-32 w-56"
                                     }`}
                             >
-                                <img
+                                <ImageFallback
                                     src={movie.backdropPath ? `https://image.tmdb.org/t/p/w500${movie.backdropPath}` : "https://via.placeholder.com/500x750?text=No+Poster"}
                                     alt={movie.title}
                                     className="h-full w-full rounded-md object-cover"

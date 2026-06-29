@@ -8,22 +8,22 @@ export async function getTop10(type: ContentType, limit: number): Promise<MovieT
     const response = (await apiClientService.get(API_ENDPOINTS.HOMEPAGE.TOP10, {
         params: { contenttype: type, limit }
     }));
-    return response.data;
+    return response;
 }
 
 export async function getTrending(): Promise<MovieThumbnailGetVm[]> {
     const response = await apiClientService.get(API_ENDPOINTS.HOMEPAGE.TRENDING);
-    return response.data;
+    return response;
 }
 
 export async function getHeroMovie(): Promise<MovieHeroGetVm> {
     const response = await apiClientService.get(API_ENDPOINTS.HOMEPAGE.HERO_MOVIE);
-    return response.data;
+    return response;
 }
 
 export async function getMoviePreferredGenres(limit: number): Promise<Record<string, MovieThumbnailGetVm[]>> {
     const response = (await apiClientService.get(
         API_ENDPOINTS.HOMEPAGE.PREFERRED_GENRES.replace("{limit}", limit.toString())
     ));
-    return response.data;
+    return response;
 }

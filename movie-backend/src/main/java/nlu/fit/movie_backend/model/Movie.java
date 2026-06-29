@@ -13,8 +13,8 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @NoArgsConstructor
 @DiscriminatorValue(value = "MOVIE")
-@SQLDelete(sql = "UPDATE movie SET isDeleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+//@SQLDelete(sql = "UPDATE movie SET isDeleted = true WHERE id = ?")
+//@Where(clause = "deleted = false")
 public class Movie extends MediaContent {
 
     @Column(name = "runtime")

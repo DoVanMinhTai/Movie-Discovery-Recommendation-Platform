@@ -8,10 +8,12 @@ import nlu.fit.movie_backend.viewmodel.movie.EpisodeGetVm;
 import nlu.fit.movie_backend.viewmodel.movie.MediaContentGetVm;
 import nlu.fit.movie_backend.viewmodel.movie.SeasonGetVm;
 import nlu.fit.movie_backend.viewmodel.movie.SeriesGetVm;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class SeriesMapperStrategy implements MediaMapper {
     @Override
     public boolean supports(MediaContent mediaContent) {
@@ -36,10 +38,19 @@ public class SeriesMapperStrategy implements MediaMapper {
                 .collect(Collectors.joining(", "));
         List<SeasonGetVm> seasonVms = series.getSeasons().stream().map(item -> {
             List<EpisodeGetVm> episodeVmList = item.getEpisodes().stream().map(episode -> new EpisodeGetVm(
-                    episode.getId(), episode.getSeasonNumber(), episode.getEpisodeNumber(), episode.getTitle(), episode.getVideoUrl(), episode.getStillPath()
+                    episode.getId(),
+                    episode.getSeasonNumber(),
+                    episode.getEpisodeNumber(),
+                    episode.getTitle(),
+                    episode.getVideoUrl(),
+                    episode.getStillPath(),
+                    episode.getOverview()
             )).collect(Collectors.toList());
             return new SeasonGetVm(
-                    item.getId(), item.getSeasonNumber(), item.getAirDate(), episodeVmList
+                    item.getId(),
+                    item.getSeasonNumber(),
+                    item.getAirDate(),
+                    episodeVmList
             );
         }).collect(Collectors.toList());
 

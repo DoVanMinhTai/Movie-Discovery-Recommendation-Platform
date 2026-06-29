@@ -15,4 +15,8 @@ public interface MediaContentRepository extends JpaRepository<MediaContent,Long>
     Page<MediaContent> findByGenresId(Long genresId, Pageable pageable);
 
     List<MediaContent> findTop5ByOrderByIdDesc();
+
+    Page<MediaContent> findByDtype(String dtype, Pageable pageable);
+
+    Page<MediaContent> findByGenresIdAndDtype(Long genresId, String dtype, Pageable pageable);
 }

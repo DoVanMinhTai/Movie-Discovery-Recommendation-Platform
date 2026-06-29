@@ -1,6 +1,7 @@
 package nlu.fit.movie_backend.config;
 
 import lombok.RequiredArgsConstructor;
+import nlu.fit.movie_backend.service.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

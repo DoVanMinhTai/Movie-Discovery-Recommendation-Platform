@@ -1,17 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../../public/logo.png";
 import { getMovieSuggestionByTitle } from "../../../modules/search/service/SearchService";
 import { getAuthData } from "../../auth/AuthUtils";
+import ImageFallback from "../../../common/components/ImageFallback";
 
 const Header = () => {
 	const [searchValue, setSearchValue] = useState("");
 	const [searchResults, setSearchResults] = useState<Array<{ id: number; title: string; releaseDate: number; backdropPath: string }>>([]);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const navigate = useNavigate();
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+				setShowDropdown(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
 
 	useEffect(() => {
 		if (!searchValue.trim()) {
+			setSearchResults([]);
+			setShowDropdown(false);
 			return;
 		}
 
@@ -63,6 +80,8 @@ const Header = () => {
 				<Link to="/"><img src={logo} className="w-20 h-10 object-cover " /></Link>
 				<ul className="flex items-center justify-center gap-3 font-bold">
 					<li><Link to="/">Home</Link></li>
+					<li><Link to="/movies">Phim lẻ</Link></li>
+					<li><Link to="/series">Phim bộ</Link></li>
 					<li><Link to="/category">Danh mục</Link></li>
 					<li><Link to="/watchlist">Danh sách của tôi</Link></li>
 				</ul>
@@ -94,19 +113,26 @@ const Header = () => {
 				</div>
 			</div>
 			{showDropdown && searchResults.length > 0 && (
-				<div className="absolute top-15 right-60 w-1/4 bg-[#141414] border border-gray-700 mt-2 rounded-md shadow-2xl z-[100]">
+				<div 
+					ref={dropdownRef}
+					className="absolute top-15 right-60 w-1/4 bg-[#141414] border border-gray-700 mt-2 rounded-md shadow-2xl z-[100]"
+				>
 					{searchResults.map((movie) => (
 						<Link
 							key={movie.id}
 							to={`/movie/${movie.id}`}
 							className="flex flex-col px-4 py-3 hover:bg-gray-800 border-b border-gray-800 last:border-none"
-							onClick={() => setSearchValue("")}
+							onClick={() => {
+								setShowDropdown(false);
+								setSearchValue("");
+							}}
 						>
 							<div className="flex flex-1 items-center gap-3">
-								{movie.backdropPath && (
-									<img src={`https://image.tmdb.org/t/p/w500${movie.backdropPath}`} alt={movie.title}
-										className="w-12 h-12 object-cover rounded mb-2" />
-								)}
+								<ImageFallback 
+									src={movie.backdropPath ? `https://image.tmdb.org/t/p/w500${movie.backdropPath}` : "/image_fallback.png"} 
+									alt={movie.title}
+									className="w-12 h-12 object-cover rounded mb-2" 
+								/>
 								<span className="font-bold text-sm">{movie.title}</span>
 								<span className="text-xs text-gray-400">{movie.releaseDate}</span>
 							</div>
@@ -114,6 +140,7 @@ const Header = () => {
 					))}
 					<Link
 						to={`/search?s=${searchValue}`}
+						onClick={() => setShowDropdown(false)}
 						className="block text-center py-2 text-xs text-blue-400 hover:bg-gray-800">
 						Xem tất cả kết quả
 					</Link>

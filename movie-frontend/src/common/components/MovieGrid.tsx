@@ -1,5 +1,6 @@
 import MovieWrapper from "./MovieWrapper";
 import type { PageAbleResponse } from "../services/ApiClientService";
+import ImageFallback from "./ImageFallback";
 
 type MovieGridProps = {
     data: PageAbleResponse;
@@ -24,10 +25,11 @@ const MovieGrid = ({ data, loading, onPageChange }: MovieGridProps) => {
                             <MovieWrapper id={movie.id}>
                                 <div className="flex flex-col gap-3">
                                     <div className="relative aspect-[2/3] w-full rounded-md overflow-hidden bg-[#1a1a1a] ring-1 ring-white/10 group-hover:ring-red-600 transition-all duration-300">
-                                        <img
+                                        <ImageFallback
                                             src={movie.backdropPath
                                                 ? `https://image.tmdb.org/t/p/w500${movie.backdropPath}`
                                                 : "https://via.placeholder.com/500x750?text=No+Poster"}
+                                            fallbackSrc="/image_fallback.png"
                                             alt={movie.title}
                                             loading="lazy"
                                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -45,11 +47,17 @@ const MovieGrid = ({ data, loading, onPageChange }: MovieGridProps) => {
                                             {movie.title}
                                         </h3>
                                         <div className="flex items-center gap-2 mt-1">
-                                            <span className="text-[10px] text-gray-400 border border-gray-600 px-1 rounded-sm uppercase font-bold">
-                                                HD
-                                            </span>
+                                            {movie.dtype === 'SERIES' ? (
+                                                <span className="text-[10px] text-white border border-red-500 bg-red-600 px-1 rounded-sm uppercase font-bold">
+                                                    SERIES
+                                                </span>
+                                            ) : (
+                                                <span className="text-[10px] text-gray-400 border border-gray-600 px-1 rounded-sm uppercase font-bold">
+                                                    HD
+                                                </span>
+                                            )}
                                             <span className="text-xs text-gray-500">
-                                                {movie.releaseDate?.substring(0, 4) || "N/A"}
+                                                {movie.releaseDate ? movie.releaseDate : "N/A"}
                                             </span>
                                         </div>
                                     </div>

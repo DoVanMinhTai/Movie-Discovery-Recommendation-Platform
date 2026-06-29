@@ -14,10 +14,12 @@ import java.util.List;
 @DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public abstract class MediaContent {
     @Id
-    @Column(name = "movieId")
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    Check
+    @Column(name = "media_content_id", unique = true)
     private Long id;
 
-    @Column(name = "tmdbId", unique = true)
+    @Column(name = "tmdbId")
     private Long tmDBId;
 
     @Column(name = "title")

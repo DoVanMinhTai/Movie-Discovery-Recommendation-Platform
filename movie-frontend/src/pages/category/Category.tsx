@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom"
+import { useSearchParams, useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query";
 import { getAllGenre, getMoviesFilter } from "../../modules/category/service/CategoryService";
 import MovieGrid from "../../common/components/MovieGrid";
@@ -7,8 +7,10 @@ import { useState } from "react";
 
 export default function Category() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
     const genreId = searchParams.get('genre') || '';
     const sortByParam = searchParams.get('sortBy') || 'POPULARITY';
+    const dtypeParam = searchParams.get('dtype') || '';
     const [page, setPage] = useState(0);
 
     const genresQuery = useQuery({
@@ -16,19 +18,32 @@ export default function Category() {
         queryFn: getAllGenre,
         staleTime: Infinity,
     });
+
     const movieQuery = useQuery({
-        queryKey: ['movies', sortByParam, genreId, page],
-        queryFn: () => getMoviesFilter({ sortBy: sortByParam, genre: genreId, page }),
+        queryKey: ['movies', sortByParam, genreId, dtypeParam, page],
+        queryFn: () => getMoviesFilter({ sortBy: sortByParam, genre: genreId, dtype: dtypeParam, page }),
         placeholderData: (pre) => pre,
     });
 
     const handleSortChange = (newSortBy: string) => {
-        setSearchParams({ sortBy: newSortBy, genre: genreId });
+        setPage(0);
+        setSearchParams({ sortBy: newSortBy, genre: genreId, dtype: dtypeParam });
     }
 
     const handleGenreChange = (newGenreId: string) => {
         setPage(0);
-        setSearchParams({ sortBy: sortByParam, genre: newGenreId });
+        setSearchParams({ sortBy: sortByParam, genre: newGenreId, dtype: dtypeParam });
+    }
+
+    const handleDtypeChange = (newDtype: string) => {
+        if (newDtype === 'MOVIE') {
+            navigate('/movies');
+        } else if (newDtype === 'SERIES') {
+            navigate('/series');
+        } else {
+            setPage(0);
+            setSearchParams({ sortBy: sortByParam, genre: genreId, dtype: '' });
+        }
     }
 
     const banner_category_image = "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1280";
@@ -54,8 +69,10 @@ export default function Category() {
                         genres={genresQuery.data || []}
                         activeSort={sortByParam}
                         activeGenre={genreId}
+                        activeDtype={dtypeParam}
                         onSortChange={handleSortChange}
                         onGenreChange={handleGenreChange}
+                        onDtypeChange={handleDtypeChange}
                     />
                 </aside>
 

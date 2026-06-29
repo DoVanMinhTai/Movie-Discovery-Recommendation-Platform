@@ -5,16 +5,21 @@ import MovieRow from "../../modules/movie/components/MovieRow.tsx";
 import type { MovieThumbnailGetVm } from "../../modules/movie/model/MovieThumbnailGetVm.ts";
 import { getHeroMovie, getMoviePreferredGenres, getTop10, getTrending } from "../../modules/homepage/service/HomePageService.ts";
 import { ContentType } from "../../modules/homepage/model/enum/ContentType.ts";
+import { getCollaborativeFiltering } from "../../modules/movie/service/MovieService.ts";
 
 export default function HomePage() {
-
-
   const [moviesTop10, setMoviesTop10] = useState<MovieThumbnailGetVm[]>([]);
   const [moviesTrending, setMoviesTrending] = useState<MovieThumbnailGetVm[]>([]);
   const [movieHero, setMovieHero] = useState<MovieHeroGetVm>();
   const [preferredGenres, setPreferredGenres] = useState<Record<string, MovieThumbnailGetVm[]>>({});
+  const [cfRecommendations, setCfRecommendations] = useState<MovieThumbnailGetVm[]>([]);
 
   useEffect(() => {
+    // const userId = localStorage.getItem("userId");
+    // getCollaborativeFiltering(Number(userId)).then((data) => {
+    //   setCfRecommendations(data);
+    // });
+
     getHeroMovie().then((data) => {
       setMovieHero(data);
     });
@@ -35,6 +40,12 @@ export default function HomePage() {
 
   return (<>
     {movieHero && <Banner movie={movieHero} />}
+
+    {/* <MovieRow
+      key="cf"
+      title="Gợi ý dành riêng cho bạn"
+      movies={cfRecommendations}
+    /> */}
 
     <MovieRow
       key="top10"
