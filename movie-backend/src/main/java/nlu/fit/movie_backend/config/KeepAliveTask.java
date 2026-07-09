@@ -5,12 +5,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(
+    name = "keepalive.enabled", havingValue = "true", matchIfMissing = false)
 public class KeepAliveTask {
-    @Scheduled(fixedRate = 600000)
+    
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @Scheduled(fixedRate = 600000, initialDelay = 60000)
     public void keepAlive() {
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "https://movie-discovery-recommendation-platform.onrender.com/actuator/health";
+            String url = "https://<YOUR-HF-SPACE>.hf.space/actuator/health";
             restTemplate.getForObject(url, String.class);
             System.out.println("Self-ping sent to keep server awake.");
         } catch (Exception e) {

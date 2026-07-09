@@ -3,32 +3,7 @@ from pathlib import Path
 from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
-from dotenv import load_dotenv
 
-
-def load_project_env():
-    current_dir = Path(__file__).resolve().parent
-    
-    # Navigate to project root (2 levels up: app/core -> app -> movie-recommendation -> project root)
-    project_root = current_dir.parent.parent.parent
-    
-    env_mode = os.getenv('ENV', 'dev') 
-    env_file = project_root / f'.env.{env_mode}'
-    
-    if not env_file.exists():
-        env_file = project_root / '.env'
-    
-    if env_file.exists():
-        load_dotenv(env_file, override=True)
-        print(f"[OK] Loaded environment from: {env_file}")
-        return env_file
-    else:
-        print(f"[WARNING] No environment file found at: {env_file}")
-        print(f"   Searched in: {project_root}")
-        return None
-
-
-load_project_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
@@ -40,7 +15,7 @@ class Settings(BaseSettings):
     
     database_url: str = Field(
         default="postgresql://postgres:postgres@localhost:5432/postgres",
-        validation_alias="DB_URL_PYTHON"
+        validation_alias="DATABASE_URL"
     )
     
     ES_HOST: str = Field(default="http://localhost:9200", validation_alias="ES_HOST")
@@ -60,7 +35,6 @@ class Settings(BaseSettings):
     )
     
     model_config = SettingsConfigDict(
-        env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore"

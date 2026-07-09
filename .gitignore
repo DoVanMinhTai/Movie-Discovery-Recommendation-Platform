@@ -42,17 +42,19 @@ build/
 .DS_Store
 
 # Environment files (IMPORTANT!)
-.env
+# Root-anchored: protect root-level credential files
+/.env
+/.env.prod
+# Glob patterns: protect Service_Env_Files in all subdirectories
+**/.env
+**/.env.local
+**/.env.production
+**/.env.prod
+# Wildcard catch-all (must come before negation rules)
 .env.*
+# Negation rules (MUST appear after all wildcard rules above)
 !.env.example
-
-# Service-specific old env files (deprecated)
-movie-backend/.env
-movie-backend/.env.production
-movie-chatbot/.env
-movie-recommendation/.env
-movie-frontend/.env
-data-enrichment/.env
+!**/.env.example
 
 # Data files
 data-enrichment/*.csv

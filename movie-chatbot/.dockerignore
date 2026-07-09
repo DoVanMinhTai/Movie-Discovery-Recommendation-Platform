@@ -1,0 +1,22 @@
+# Prevent real .env files from being copied into the Docker image
+.env
+.env.*
+!.env.example
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docs (keep README out of image)
+*.md
+
+# Docker files themselves
+Dockerfile
+.dockerignore
