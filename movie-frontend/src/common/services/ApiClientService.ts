@@ -26,6 +26,11 @@ axiosInstance.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`
     }
 
+    const hfToken = import.meta.env.VITE_HF_TOKEN;
+    if (hfToken) {
+        config.headers['X-HF-Token'] = hfToken;
+    }
+
     return config;
 }, (error) => {
     if (error.response) {
