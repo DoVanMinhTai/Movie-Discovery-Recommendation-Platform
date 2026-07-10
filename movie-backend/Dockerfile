@@ -20,7 +20,7 @@ USER spring:spring
 
 COPY --from=build /app/target/*.jar app.jar
 
-ENV JAVA_OPTS="-Xms256m -Xmx350m -XX:+UseSerialGC -Djava.security.egd=file:/dev/./urandom"
+ENV JAVA_OPTS="-Xms128m -Xmx300m -XX:+UseSerialGC -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -XX:+UseCompressedOops -Xss256k -XX:MaxMetaspaceSize=128m -Djava.security.egd=file:/dev/./urandom -Dspring.jmx.enabled=false"
 
 EXPOSE 8080
 

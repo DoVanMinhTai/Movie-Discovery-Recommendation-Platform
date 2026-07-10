@@ -1,0 +1,4 @@
+hypothesis
+pytest
+pyyaml
+python-dotenv
