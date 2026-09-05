@@ -7,16 +7,16 @@ An advanced, end-to-end movie recommendation ecosystem that leverages the power 
 # Project Gallery
 |  |  |
 |:---:|:---:|
-| ![Image 1](./screenshots/image1.png) | ![Image 2](./screenshots/image2.png) |
+| ![Image 1]() | ![Image 2]() |
 |  |  |
 |:---:|:---:|
-| ![Image 3](./screenshots/image3.png) | ![Image 4](./screenshots/image4.png) |
+| ![Image 3]() | ![Image 4]() |
 |  |  |
 |:---:|:---:|
-| ![Image 5](./screenshots/image4.png) | ![Image 6](./screenshots/image6.png) |
+| ![Image 5]() | ![Image 6]() |
 |  |  |
 |:---:|:---:|
-| ![Image 7](./screenshots/image3.png) | |
+| ![Image 7]() | |
 
 # Getting Started
 
