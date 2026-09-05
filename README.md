@@ -2,7 +2,7 @@
 An advanced, end-to-end movie recommendation ecosystem that leverages the power of Generative AI, Semantic Search, and Hybrid Filtering. This project demonstrates a production-grade architecture combining Java's robustness with Python's AI capabilities.
 
 # System Architecture
-![System Architecture](./screenshots/ApplicationArchitecture.png)
+![System Architecture]()
 
 # Project Gallery
 |  |  |
